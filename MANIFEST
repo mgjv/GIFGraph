@@ -2,6 +2,7 @@ MANIFEST
 README
 Makefile.PL
 GIFgraph.pm
+GIFgraph/Convert.pm
 GIFgraph/area.pm
 GIFgraph/axestype.pm
 GIFgraph/bars.pm
