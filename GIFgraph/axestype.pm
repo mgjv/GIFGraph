@@ -5,7 +5,10 @@
 #	Name:
 #		GIFgraph::axestype.pm
 #
-# $Id: axestype.pm,v 1.4 1999-12-26 10:59:19 mgjv Exp $
+#	This package is not in use for GIFgraph itself anymore, but it's
+#	here in case anyone subclasses this. Hopefully it will still work.
+#
+# $Id: axestype.pm,v 1.5 1999-12-29 12:17:44 mgjv Exp $
 #
 #==========================================================================
 
@@ -15,6 +18,11 @@ use GIFgraph;
 use GD::Graph::axestype;
 @GIFgraph::axestype::ISA = qw(GD::Graph::axestype GIFgraph);
 
-# Intentionally left blank
+sub plot 
+{ 
+	my $self = shift;
+	my $gd   = $self->SUPER::plot(@_);
+	$self->_old_plot($gd);
+}
 
 1;

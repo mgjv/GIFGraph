@@ -18,7 +18,7 @@
 #		GIFgraph::pie
 #		GIFgraph::mixed
 #
-# $Id: GIFgraph.pm,v 1.5 1999-12-26 11:08:17 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.6 1999-12-29 12:17:44 mgjv Exp $
 #
 #==========================================================================
 
@@ -87,13 +87,16 @@ B<GIFgraph> is a I<perl5> module to create and display GIF output
 for a graph.
 
 GIFgraph is nothing more than a wrapper around GD::Graph, and its use is
-deprecated. it only exists for backward compatibility. The documentation
+deprecated. It only exists for backward compatibility. The documentation
 for all the functionality can be found in L<GD::Graph>.
 
 This module should work with all versions of GD, but it has only been
 tested with version 1.19 and above. Version 1.19 is the last version
 that produces GIF output directly. Any version later than that requires
-a conversion step.
+a conversion step. The default distribution of GIFgraph uses
+Image::Magick for this. If you'd like to use something else, please
+replace the sub png2gif in GIFgraph::Convert with something more to your
+liking.
 
 =head1 EXAMPLE
 
@@ -102,7 +105,13 @@ a conversion step.
 Note that if you use GIFgraph with a GD version 1.20 or up that any
 included logos will have to be in the PNG format. The only time that GIF
 comes into play is _after_ GD has done its work, and the PNG gets
-converted to GIF.
+converted to GIF. There are no plans to change that behaviour; it's too
+much work, and for you, the user, it is a one time conversion of these
+pictures, when you move from GD < 1.20 to GD >= 1.20.
+
+=head1 SEE ALSO
+
+GD::Graph(3), Chart::PNGgraph(3).
 
 =head1 AUTHOR
 
