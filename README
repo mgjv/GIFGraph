@@ -36,11 +36,11 @@ function being to provide a backward compatible interface to GD.
 GD VERSIONS
 
 If you want to use a GD version 1.20 or up, you will need to have
-something installed that can do an on-the-fly conversion of PNG to GIF. 
-I recommend that you use Image::Magick, since that is what the GIfgraph
+something installed that can do an on-the-fly conversion of PNG to GIF.
+I recommend that you use Image::Magick, since that is what the GIFgraph
 module has been setup to use. If you don't want to, or can't install
-Image::Magick, you will have to edit the file GIFgraph.pm to provide a
-different sub _png2gif.
+Image::Magick, you will have to edit the file GIFgraph/Convert.pm to
+provide a different sub png2gif.
 
 AUTHOR
 
