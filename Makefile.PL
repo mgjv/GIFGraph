@@ -1,5 +1,5 @@
 # This -*- perl -*- script makes the Makefile
-# $Id: Makefile.PL,v 1.5 1999-12-30 04:13:34 mgjv Exp $
+# $Id: Makefile.PL,v 1.6 2000-01-04 05:55:34 mgjv Exp $
  
 #--- Distribution section ---
 
@@ -15,6 +15,8 @@ WriteMakefile(
 			 'AUTHOR'		=> 'Martien Verbruggen (mgjv@comdyn.com.au)',
 			) : ()
 		),
+
+		'PMLIBDIRS' 		=> [ qw(Bundle GIFgraph) ],
 
 		'PREREQ_PM'			=> { 
 			'GD::Graph' => '1.20',
