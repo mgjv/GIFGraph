@@ -18,14 +18,16 @@
 #		GIFgraph::area
 #		GIFgraph::pie
 #
-# $Id: GIFgraph.pm,v 1.1.1.5 1999-10-10 12:37:12 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.1.1.6 1999-10-10 12:37:32 mgjv Exp $
 #
 #==========================================================================
 
 require 5.003;
 
-#use strict qw(vars refs subs);
 use strict qw(vars refs);
+#use strict;		# TODO work with file handles, GIFLOGO
+
+use vars qw(@ISA);
 
 # Use Lincoln Stein's GD and Thomas Boutell's libgd.a
 use GD;
@@ -39,11 +41,11 @@ use GD;
 package GIFgraph;
 
 $GIFgraph::prog_name    = 'GIFgraph.pm';
-$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.5 $';
+$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.6 $';
 $GIFgraph::prog_version = 
 	($GIFgraph::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
-$GIFgraph::VERSION = '1.01';
+$GIFgraph::VERSION = '1.02';
 
 # Some tools and utils
 use GIFgraph::colour qw(:colours);
@@ -734,6 +736,17 @@ Default: undef.
 Print every I<x_label_skip>th number under the tick on the x axis, and
 every I<y_label_skip>th number next to the tick on the y axis.
 Default: 1 for both.
+
+=item x_all_ticks
+
+Force a print of all the x ticks, even if x_label_skip is set to a value
+Default: 0.
+
+=item x_labels_vertical
+
+If set to a true value, the X axis labels will be printed vertically.
+This can be handy in case these labels get very long.
+Default: 0.
 
 =item x_plot_values, y_plot_values
 

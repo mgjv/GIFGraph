@@ -1,3 +1,11 @@
+Mon Jan 19 1998
+
+- Fixed some bugs (see file BUGS, version 1.02)
+- Added option x_all_ticks, to force all x ticks to be printed, even
+  if x_label_skip is set.
+- Added option x_labels_vertical, to print x labels vertical
+	(Thanks to DBelcher <dbelcher@cyberhino.com> for a patch)
+
 Fri Jan  9 1998
 
 - Fixed some bugs (see file BUGS, version 1.01)

@@ -11,12 +11,12 @@ print STDERR "Processing sample 1-2\n";
 $my_graph = new GIFgraph::bars();
 
 $my_graph->set( 
-	'x_label' => 'X Label',
-	'y_label' => 'Y label',
-	'title' => 'Two data sets',
-	'y_max_value' => 40,
-	'y_tick_number' => 8,
-	'y_label_skip' => 2,
+	x_label => 'X Label',
+	y_label => 'Y label',
+	title => 'Two data sets',
+	y_max_value => 40,
+	y_tick_number => 8,
+	y_label_skip => 2,
 );
 
 $my_graph->set_legend( 'Data set 1', 'Data set 2' );

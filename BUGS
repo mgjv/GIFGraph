@@ -3,6 +3,10 @@ UNRESOLVED BUGS
 + two_axes doesn't work correctly with negative numbers and zero_axis
 + y_max_value doesn't get adapted for bars and area if all negative values
 + init_graph does too much work for pies. Needs to be split up.
++ When data values are large, and x_min_value is larger than 0, the
+  horizontal axis doesn't get drawm correctly. (check zero_axis option)
+  (see sample41)
+  (problem defined after report from jackb@pgw.picker.com)
 
 NOT REALLY BUGS
 
@@ -11,6 +15,19 @@ NOT REALLY BUGS
 - A positive y_min_value doesn't work with bars or area, bars and area 
   always are set off against 0. Wether this is a bug, or wanted behaviour
   might be a point for discussion.
+
+FIXED IN 1.02
+
+! GIFgraph::Colour::read_rgb() falls over on comment lines.
+	(reported: adamm@genomecorp.com)
+! GIFgraph::Colour::read_rgb() contains inline my-declaration of $line, 
+  breaks perl5.003 
+	(reported: Pat Becker <pmb@iss.net>)
+! if a colour name doesn't exist, program falls over with a cryptic message
+  about some undefined array index.
+	(reported: adamm@genomecorp.com)
+! x_label_skip doesn't skip ticks. (also added x_all_ticks option)
+	(reported: adamm@genomecorp.com)
 
 FIXED IN 1.01
 
@@ -32,7 +49,7 @@ FIXED IN 1.00
 FIXED IN 0.99
 
 ! Cannot use any 'null' values in graphs
-	Lee Khandelwal <lee_khandelwal@il.us.swissbank.com>
+	(reported: Lee Khandelwal <lee_khandelwal@il.us.swissbank.com>)
 
 FIXED IN 0.95
 
@@ -43,10 +60,10 @@ FIXED IN 0.94
 ! area doesn't work with negative numbers
 ! Right axis doesn't get drawn when box_axis == 0 and two_axes == 1
 ! Color on front of 3D pies wrong with some data sets
-	Reported by various people
+	(reported: by various people)
 
 FIXED IN 0.91
 
 ! Segmentation fault for 3d pies where last slice is small
-	Reported by Dave Stafford <Dave.Stafford@mpn.cp.philips.com>
+	(reported: Dave Stafford <Dave.Stafford@mpn.cp.philips.com>)
 

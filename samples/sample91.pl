@@ -11,10 +11,10 @@ $my_graph = new GIFgraph::pie( 250, 200 );
 #$my_graph = new GIFgraph::pie( );
 
 $my_graph->set( 
-	'title' => 'A Pie Chart',
-	'label' => 'Label',
-	'axislabelclr' => 'black',
-	'pie_height' => 36,
+	title => 'A Pie Chart',
+	label => 'Label',
+	axislabelclr => 'black',
+	pie_height => 36,
 );
 
 $my_graph->plot_to_gif( "sample91.gif", \@data );

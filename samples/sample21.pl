@@ -11,12 +11,12 @@ print STDERR "Processing sample 2-1\n";
 $my_graph = new GIFgraph::area();
 
 $my_graph->set( 
-	'x_label' => 'X Label',
-	'y_label' => 'Y label',
-	'title' => 'An Area Graph',
-	'y_max_value' => 40,
-	'y_tick_number' => 8,
-	'y_label_skip' => 2,
+	x_label => 'X Label',
+	y_label => 'Y label',
+	title => 'An Area Graph',
+	y_max_value => 40,
+	y_tick_number => 8,
+	y_label_skip => 2,
 );
 
 $my_graph->set_legend( 'one', 'two' );

@@ -11,7 +11,7 @@
 #		Package of colour manipulation routines, to be used 
 #		with GIFgraph.
 #
-# $Id: colour.pm,v 1.1.1.5 1999-10-10 12:37:16 mgjv Exp $
+# $Id: colour.pm,v 1.1.1.6 1999-10-10 12:37:37 mgjv Exp $
 #
 #==========================================================================
 
@@ -25,7 +25,7 @@ require Exporter;
 @GIFgraph::colour::ISA = qw( Exporter );
 
 $GIFgraph::colour::prog_name    = 'GIFgraph::colour.pm';
-$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.5 $';
+$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.6 $';
 $GIFgraph::colour::prog_version = 
 	($GIFgraph::colour::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
@@ -108,10 +108,22 @@ $GIFgraph::colour::prog_version =
 		($_[0] + $_[1] + $_[2])/(3*0xFF); 
 	}
 
+my %WarnedColours = ();
+
 	# return the RGB values of the colour name
     sub _rgb 
 	{ 
-		@{$RGB{$_[0]}}; 
+		my $clr = shift;
+		my $rgb_ref;
+		$rgb_ref = $RGB{$clr} or do {
+			$rgb_ref = $RGB{'black'};
+			unless ($WarnedColours{$clr})
+			{
+				$WarnedColours{$clr} = 1;
+				warn "Colour $clr is not defined, reverting to black"; 
+			}
+		};
+		@{$rgb_ref};
 	}
 
     sub version 
@@ -141,6 +153,8 @@ $GIFgraph::colour::prog_version =
 	# R G B colour name
 	#
 	# Fields can be separated by any number of whitespace
+	# Lines starting with an exclamation mark (!) are comment and 
+	# will be ignored.
 	#
 	# returns number of colours read
 
@@ -148,13 +162,19 @@ $GIFgraph::colour::prog_version =
 	{
 		my $fn = shift;
 		my $n = 0;
+		my $line;
 
-		open(RGB, "$fn") or return 0;
+		open(RGB, $fn) or return 0;
 
-		while (defined(my $line = <RGB>))
+		while (defined($line = <RGB>))
 		{
+			next if ($line =~ /\s*!/);
 			chomp($line);
+
+			# remove leading white space
 			$line =~ s/^\s+//;
+
+			# get the colours
 			my ($r, $g, $b, $name) = split(/\s+/, $line, 4);
 			
 			# Ignore bad lines

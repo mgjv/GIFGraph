@@ -11,12 +11,12 @@ print STDERR "Processing sample 1-5\n";
 $my_graph = new GIFgraph::bars();
 
 $my_graph->set( 
-	'x_label' => 'X Label',
-	'y_label' => 'Y label',
-	'title' => 'Bars on top of each other (incremental)',
-	'y_tick_number' => 8,
-	'y_label_skip' => 2,
-	'overwrite' => 2,
+	x_label => 'X Label',
+	y_label => 'Y label',
+	title => 'Bars on top of each other (incremental)',
+	y_tick_number => 8,
+	y_label_skip => 2,
+	overwrite => 2,
 );
 
 $my_graph->set_legend( 'offset', 'increment');

@@ -10,16 +10,16 @@ print STDERR "Processing sample 1-6\n";
 $my_graph = new GIFgraph::bars();
 
 $my_graph->set( 
-	'x_label' => 'Day',
-	'y_label' => 'AUD',
-	'title' => 'Credits and Debits',
-	'y_tick_number' => 12,
-	'y_label_skip' => 2,
-	'overwrite' => 1, 
-	'dclrs' => [ qw( green lred ) ],
-	'axislabelclr' => 'black',
-	'legend_placement' => 'RB',
-	'zero_axis_only' => 0,
+	x_label => 'Day',
+	y_label => 'AUD',
+	title => 'Credits and Debits',
+	y_tick_number => 12,
+	y_label_skip => 2,
+	overwrite => 1, 
+	dclrs => [ qw( green lred ) ],
+	axislabelclr => 'black',
+	legend_placement => 'RB',
+	zero_axis_only => 0,
 
 );
 

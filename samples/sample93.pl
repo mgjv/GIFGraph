@@ -10,7 +10,7 @@ print STDERR "Processing sample 9-3\n";
 $my_graph = new GIFgraph::pie( 200, 200 );
 
 $my_graph->set( 
-	'start_angle' => 90,
+	start_angle => 90,
 	'3d' => 0
 );
 

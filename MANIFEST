@@ -46,6 +46,7 @@ samples/sample16.htm
 samples/sample21.htm
 samples/sample31.htm
 samples/sample41.htm
+samples/sample42.htm
 samples/sample51.htm
 samples/sample52.htm
 samples/sample91.htm
@@ -60,10 +61,12 @@ samples/sample16.pl
 samples/sample21.pl
 samples/sample31.pl
 samples/sample41.pl
+samples/sample42.pl
 samples/sample51.pl
 samples/sample52.pl
 samples/sample91.pl
 samples/sample92.pl
 samples/sample93.pl
+samples/sample42.dat
 samples/rgb.txt
 samples/Makefile

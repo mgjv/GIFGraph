@@ -11,16 +11,16 @@ print STDERR "Processing sample 3-1\n";
 $my_graph = new GIFgraph::points();
 
 $my_graph->set( 
-	'x_label' => 'X Label',
-	'y_label' => 'Y label',
-	'title' => 'A Points Graph',
-	'y_max_value' => 40,
-	'y_tick_number' => 8,
-	'y_label_skip' => 2, 
-	'legend_placement' => 'RC',
-	'long_ticks' => 1,
-	'marker_size' => 6,
-	'markers' => [ 1, 7, 5 ],
+	x_label => 'X Label',
+	y_label => 'Y label',
+	title => 'A Points Graph',
+	y_max_value => 40,
+	y_tick_number => 8,
+	y_label_skip => 2, 
+	legend_placement => 'RC',
+	long_ticks => 1,
+	marker_size => 6,
+	markers => [ 1, 7, 5 ],
 );
 
 $my_graph->set_legend( qw( one two ) );

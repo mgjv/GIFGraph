@@ -10,11 +10,11 @@ print STDERR "Processing sample 9-2\n";
 $my_graph = new GIFgraph::pie( 250, 200 );
 
 $my_graph->set( 
-	'title' => 'A Pie Chart',
-	'label' => 'Label',
-	'axislabelclr' => 'white',
-	'dclrs' => [ 'lblue' ],
-	'accentclr' => 'lgray',
+	title => 'A Pie Chart',
+	label => 'Label',
+	axislabelclr => 'white',
+	dclrs => [ 'lblue' ],
+	accentclr => 'lgray',
 );
 
 $my_graph->plot_to_gif( "sample92.gif", \@data );

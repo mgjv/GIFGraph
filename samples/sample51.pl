@@ -13,15 +13,15 @@ print STDERR "Processing sample 5-1\n";
 $my_graph = new GIFgraph::lines();
 
 $my_graph->set( 
-	'x_label' => 'Month',
-	'y_label' => 'Measure of success',
-	'title' => 'A Simple Line Graph',
-	'y_max_value' => 8,
-	'y_min_value' => -6,
-	'y_tick_number' => 14,
-	'y_label_skip' => 2,
-	'box_axis' => 0,
-	'line_width' => 3,
+	x_label => 'Month',
+	y_label => 'Measure of success',
+	title => 'A Simple Line Graph',
+	y_max_value => 8,
+	y_min_value => -6,
+	y_tick_number => 14,
+	y_label_skip => 2,
+	box_axis => 0,
+	line_width => 3,
 );
 
 $my_graph->plot_to_gif( "sample51.gif", \@data );

@@ -11,12 +11,12 @@ print STDERR "Processing sample 1-1\n";
 $my_graph = new GIFgraph::bars();
 
 $my_graph->set( 
-	'x_label' => 'X Label',
-	'y_label' => 'Y label',
-	'title' => 'A Simple Bar Chart',
-	'y_max_value' => 8,
-	'y_tick_number' => 8,
-	'y_label_skip' => 2,
+	x_label => 'X Label',
+	y_label => 'Y label',
+	title => 'A Simple Bar Chart',
+	y_max_value => 8,
+	y_tick_number => 8,
+	y_label_skip => 2,
 );
 
 $my_graph->plot_to_gif( "sample11.gif", \@data );

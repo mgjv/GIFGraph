@@ -1,3 +1,4 @@
+! $XConsortium: rgb.txt,v 10.41 94/02/20 18:39:36 rws Exp $
 199  21 133		medium violet red
 176 196 222		light steel blue
 102 139 139		paleturquoise4
@@ -8,6 +9,7 @@
 154 205  50		yellowgreen
 178  58 238		darkorchid2
  69 139 116		aquamarine4
+! This is a comment
  71  60 139		slateblue4
 131 111 255		slateblue1
 192 255  62		olivedrab1

@@ -11,17 +11,18 @@ print STDERR "Processing sample 1-4\n";
 $my_graph = new GIFgraph::bars( );
 
 $my_graph->set( 
-	'x_label' => 'X Label',
-	'y1_label' => 'Y1 label',
-	'y2_label' => 'Y2 label',
-	'title' => 'Using two axes',
-	'y1_max_value' => 40,
-	'y2_max_value' => 8,
-	'y_tick_number' => 8,
-	'y_label_skip' => 2,
-	'long_ticks' => 1,
-	'two_axes' => 1,
-	'legend_placement' => 'RT',
+	x_label => 'X Label',
+	y1_label => 'Y1 label',
+	y2_label => 'Y2 label',
+	title => 'Using two axes',
+	y1_max_value => 40,
+	y2_max_value => 8,
+	y_tick_number => 8,
+	y_label_skip => 2,
+	long_ticks => 1,
+	two_axes => 1,
+	legend_placement => 'RT',
+	x_labels_vertical => 1,
 );
 
 $my_graph->set_legend( 'left axis', 'right axis');
