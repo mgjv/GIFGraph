@@ -5,22 +5,27 @@ UNRESOLVED BUGS
 + y_min_value doesn't automatically get adapted for bars and area if 0
   is not included in the range
 + init_graph does too much work for pies. Needs to be split up.
-+ logo positioning and legends don't work very well together.
 
 NOT REALLY BUGS
 
+- The whole naming of x_label.*, x_tick.*, x_axis.* is very confused
+  and confusing. Hard to fix without breaking backward compatibility.
 - overwrite == 2 only makes sense if all the data is either positive,
   or negative
 - A positive y_min_value doesn't work with bars or area, bars and area 
   always are set off against 0. Wether this is a bug, or wanted behaviour
   might be a point for discussion.
 
+FIXED IN 1.04
+
+! logo positioning and legends don't work very well together.
+
 FIXED IN 1.03
 
 ! When data values are large, and x_min_value is larger than 0, the
   horizontal axis doesn't get drawm correctly. (check zero_axis option)
   (see sample41)
-  (problem defined after report from jackb@pgw.picker.com)
+  (problem found after report from jackb@pgw.picker.com)
 
 FIXED IN 1.02
 

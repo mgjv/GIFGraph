@@ -1,13 +1,11 @@
 #==========================================================================
-#			   Copyright (c) 1995 Martien Verbruggen
-#			   Copyright (c) 1996 Commercial Dynamics Pty Ltd
-#			   Copyright (c) 1997 Martien Verbruggen
+#			   Copyright (c) 1995-1998 Martien Verbruggen
 #--------------------------------------------------------------------------
 #
 #	Name:
 #		GIFgraph::bars.pm
 #
-# $Id: bars.pm,v 1.1.1.5 1999-10-10 12:39:50 mgjv Exp $
+# $Id: bars.pm,v 1.1.1.6 1999-10-10 12:40:28 mgjv Exp $
 #
 #==========================================================================
  
@@ -30,12 +28,18 @@ use GIFgraph::utils qw(:all);
 
 		if ( $s->{overwrite} ) 
 		{
-			$s->draw_data_overwrite($g,$d);
+			$s->draw_data_overwrite($g, $d);
 		} 
 		else 
 		{
-			$s->draw_data_side_by_side($g,$d);
+			$s->SUPER::draw_data($g, $d);
 		}
+
+		# redraw the 'zero' axis
+		$g->line( 
+			$s->{left}, $s->{zeropoint}, 
+			$s->{right}, $s->{zeropoint}, 
+			$s->{fgci} );
 	}
  
 	# Draws the bars on top of each other
@@ -90,66 +94,56 @@ use GIFgraph::utils qw(:all);
 				$bottom = $t if ($s->{overwrite} == 2);
 			}
 		}
-
-		# redraw the 'zero' axis
-		$g->line( 
-			$s->{left}, $s->{zeropoint}, 
-			$s->{right}, $s->{zeropoint}, 
-			$s->{fgci} );
 	 }
 
-	# Draw the bars side by side
- 
-	sub draw_data_side_by_side { # GD::Image, \@data
-
+	sub draw_data_set($$$)
+	{
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
+		my $ds = shift;
 
-		my $ds;
-		foreach $ds (1..$s->{numsets}) 
+		# Pick a data colour
+		my $dsci = $s->set_clr( $g, $s->pick_data_clr($ds) );
+
+		my $i;
+		for $i (0..$s->{numpoints}) 
 		{
-			# Pick a data colour
-			my $dsci = $s->set_clr( $g, $s->pick_data_clr($ds) );
+			next if (!defined($$d[$i]));
 
-			my $i;
-			for $i (0..$s->{numpoints}) 
+			# get coordinates of top and center of bar
+			my ($xp, $t) = $s->val_to_pixel($i+1, $$d[$i], $ds);
+
+			# calculate left and right of bar
+			my ($l, $r);
+
+			if ($s->{mixed})
 			{
-				next if (!defined($$d[$ds][$i]));
-
-				# get coordinates of top and center of bar
-				my ($xp, $t) = $s->val_to_pixel($i+1, $$d[$ds][$i], $ds);
-
-				# calculate left and right of bar
-				my $l = 
-					$xp - $s->{x_step}/2 +
+				$l = $xp - _round($s->{x_step}/2);
+				$r = $xp + _round($s->{x_step}/2);
+			}
+			else
+			{
+				$l = $xp - $s->{x_step}/2 +
 					_round(($ds-1) * $s->{x_step}/$s->{numsets});
-				my $r = 
-					$xp - $s->{x_step}/2 +
+				$r = $xp - $s->{x_step}/2 +
 					_round($ds * $s->{x_step}/$s->{numsets});
+			}
 
-				# draw the bar
-				if ($$d[$ds][$i] >= 0)
-				{
-					# positive value
-					$g->filledRectangle( $l, $t, $r, $s->{zeropoint}, $dsci );
-					$g->rectangle( $l, $t, $r, $s->{zeropoint}, $s->{acci} );
-				}
-				else
-				{
-					# negative value
-					$g->filledRectangle( $l, $s->{zeropoint}, $r, $t, $dsci );
-					$g->rectangle( $l, $s->{zeropoint}, $r, $t, $s->{acci} );
-				}
-
+			# draw the bar
+			if ($$d[$i] >= 0)
+			{
+				# positive value
+				$g->filledRectangle( $l, $t, $r, $s->{zeropoint}, $dsci );
+				$g->rectangle( $l, $t, $r, $s->{zeropoint}, $s->{acci} );
+			}
+			else
+			{
+				# negative value
+				$g->filledRectangle( $l, $s->{zeropoint}, $r, $t, $dsci );
+				$g->rectangle( $l, $s->{zeropoint}, $r, $t, $s->{acci} );
 			}
 		}
-
-		# redraw the 'zero' axis
-		$g->line( 
-			$s->{left}, $s->{zeropoint}, 
-			$s->{right}, $s->{zeropoint}, 
-			$s->{fgci} );
 	}
  
 } # End of package GIFgraph::bars

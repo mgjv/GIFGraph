@@ -1,13 +1,11 @@
 #==========================================================================
-#			   Copyright (c) 1995 Martien Verbruggen
-#			   Copyright (c) 1996 Commercial Dynamics Pty Ltd
-#			   Copyright (c) 1997 Martien Verbruggen
+#			   Copyright (c) 1995-1998 Martien Verbruggen
 #--------------------------------------------------------------------------
 #
 #	Name:
 #		GIFgraph::pie.pm
 #
-# $Id: pie.pm,v 1.1.1.6 1999-10-10 12:39:49 mgjv Exp $
+# $Id: pie.pm,v 1.1.1.7 1999-10-10 12:40:27 mgjv Exp $
 #
 #==========================================================================
 

@@ -1,13 +1,11 @@
 #==========================================================================
-#			   Copyright (c) 1995 Martien Verbruggen
-#			   Copyright (c) 1996 Commercial Dynamics Pty Ltd
-#			   Copyright (c) 1997 Martien Verbruggen
+#			   Copyright (c) 1995-1998 Martien Verbruggen
 #--------------------------------------------------------------------------
 #
 #	Name:
 #		GIFgraph::linespoints.pm
 #
-# $Id: linespoints.pm,v 1.1.1.6 1999-10-10 12:39:50 mgjv Exp $
+# $Id: linespoints.pm,v 1.1.1.7 1999-10-10 12:40:28 mgjv Exp $
 #
 #==========================================================================
 
@@ -35,17 +33,18 @@ use GIFgraph::points;
 	}
 
 	# PRIVATE
-	sub draw_data($$) # GD::Image, \@data
+
+	sub draw_data_set($$$) # GD::Image, \@data, $ds
 	{
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
+		my $ds = shift;
 
-		$s->GIFgraph::points::draw_data( $g, $d );
-		$s->GIFgraph::lines::draw_data( $g, $d );
-
+		$s->GIFgraph::points::draw_data_set( $g, $d, $ds );
+		$s->GIFgraph::lines::draw_data_set( $g, $d, $ds );
 	}
- 
+
 	sub draw_legend_marker($$$$) # (GD::Image, data_set_number, x, y)
 	{
 		my $s = shift;

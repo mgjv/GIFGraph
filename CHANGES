@@ -1,4 +1,19 @@
+Tue August 18 1998
+
+- Added rudimentary mixed type graph
+
+Mon August 17 1998
+
+- Added control over axis label placement through x_label_position and
+  y_label_position.
+- Added possibility to call a coderef to format the y labels. See
+  y_number_format.
+	(Idea: brian d foy <comdog@computerdog.com>)
+- Fixed some bugs (see file BUGS, version 1.04)
+
 Fri August 14 1998
+
+- Uploaded version 1.03 to CPAN
 
 - Finally able to make some fixes
 - Changed defaults for zero_axis and zero_axis_only to 0. Were both 1.

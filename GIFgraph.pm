@@ -1,6 +1,5 @@
 #==========================================================================
-#              Copyright (c) 1995 Martien Verbruggen
-#              Copyright (c) 1996 Commercial Dynamics Pty Ltd
+#              Copyright (c) 1995-1998 Martien Verbruggen
 #--------------------------------------------------------------------------
 #
 #	Name:
@@ -17,15 +16,15 @@
 #		GIFgraph::linespoints
 #		GIFgraph::area
 #		GIFgraph::pie
+#		GIFgraph::mixed
 #
-# $Id: GIFgraph.pm,v 1.1.1.7 1999-10-10 12:39:45 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.1.1.8 1999-10-10 12:40:22 mgjv Exp $
 #
 #==========================================================================
 
 require 5.004;
 
-use strict qw(vars refs);
-#use strict;		# TODO work with file handles, GIFLOGO
+use strict;
 
 use vars qw(@ISA);
 
@@ -41,11 +40,11 @@ use GD;
 package GIFgraph;
 
 $GIFgraph::prog_name    = 'GIFgraph.pm';
-$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.7 $';
+$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.8 $';
 $GIFgraph::prog_version = 
 	($GIFgraph::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
-$GIFgraph::VERSION = '1.03';
+$GIFgraph::VERSION = '1.04';
 
 # Some tools and utils
 use GIFgraph::colour qw(:colours);
@@ -367,9 +366,14 @@ my %Defaults = (
         my ($x, $y, $glogo);
         my $r = $self->{logo_resize};
 
+        my $r_margin = (defined $self->{r_margin_abs}) ? 
+            $self->{r_margin_abs} : $self->{r_margin};
+        my $b_margin = (defined $self->{b_margin_abs}) ? 
+            $self->{b_margin_abs} : $self->{b_margin};
+
         open(GIFLOGO, $self->{logo}) || return;
 		binmode(GIFLOGO) if ($GIFgraph::needs_binmode);
-        unless ( $glogo = newFromGif GD::Image(GIFLOGO) ) 
+        unless ( $glogo = newFromGif GD::Image(\*GIFLOGO) ) 
 		{
             warn "Problems reading $self->{logo}"; 
 			close(GIFLOGO); 
@@ -385,18 +389,18 @@ my %Defaults = (
                 last LOGO;
             };
             /UR/i && do {
-                $x = $self->{gifx} - $self->{r_margin} - $w * $r;
+                $x = $self->{gifx} - $r_margin - $w * $r;
                 $y = $self->{t_margin};
                 last LOGO;
             };
             /LL/i && do {
                 $x = $self->{l_margin};
-                $y = $self->{gify} - $self->{b_margin} - $h * $r;
+                $y = $self->{gify} - $b_margin - $h * $r;
                 last LOGO;
             };
             # default "LR"
-            $x = $self->{gifx} - $self->{r_margin} - $r * $w;
-            $y = $self->{gify} - $self->{b_margin} - $r * $h;
+            $x = $self->{gifx} - $r_margin - $r * $w;
+            $y = $self->{gify} - $b_margin - $r * $h;
             last LOGO;
         }
         $graph->copyResized($glogo, $x, $y, 0, 0, $r * $w, $r * $h, $w, $h);
@@ -506,6 +510,13 @@ Combination of lines and points.
 
 Create a graph, representing the data as areas under a line.
 
+=item C<GIFgraph::mixed>
+
+Create a mixed type graph, any combination of the above. At the moment
+this is fairly limited. Some of the options that can be used with some
+of the individual graph types won't work very well. Multiple bar
+graphs in a mixed graph won't display very nicely.
+
 =back
 
 Additional types:
@@ -592,14 +603,6 @@ Plot the chart, and return the GIF data.
 =item plot_to_gif( F<filename>, I<\@data> )
 
 Plot the chart, and write the GIF data to I<filename>.
-
-=cut
-
-# =item ReadFile ( F<"filename">, I<some array of columns?> )
-# 
-# Read data from F<filename>, which must be a data file formatted for
-# GNUplot.
-# B<NB.> Have to figure out how to call the function.
 
 =item set( key1 => value1, key2 => value2 .... )
 
@@ -727,8 +730,41 @@ Default: 5.
 
 =item y_number_format
 
-An sprintf() type of format string to display numbers on the Y axes.
-If not defined, no formatting will be done.
+This can be either a string, or a reference to a subroutine. If it is
+a string, it will be taken to be the first argument to an sprintf,
+with the value as the second argument:
+
+    $label = sprintf( $s->{y_number_format, $value );
+
+If it is a code reference, it will be executed with the value as the
+argument:
+
+    $label = &{$s->{y_number_format}}($value);
+
+This can be useful, for example, if you want to reformat your values
+in currency, with the - sign in the right spot. Something like:
+
+    sub y_format
+    {
+        my $value = shift;
+        my $ret;
+
+        if ($value >= 0)
+        {
+            $ret = sprintf("\$%d", $value * $refit);
+        }
+        else
+        {
+            $ret = sprintf("-\$%d", abs($value) * $refit);
+        }
+
+        return $ret;
+    }
+
+    $my_graph->set( 'y_number_format' => \&y_format );
+
+(Yes, I know this can be much shorter and more concise)
+
 Default: undef.
 
 =item x_label_skip, y_label_skip
@@ -741,6 +777,20 @@ Default: 1 for both.
 
 Force a print of all the x ticks, even if x_label_skip is set to a value
 Default: 0.
+
+=item x_label_position
+
+Controls the position of the X axis label (title). The value for this
+should be between 0 and 1, where 0 means aligned to the left, 1 means
+aligned to the right, and 1/2 means centered. 
+Default: 3/4
+
+=item y_label_position
+
+Controls the position of both Y axis labels (titles). The value for
+this should be between 0 and 1, where 0 means aligned to the bottom, 1
+means aligned to the top, and 1/2 means centered. 
+Default: 1/2
 
 =item x_labels_vertical
 
@@ -867,6 +917,31 @@ in pixels.  Default: 4.
 
 =back
 
+B<mixed graphs>
+
+=over 4
+
+=item types
+
+A reference to an array with graph types, in the same order as the
+data sets. Possible values are:
+
+  $graph->set( types => [qw(lines bars points area linespoints)] );
+  $graph->set( types => ['lines', undef, undef, 'bars'] );
+
+values that are undefined or unknown will be set to C<default_type>.
+
+Default: all set to C<default_type>
+
+=item default_type
+
+The type of graph to draw for data sets that either have no type set,
+or that have an unknown type set.
+
+Default: lines
+
+=back
+
 =head2 Options and methods for legends (axestype graphs only)
 
 At the moment legend support is minimal.
@@ -899,7 +974,7 @@ Where to put the legend. This should be a two letter key of the form:
 'B[LCR]|R[TCB]'. The first letter sigifies the placement (I<B>ottom or
 I<R>ight), and the second letter signifies the alignment (I<L>eft,
 I<R>ight, I<C>enter, I<T>op, or I<B>ottom).
-Defaults: B and C
+Default: 'BC'
 
 If the legend is placed at the bottom, some calculations will be made
 to ensure that there is some 'intelligent' wrapping going on. if the
@@ -968,11 +1043,11 @@ Martien Verbruggen
 
 =head2 Contact info 
 
-email: mgjv@comdyn.com.au or tgtcmv@chem.tue.nl
+email: mgjv@comdyn.com.au
 
 =head2 Copyright
 
-Copyright (C) 1996 Martien Verbruggen.
+Copyright (C) 1995-1998 Martien Verbruggen.
 All rights reserved.  This package is free software; you can redistribute it 
 and/or modify it under the same terms as Perl itself.
 

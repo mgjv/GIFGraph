@@ -23,6 +23,8 @@ $my_graph->set(
 	box_axis => 0,
 	line_width => 3,
 	zero_axis_only => 1,
+	x_label_position => 1,
+	y_label_position => 1,
 );
 
 $my_graph->plot_to_gif( "sample52.gif", \@data );

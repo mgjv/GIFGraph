@@ -10,6 +10,7 @@ GIFgraph/bars.pm
 GIFgraph/colour.pm
 GIFgraph/lines.pm
 GIFgraph/linespoints.pm
+GIFgraph/mixed.pm
 GIFgraph/pie.pm
 GIFgraph/points.pm
 GIFgraph/utils.pm
@@ -50,6 +51,7 @@ samples/sample42.htm
 samples/sample51.htm
 samples/sample52.htm
 samples/sample53.htm
+samples/sample61.htm
 samples/sample91.htm
 samples/sample92.htm
 samples/sample93.htm
@@ -66,6 +68,7 @@ samples/sample42.pl
 samples/sample51.pl
 samples/sample52.pl
 samples/sample53.pl
+samples/sample61.pl
 samples/sample91.pl
 samples/sample92.pl
 samples/sample93.pl

@@ -20,8 +20,26 @@ $my_graph->set(
 	axislabelclr => 'black',
 	legend_placement => 'RB',
 	zero_axis_only => 0,
-
+	y_number_format => \&y_format,
+	x_label_position => 1/2,
 );
+
+my $refit = 1.8;
+
+sub y_format
+{
+	my $value = shift;
+	my $ret;
+
+	if ($value >= 0)
+	{
+		$ret = sprintf("\$%3d", $value * $refit);
+	}
+	else
+	{
+		$ret = sprintf("-\$%3d", abs($value) * $refit);
+	}
+}
 
 $my_graph->set_legend( 'credits', 'debets' );
 

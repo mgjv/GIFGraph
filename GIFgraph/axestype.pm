@@ -1,19 +1,17 @@
 #==========================================================================
-#			   Copyright (c) 1995 Martien Verbruggen
-#			   Copyright (c) 1996 Commercial Dynamics Pty Ltd
-#			   Copyright (c) 1997 Martien Verbruggen
+#			   Copyright (c) 1995-1998 Martien Verbruggen
 #--------------------------------------------------------------------------
 #
 #	Name:
 #		GIFgraph::axestype.pm
 #
-# $Id: axestype.pm,v 1.1.1.7 1999-10-10 12:39:49 mgjv Exp $
+# $Id: axestype.pm,v 1.1.1.8 1999-10-10 12:40:27 mgjv Exp $
 #
 #==========================================================================
 
 package GIFgraph::axestype;
 
-use strict qw(vars refs subs);
+use strict;
  
 use GIFgraph;
 use GIFgraph::utils qw(:all);
@@ -44,6 +42,11 @@ my %Defaults = (
 
 	x_ticks				=> 1,
 	x_all_ticks			=> 0,
+
+	# Where to place the x and y labels
+
+	x_label_position	=> 3/4,
+	y_label_position	=> 1/2,
 
 	# vertical printing of x labels
 
@@ -302,8 +305,19 @@ my %Defaults = (
 					$t *
 					($s->{y_max}[$a] - $s->{y_min}[$a])/$s->{y_tick_number};
 				
-				$label = sprintf($s->{y_number_format}, $label)
-					if (defined($s->{y_number_format}));
+				$s->{y_values}[$a][$t] = $label;
+
+				if (defined $s->{y_number_format})
+				{
+					if (ref $s->{y_number_format} eq 'CODE')
+					{
+						$label = &{$s->{y_number_format}}($label);
+					}
+					else
+					{
+						$label = sprintf($s->{y_number_format}, $label);
+					}
+				}
 				
 				my $len = length($label);
 
@@ -356,10 +370,10 @@ my %Defaults = (
 		# X label
 		if ($s->{xlfh}) 
 		{
-			# TODO Need more control for placement
 			my $tx = 
-				3 * ($s->{left}+$s->{right})/4 - 
-				length($s->{x_label}) * $s->{xlfw}/2;
+				$s->{left} +
+				$s->{x_label_position} * ($s->{right} - $s->{left}) - 
+				$s->{x_label_position} * length($s->{x_label}) * $s->{xlfw};
 			my $ty = $s->{gify} - $s->{xlfh} - $s->{b_margin};
 
 			$g->string($s->{xlf}, $tx, $ty, $s->{x_label}, $s->{lci});
@@ -368,21 +382,21 @@ my %Defaults = (
 		# Y labels
 		if ($s->{ylfh1}) 
 		{
-			# TODO Need more control for placement
 			my $tx = $s->{l_margin};
 			my $ty = 
-				($s->{bottom}+$s->{top})/2 + 
-				length($s->{y1_label}) * $s->{ylfw}/2;
+				$s->{bottom} -
+				$s->{y_label_position} * ($s->{bottom} - $s->{top}) +
+				$s->{y_label_position} * length($s->{y1_label}) * $s->{ylfw};
 
 			$g->stringUp($s->{ylf}, $tx, $ty, $s->{y1_label}, $s->{lci});
 		}
 		if ( $s->{two_axes} && $s->{ylfh2} ) 
 		{
-			# TODO Need more control for placement
 			my $tx = $s->{gifx} - $s->{ylfh} - $s->{r_margin};
 			my $ty = 
-				($s->{bottom} + $s->{top})/2 + 
-				length($s->{y2_label}) * $s->{ylfw}/2;
+				$s->{bottom} -
+				$s->{y_label_position} * ($s->{bottom} - $s->{top}) +
+				$s->{y_label_position} * length($s->{y2_label}) * $s->{ylfw};
 
 			$g->stringUp($s->{ylf}, $tx, $ty, $s->{y2_label}, $s->{lci});
 		}
@@ -432,15 +446,12 @@ my %Defaults = (
 			my $a;
 			foreach $a (1 .. ($s->{two_axes} + 1)) 
 			{
-				my $label = 
-					$s->{y_labels}[$a][$t];
-			#		$s->{y_min}[$a] + 
-			#		$t * 
-			#		($s->{y_max}[$a] - $s->{y_min}[$a])/$s->{y_tick_number};
+				my $value = $s->{y_values}[$a][$t];
+				my $label = $s->{y_labels}[$a][$t];
 				
 				my ($x, $y) = $s->val_to_pixel( 
 					($a-1) * ($s->{numpoints} + 2), 
-					$label, 
+					$value, 
 					$a 
 				);
 
@@ -525,8 +536,22 @@ my %Defaults = (
 		}
 	}
  
-	# draw_data is in sub classes
-	sub draw_data()
+	sub draw_data($$) # GD::Image, \@data
+	{
+		my $s = shift;
+		my $g = shift;
+		my $d = shift;
+
+		my $ds;
+		foreach $ds (1 .. $s->{numsets}) 
+		{
+			$s->draw_data_set($g, $$d[$ds], $ds);
+		}
+	}
+
+	# draw_data_set is in sub classes
+
+	sub draw_data_set()
 	{
 		# ABSTRACT
 		my $s = shift;
@@ -764,6 +789,10 @@ my %Defaults = (
 
 		my $maxlen = 0;
 		my $num = 0;
+
+		# Save some variables
+		$s->{r_margin_abs} = $s->{r_margin};
+		$s->{b_margin_abs} = $s->{b_margin};
 
 		my $legend;
 		foreach $legend (@{$s->{legend}})

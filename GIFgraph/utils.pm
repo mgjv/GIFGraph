@@ -1,7 +1,5 @@
 #==========================================================================
-#              Copyright (c) 1995 Martien Verbruggen
-#              Copyright (c) 1996 Commercial Dynamics Pty Ltd
-#              Copyright (c) 1997 Martien Verbruggen
+#              Copyright (c) 1995-1998 Martien Verbruggen
 #--------------------------------------------------------------------------
 #
 #	Name:
@@ -10,7 +8,7 @@
 #	Description:
 #		Package of general utilities.
 #
-# $Id: utils.pm,v 1.1.1.5 1999-10-10 12:39:49 mgjv Exp $
+# $Id: utils.pm,v 1.1.1.6 1999-10-10 12:40:27 mgjv Exp $
 #
 #==========================================================================
  
@@ -27,7 +25,7 @@ require Exporter;
 %EXPORT_TAGS = ( all => [qw(_max _min _round)],);
 
 $GIFgraph::utils::prog_name    = 'GIFgraph::utils.pm';
-$GIFgraph::utils::prog_rcs_rev = '$Revision: 1.1.1.5 $';
+$GIFgraph::utils::prog_rcs_rev = '$Revision: 1.1.1.6 $';
 $GIFgraph::utils::prog_version = 
 	($GIFgraph::utils::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 

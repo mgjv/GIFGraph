@@ -38,7 +38,9 @@ TESTED PLATFORMS (also see NOTES FOR WIN32)
 
 - perl 5.004_04 on Solaris 2.5.1, GD 1.15
 - perl 5.004_04 on Solaris 2.6, GD 1.18
-- perl 5.005_01 on Solaris 2.6, GD 1.18
+- perl 5.005_02 on Solaris 2.6, GD 1.18
+
+Version 1.01:
 - perl 5.004_02 for win32 by Gurusamy Sarathy, GD (1.14 I think)
 - perl 5.004_04 HP-UX 10.20, GD 1.18 (Ronald Post)
 
@@ -47,6 +49,16 @@ AUTHOR
 Martien Verbruggen
 mgjv@comdyn.com.au
 tgtcmv@chem.tue.nl
+
+MOST IMPORTANT CHANGES SINCE VERSION 1.03
+
+- Added mixed type graph.
+  GIFgraph::mixed
+  options types and default_type
+- Added callback functionality to format y values
+  option y_number_format
+- Added control over axis label placement
+  option [xy]_label_position
 
 MOST IMPORTANT CHANGES SINCE VERSION 1.01
 

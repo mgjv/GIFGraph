@@ -23,9 +23,10 @@ $my_graph->set(
 	two_axes => 1,
 	legend_placement => 'RT',
 	x_labels_vertical => 1,
+	x_label_position => 1/2,
 
-	#logo => 'logo.gif',
-	#logo_position => 'LR',
+	logo => 'logo.gif',
+	logo_position => 'BR',
 );
 
 $my_graph->set_legend( 'left axis', 'right axis');
