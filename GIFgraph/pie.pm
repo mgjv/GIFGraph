@@ -7,20 +7,19 @@
 #	Name:
 #		GIFgraph::pie.pm
 #
-# $Id: pie.pm,v 1.1.1.2 1999-10-10 12:07:05 mgjv Exp $
+# $Id: pie.pm,v 1.1.1.3 1999-10-10 12:33:46 mgjv Exp $
 #
 #==========================================================================
 
-use strict qw(vars refs subs);
-
 package GIFgraph::pie;
+
+use strict qw(vars refs subs);
 
 use GIFgraph;
 use GIFgraph::utils qw(:all);
 use GIFgraph::colour qw(:colours :lists);
 
-use vars qw( @ISA %DEBUG );
-@ISA = qw( GIFgraph );
+@GIFgraph::pie::ISA = qw( GIFgraph );
 
 my $ANGLE_OFFSET = 90;
 
@@ -32,21 +31,20 @@ my %Defaults = (
  
 	#   'pie_height' => _round(0.1*${'gifx'}),
  
-	# 3D pie?
+	# Do you want a 3D pie?
  
 	'3d'         => 1,
  
 	# The angle at which to start the first data set
-	# 0 is to the right
+	# 0 is at the front/bottom
  
 	'start_angle' => 0,
 );
 
 {
- 
 	# PUBLIC methods, documented in pod
-	sub plot { # \@data
-
+	sub plot($) # (\@data)
+	{
 		my $self = shift;
 		my $data = shift;
 
@@ -61,8 +59,8 @@ my %Defaults = (
 		return $g->gif;
 	}
  
-	sub set_label_font { # fontname
-
+	sub set_label_font($) # (fontname)
+	{
 		my $self = shift;
 
 		$self->{lf} = shift;
@@ -72,8 +70,8 @@ my %Defaults = (
 		);
 	}
  
-	sub set_value_font { # fontname
-
+	sub set_value_font($) # (fontname)
+	{
 		my $self = shift;
 
 		$self->{vf} = shift;
@@ -87,8 +85,8 @@ my %Defaults = (
  
 	# PRIVATE
 	# called on construction by new.
-	sub initialise { # key => value, key => value, etc..
-
+	sub initialise(%) # (key => value, key => value, ...)
+	{
 		my $self = shift;
  
 		$self->defaults();
@@ -109,8 +107,8 @@ my %Defaults = (
 	# Setup the coordinate system and colours, calculate the
 	# relative axis coordinates in respect to the gif size.
  
-	sub setup_coords {
-
+	sub setup_coords()
+	{
 		my $s = shift;
  
 		# Make sure we're not reserving space we don't need.
@@ -155,8 +153,8 @@ my %Defaults = (
 	# inherit open_graph from GIFgraph
  
 	# Put the text on the canvas.
-	sub draw_text { # GD::Image
-
+	sub draw_text($) # (GD::Image)
+	{
 		my $s = shift;
 		my $g = shift;
  
@@ -176,8 +174,8 @@ my %Defaults = (
  
 	# draw the pie, without the data slices
  
-	sub draw_pie { # GD::Image
-
+	sub draw_pie($) # (GD::Image)
+	{
 		my $s = shift;
 		my $g = shift;
 
@@ -210,8 +208,8 @@ my %Defaults = (
  
 	# Draw the data slices
  
-	sub draw_data { # \@data, GD::Image
-
+	sub draw_data($$) # (\@data, GD::Image)
+	{
 		my $s = shift;
 		my $data = shift;
 		my $g = shift;
@@ -261,7 +259,7 @@ my %Defaults = (
 					$s->{xc}, $s->{yc}, $s->{h}/$s->{w}
 				);
 
-			$g->fill($xe, $ye, $dc);
+			$g->fillToBorder($xe, $ye, $ac, $dc);
 
 			$s->put_label($g, $xe, $ye, $$data[0][$i]);
 
@@ -270,14 +268,14 @@ my %Defaults = (
 			{
 				my ($xe, $ye) = $s->_get_pie_front_coords($pa, $pb);
 
-				$g->fill($xe, $ye + $s->{pie_height}/2, $dc)
+				$g->fillToBorder($xe, $ye + $s->{pie_height}/2, $ac, $dc)
 					if (defined($xe) and defined($ye));
 			}
 		}
 	} #GIFgraph::pie::draw_data
 
-	sub _get_pie_front_coords { # angle 1, angle 2
-
+	sub _get_pie_front_coords($$) # (angle 1, angle 2)
+	{
 		my $s = shift;
 		my $pa = level_angle(shift);
 		my $pb = level_angle(shift);
@@ -320,14 +318,16 @@ my %Defaults = (
  
 	# return true if this angle is on the front of the pie
 
-	sub in_front { # angle
+	sub in_front($) # (angle)
+	{
 		my $a = level_angle( shift );
 		( $a > ($ANGLE_OFFSET - 180) and $a < $ANGLE_OFFSET ) ? 1 : 0;
 	}
  
 	# return a value for angle between -180 and 180
  
-	sub level_angle { # angle
+	sub level_angle($) # (angle)
+	{
 		my $a = shift;
 		return level_angle($a-360) if ( $a > 180 );
 		return level_angle($a+360) if ( $a <= -180 );
@@ -336,8 +336,8 @@ my %Defaults = (
  
 	# put the label on the pie
  
-	sub put_label { # GD:Image
-
+	sub put_label($) # (GD:Image)
+	{
 		my $s = shift;
 		my $g = shift;
 
@@ -352,7 +352,8 @@ my %Defaults = (
 	# radius, angle, center x and y and a scaling factor (height/width)
 	#
 	# $ANGLE_OFFSET is used to define where 0 is meant to be
-	sub cartesian {
+	sub cartesian($$$$$) 
+	{
 		my ($r, $phi, $xi, $yi, $cr) = @_; my $PI=4*atan2(1, 1);
 		return (
 			$xi+$r*cos($PI*($phi + $ANGLE_OFFSET)/180), 
@@ -360,11 +361,12 @@ my %Defaults = (
 		);
 	}
  
-	sub pick_data_clr { # number
+	sub pick_data_clr($) # (number)
+	{
 		my $s = shift;
 		return _rgb( $s->{dclrs}[ $_[0] % (1+$#{$s->{dclrs}}) ] );
 	}
- 
+
 } # End of package GIFgraph::pie
  
 1;

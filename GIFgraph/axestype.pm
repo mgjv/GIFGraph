@@ -7,19 +7,18 @@
 #	Name:
 #		GIFgraph::axestype.pm
 #
-# $Id: axestype.pm,v 1.1.1.2 1999-10-10 12:07:05 mgjv Exp $
+# $Id: axestype.pm,v 1.1.1.3 1999-10-10 12:33:46 mgjv Exp $
 #
 #==========================================================================
 
-use strict qw(vars refs subs);
- 
 package GIFgraph::axestype;
 
+use strict qw(vars refs subs);
+ 
 use GIFgraph;
 use GIFgraph::utils qw(:all);
 
-use vars qw( @ISA );
-@ISA = qw( GIFgraph );
+@GIFgraph::axestype::ISA = qw( GIFgraph );
 
 my %Defaults = (
  
@@ -86,28 +85,38 @@ my %Defaults = (
 	# box-axis == 0
 	# This also moves the x axis labels to the zero axis
 	'zero_axis_only'	=>	1,
+
+	# Size of the legend markers
+
+	'legend_marker_height'	=> 8,
+	'legend_marker_width'	=> 12,
+	'legend_spacing'		=> 4,
+	'legend_placement'		=> 'BC',		# '[B][LCR]'
 );
 
 {
  
 	# PUBLIC
-	sub plot { # \@data
-
+	sub plot($) # (\@data)
+	{
 		my $self = shift;
 		my $data = shift;
  
 		$self->check_data($data);
+		$self->setup_legend();
 		$self->setup_coords($data);
 		$self->init_graph($self->{graph});
 		$self->draw_text($self->{graph});
 		$self->draw_axes($self->{graph}, $data);
 		$self->draw_data($self->{graph}, $data);
 		$self->draw_ticks($self->{graph}, $data);
+		$self->draw_legend($self->{graph});
 
 		return $self->{graph}->gif;
 	}
- 
-	sub set_x_label_font { # fontname
+
+	sub set_x_label_font($) # (fontname)
+	{
 		my $self = shift;
 		$self->{xlf} = shift;
 		$self->set( 
@@ -115,7 +124,8 @@ my %Defaults = (
 			'xlfh' => $self->{xlf}->height,
 		);
 	}
-	sub set_y_label_font { # fontname
+	sub set_y_label_font($) # (fontname)
+	{
 		my $self = shift;
 		$self->{ylf} = shift;
 		$self->set( 
@@ -123,7 +133,8 @@ my %Defaults = (
 			'ylfh' => $self->{ylf}->height,
 		);
 	}
-	sub set_x_axis_font { # fontname
+	sub set_x_axis_font($) # (fontname)
+	{
 		my $self = shift;
 		$self->{xaf} = shift;
 		$self->set( 
@@ -131,7 +142,8 @@ my %Defaults = (
 			'xafh' => $self->{xaf}->height,
 		);
 	}
-	sub set_y_axis_font { # fontname
+	sub set_y_axis_font($) # (fontname)
+	{
 		my $self = shift;
 		$self->{yaf} = shift;
 		$self->set( 
@@ -139,13 +151,29 @@ my %Defaults = (
 			'yafh' => $self->{yaf}->height,
 		);
 	}
+
+	sub set_legend(@) # List of legend keys
+	{
+		my $self = shift;
+		$self->set( 'legend' => [@_]);
+	}
+
+	sub set_legend_font($) # (font name)
+	{
+		my $self = shift;
+		$self->{lgf} = shift;
+		$self->set( 
+			'lgfw' => $self->{lgf}->width,
+			'lgfh' => $self->{lgf}->height,
+		);
+	}
  
 	# PRIVATE
 	# called on construction, by new
 	# use inherited defaults
  
-	sub initialise {
-
+	sub initialise()
+	{
 		my $self = shift;
  
 		$self->defaults( @_ );
@@ -159,14 +187,15 @@ my %Defaults = (
 		$self->set_y_label_font(GD::gdSmallFont);
 		$self->set_x_axis_font(GD::gdTinyFont);
 		$self->set_y_axis_font(GD::gdTinyFont);
+		$self->set_legend_font(GD::gdTinyFont);
  
 		$self->{graph} = $self->open_graph();
 	}
  
 	# inherit check_data from GIFgraph
  
-	sub setup_coords {
-
+	sub setup_coords($)
+	{
 		my $s = shift;
 		my $data = shift;
 
@@ -185,8 +214,8 @@ my %Defaults = (
 			$s->{y1_label} = $s->{y_label};
 		}
 
-		$s->set( 'ylfh1' => ($s->{y1_label})?1:0 );
-		$s->set( 'ylfh2' => ($s->{y2_label})?1:0 );
+		$s->set( 'ylfh1' => $s->{y1_label} ? 1 : 0 );
+		$s->set( 'ylfh2' => $s->{y2_label} ? 1 : 0 );
 
 		unless ( $s->{x_plot_values} ) 
 		{ 
@@ -198,13 +227,15 @@ my %Defaults = (
 			$s->set( 'yafw' => 0 );
 		}
 
-		my $lbl = ($s->{xlfh})?1:0 + ($s->{xafh})?1:0 ;
+		my $lbl = ($s->{xlfh} ? 1 : 0) + ($s->{xafh} ? 1 : 0);
 
 		# calculate the top and bottom of the bounding box for the graph
-		$s->{bottom} = $s->{gify} - $s->{b_margin} - 1 -
-					 ( ( $s->{xlfh} ) ? $s->{xlfh} : 0 ) -
-					 ( ( $s->{xafh} ) ? $s->{xafh}: 0) -
-					 ( ( $lbl ) ? $lbl*$s->{text_space} : 0 );
+		$s->{bottom} = 
+			$s->{gify} - $s->{b_margin} - 1 -
+			( $s->{xlfh} ? $s->{xlfh} : 0 ) -
+			( $s->{xafh} ? $s->{xafh}: 0) -
+			( $lbl ? $lbl * $s->{text_space} : 0 )
+		;
 
 		$s->{top} = $s->{t_margin} +
 					( ( $s->{tfh} ) ? $s->{tfh} + $s->{text_space} : 0 );
@@ -255,8 +286,8 @@ my %Defaults = (
  
 	# inherit open_graph from GIFgraph
  
-	sub draw_text { # GD::Image
-
+	sub draw_text($) # GD::Image
+	{
 		my $s = shift;
 		my $g = shift;
  
@@ -300,8 +331,8 @@ my %Defaults = (
 		}
 	}
  
-	sub draw_axes { # GD::Image
-
+	sub draw_axes($) # GD::Image
+	{
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
@@ -330,8 +361,8 @@ my %Defaults = (
 
 	}
  
-	sub draw_ticks { # GD::Image, \@data
-
+	sub draw_ticks($$) # GD::Image, \@data
+	{
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
@@ -398,8 +429,11 @@ my %Defaults = (
 			{
 				if ($s->{long_ticks})
 				{
-					$g->line( $x, $y, $x, $y + $s->{top} - $s->{bottom},
-							  $s->{fgci} );
+					$g->line( 
+						$x, $s->{bottom}, $x, 
+						$s->{top},
+						$s->{fgci} 
+					);
 				}
 				else
 				{
@@ -419,12 +453,18 @@ my %Defaults = (
 	}
  
 	# draw_data is in sub classes
+	sub draw_data()
+	{
+		# ABSTRACT
+		my $s = shift;
+		$s->die_abstract( "sub draw_data missing, ");
+	}
  
 	# Figure out the maximum values for the vertical exes, and calculate
 	# a more or less sensible number for the tops.
 
-	sub set_max_min {
-
+	sub set_max_min($)
+	{
 		my $s = shift;
 		my $d = shift;
 
@@ -515,27 +555,36 @@ my %Defaults = (
  
 	# return maximum value from an array
  
-	sub get_max_y { # array
+	sub get_max_y(@) # array
+	{
 		my $max = undef;
+
 		foreach my $i (@_) 
 		{ 
+			next if (!defined($i));
 			$max = (defined($max) && $max >= $i) ? $max : $i; 
 		}
+
 		return $max;
 	}
 
-	sub get_min_y { # array
+	sub get_min_y(@) # array
+	{
 		my $min = undef;
+
 		foreach my $i (@_) 
 		{ 
+			next if (!defined($i));
 			$min = ( defined($min) and $min <= $i) ? $min : $i;
 		}
+
 		return $min;
 	}
  
 	# get maximum y value from the whole data set
  
-	sub get_max_min_y_all { # \@data
+	sub get_max_min_y_all($) # \@data
+	{
 		my $s = shift;
 		my $d = shift;
 
@@ -570,7 +619,8 @@ my %Defaults = (
 	}
  
 	# Return a more or less nice top axis value, given a value
-	sub _bound { # value
+	sub _bound($$) # value, offset
+	{
 		my $val = shift;
 		my $offset = shift;
 
@@ -586,7 +636,7 @@ my %Defaults = (
 		return $ss * $ret;
 	}
 
-	sub up_bound
+	sub up_bound($)
 	{
 		my $val = shift;
 
@@ -595,7 +645,7 @@ my %Defaults = (
 		return _bound($val, $offset);
 	}
 
-	sub down_bound
+	sub down_bound($)
 	{
 		my $val = shift;
 
@@ -606,19 +656,22 @@ my %Defaults = (
 
 	# Pick a marker type
  
-	sub pick_marker { # number
+	sub pick_marker($) # number
+	{
 		my $s = shift;
+
 		if ( exists $s->{markers} ) 
 		{
 			return $s->{markers}[ $_[0] % (1+$#{$s->{markers}}) -1 ];
 		}
+
 		return $_[0]%8;
 	}
  
 	# Draw a marker
  
-	sub marker { # $graph, $xp, $yp, type (1-7), $colourindex
-
+	sub marker($$$$$) # $graph, $xp, $yp, type (1-7), $colourindex
+	{
 		my $self = shift;
 
 		my ($graph, $xp, $yp, $mtype, $mclr) = @_;
@@ -658,7 +711,7 @@ my %Defaults = (
 				$graph->line( $xp, $t, $r, $yp, $mclr );
 				$graph->line( $r, $yp, $xp, $b, $mclr );
 				$graph->line( $xp, $b, $l, $yp, $mclr );
-				$graph->fill( $xp, $yp, $mclr );
+				$graph->fillToBorder( $xp, $yp, $mclr, $mclr );
 				last MARKER;
 			};
 			($mtype == 6) && do 
@@ -673,7 +726,7 @@ my %Defaults = (
 			{ # Circle, filled
 				$graph->arc( $xp, $yp, 2 * $self->{marker_size},
 							 2 * $self->{marker_size}, 0, 360, $mclr );
-				$graph->fill( $xp, $yp, $mclr );
+				$graph->fillToBorder( $xp, $yp, $mclr, $mclr );
 				last MARKER;
 			};
 			($mtype == 8) && do 
@@ -687,8 +740,8 @@ my %Defaults = (
  
 	# Convert value coordinates to pixel coordinates on the canvas.
  
-	sub val_to_pixel {	# ($x, $y, $i) in real coords ($Dataspace), 
-						# return [x, y] in pixel coords
+	sub val_to_pixel($$$)	# ($x, $y, $i) in real coords ($Dataspace), 
+	{						# return [x, y] in pixel coords
 		my $s = shift;
 		my ($x, $y, $i) = @_;
 
@@ -705,7 +758,187 @@ my %Defaults = (
 			_round( $s->{bottom} - ($y - $y_min) * $y_step )
 		);
 	}
- 
+
+	#
+	# Legend
+	#
+
+	sub setup_legend()
+	{
+		my $s = shift;
+
+		return unless defined($s->{legend});
+
+		my $maxlen = 0;
+		my $num = 0;
+
+		foreach my $legend (@{$s->{legend}})
+		{
+			if (defined($legend) and $legend ne "")
+			{
+				my $len = length($legend);
+				$maxlen = ($maxlen > $len) ? $maxlen : $len;
+				$num++;
+			}
+			last if ($num >= $s->{numsets});
+		}
+
+		$s->{lg_num} = $num;
+
+		# calculate the height and width of each element
+
+		my $text_width = $maxlen * $s->{lgfw};
+		my $legend_height = _max($s->{lgfh}, $s->{legend_marker_height});
+
+		$s->{lg_el_width} = 
+			$text_width + $s->{legend_marker_width} + 
+			3 * $s->{legend_spacing};
+		$s->{lg_el_height} = $legend_height + 2 * $s->{legend_spacing};
+
+		my ($lg_pos, $lg_align) = split(//, $s->{legend_placement});
+
+		if ($lg_pos eq 'R')
+		{
+			# Always work in one column
+			$s->{lg_cols} = 1;
+			$s->{lg_rows} = $num;
+
+			# Just for completeness, might use this in later versions
+			$s->{lg_x_size} = $s->{lg_cols} * $s->{lg_el_width};
+			$s->{lg_y_size} = $s->{lg_rows} * $s->{lg_el_height};
+
+			# Adjust the right margin for the rest of the graph
+			$s->{r_margin} += $s->{lg_x_size};
+
+			# Set the x starting point
+			$s->{lg_xs} = $s->{gifx} - $s->{r_margin};
+
+			# Set the y starting point, depending on alignment
+			if ($lg_align eq 'T')
+			{
+				$s->{lg_ys} = $s->{t_margin};
+			}
+			elsif ($lg_align eq 'B')
+			{
+				$s->{lg_ys} = $s->{gify} - $s->{b_margin} - $s->{lg_y_size};
+			}
+			else # default 'C'
+			{
+				my $height = $s->{gify} - $s->{t_margin} - $s->{b_margin};
+
+				$s->{lg_ys} = 
+					int($s->{t_margin} + $height/2 - $s->{lg_y_size}/2) ;
+			}
+		}
+		else # 'B' is the default
+		{
+			# What width can we use
+			my $width = $s->{gifx} - $s->{l_margin} - $s->{r_margin};
+
+			(!defined($s->{lg_cols})) and 
+				$s->{lg_cols} = int($width/$s->{lg_el_width});
+			
+			$s->{lg_cols} = _min($s->{lg_cols}, $num);
+
+			$s->{lg_rows} = 
+				int($num/$s->{lg_cols}) + (($num % $s->{lg_cols}) ? 1 : 0);
+
+			$s->{lg_x_size} = $s->{lg_cols} * $s->{lg_el_width};
+			$s->{lg_y_size} = $s->{lg_rows} * $s->{lg_el_height};
+
+			# Adjust the bottom margin for the rest of the graph
+			$s->{b_margin} += $s->{lg_y_size};
+
+			# Set the y starting point
+			$s->{lg_ys} = $s->{gify} - $s->{b_margin};
+
+			# Set the x starting point, depending on alignment
+			if ($lg_align eq 'R')
+			{
+				$s->{lg_xs} = $s->{gifx} - $s->{r_margin} - $s->{lg_x_size};
+			}
+			elsif ($lg_align eq 'L')
+			{
+				$s->{lg_xs} = $s->{l_margin};
+			}
+			else # default 'C'
+			{
+				$s->{lg_xs} =  
+					int($s->{l_margin} + $width/2 - $s->{lg_x_size}/2);
+			}
+
+		}
+	}
+
+	sub draw_legend($) # (GD::Image)
+	{
+		my $s = shift;
+		my $g = shift;
+
+		return unless defined($s->{legend});
+
+		my $xl = $s->{lg_xs} + $s->{legend_spacing};
+		my $y = $s->{lg_ys} + $s->{legend_spacing} - 1;
+		
+		my $i = 0;
+		my $row = 1;
+		my $x = $xl;	# start position of current element
+
+		foreach my $legend (@{$s->{legend}})
+		{
+			$i++;
+			last if ($i > $s->{numsets});
+
+			my $xe = $x;	# position within an element
+
+			next if (!defined($legend) or $legend eq "");
+
+			$s->draw_legend_marker($g, $i, $xe, $y);
+
+			$xe += $s->{legend_marker_width} + $s->{legend_spacing};
+			my $ys = int($y + $s->{lg_el_height}/2 - $s->{lgfh}/2);
+
+			$g->string($s->{lgf}, $xe, $ys, $legend, $s->{fgci});
+
+			$x += $s->{lg_el_width};
+
+			if (++$row > $s->{lg_cols})
+			{
+				$row = 1;
+				$y += $s->{lg_el_height};
+				$x = $xl;
+			}
+		}
+	}
+
+	# This will be virtual; every sub class should define their own
+	# if this one doesn't suffice
+	sub draw_legend_marker($$$$) # (GD::Image, data_set_number, x, y)
+	{
+		my $s = shift;
+		my $g = shift;
+		my $n = shift;
+		my $x = shift;
+		my $y = shift;
+
+		my $ci = $s->set_clr( $g, $s->pick_data_clr($n) );
+
+		$y += int($s->{lg_el_height}/2 - $s->{legend_marker_height}/2);
+
+		$g->filledRectangle(
+			$x, $y, 
+			$x + $s->{legend_marker_width}, $y + $s->{legend_marker_height},
+			$ci
+		);
+
+		$g->rectangle(
+			$x, $y, 
+			$x + $s->{legend_marker_width}, $y + $s->{legend_marker_height},
+			$s->{acci}
+		);
+
+	}
+
 } # End of package GIFgraph::axestype
  
 1;

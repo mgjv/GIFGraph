@@ -18,7 +18,7 @@
 #		GIFgraph::area
 #		GIFgraph::pie
 #
-# $Id: GIFgraph.pm,v 1.1.1.2 1999-10-10 12:07:03 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.1.1.3 1999-10-10 12:33:43 mgjv Exp $
 #
 #==========================================================================
 
@@ -39,11 +39,11 @@ use GD;
 package GIFgraph;
 
 $GIFgraph::prog_name    = 'GIFgraph.pm';
-$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.2 $';
+$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.3 $';
 $GIFgraph::prog_version = 
 	($GIFgraph::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
-$GIFgraph::VERSION = '0.94';
+$GIFgraph::VERSION = '0.99';
 
 # Some tools and utils
 use GIFgraph::colour qw(:colours);
@@ -137,9 +137,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     #
     # PUBLIC methods, documented in pod.
     #
-    sub new 
-	{ # [ width, height ] optional;
-
+    sub new(;$$)  # [ width, height ] optional;
+	{
         my $type = shift;
         my $self = {};
         bless $self, $type;
@@ -167,7 +166,7 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
         return $self;
     }
 
-    sub set 
+    sub set(@)
 	{
         my $s = shift;
         my %args = @_;
@@ -184,8 +183,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     # But.. it's not nice to require the user to include GD.pm
     # just because she might want to change the font.
 
-    sub set_title_font 
-	{ # fontname
+    sub set_title_font($) # fontname
+	{
         my $self = shift;
 
         $self->{tf} = shift;
@@ -195,8 +194,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
 		);
     }
 
-    sub set_text_clr 
-	{ # colour name
+    sub set_text_clr($) # colour name
+	{
         my $s = shift;
         my $c = shift;
 
@@ -207,8 +206,15 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
         );
     }
 
-    sub plot_to_gif 
-	{ # "file.gif", \@data
+	sub plot($) # \@data
+	{
+		# ABSTRACT
+		my $s = shift;
+		$s->die_abstract( "sub plot missing," );
+	}
+
+    sub plot_to_gif($$) # "file.gif", \@data
+	{
         my $s = shift;
         my $file = shift;
         my $data = shift;
@@ -271,7 +277,7 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     # This is called by the default initialise methods 
     # from the objects further down the tree.
 
-    sub defaults 
+    sub defaults()
 	{
         my $self = shift;
 
@@ -292,8 +298,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     # per set, and kills the process if there are no datapoints
     # in the sets, or if there are no data sets.
 
-    sub check_data 
-	{ # \@data
+    sub check_data($) # \@data
+	{
         my $self = shift;
         my $data = shift;
 
@@ -311,7 +317,7 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
 
     # Open the graph output canvas by creating a new GD object.
 
-    sub open_graph 
+    sub open_graph()
 	{
         my $self = shift;
         my $graph = new GD::Image($self->{gifx}, $self->{gify});
@@ -322,8 +328,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     # index numbers for them) setting the graph to transparent, and 
     # interlaced, putting a logo (if defined) on there.
 
-    sub init_graph 
-	{ # GD::Image
+    sub init_graph($) # GD::Image
+	{
         my $self = shift;
         my $graph = shift;
 
@@ -340,8 +346,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
 
     # read in the logo, and paste it on the graph canvas
 
-    sub put_logo 
-	{ # GD::Image
+    sub put_logo($) # GD::Image
+	{
         my $self = shift;
         my $graph = shift;
 
@@ -389,8 +395,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     # Set a colour to work with on the canvas, by rgb value. 
     # Return the colour index in the palette
 
-    sub set_clr 
-	{ # GD::Image, r, g, b
+    sub set_clr($$$$) # GD::Image, r, g, b
+	{
         my $s = shift; 
 		my $g = shift; 
 		my $i;
@@ -406,8 +412,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     
     # Set a colour, disregarding wether or not it already exists.
 
-    sub set_clr_uniq 
-	{ # GD::Image, r, g, b
+    sub set_clr_uniq($$$$) # GD::Image, r, g, b
+	{
         my $s=shift; 
         my $g=shift; 
 
@@ -416,28 +422,35 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
 
     # Return an array of rgb values for a colour number
 
-    sub pick_data_clr 
-	{ # number
+    sub pick_data_clr($) # number
+	{
         my $s = shift;
 
         return _rgb( $s->{dclrs}[ $_[0] % (1+$#{$s->{dclrs}}) -1 ] );
     }
 
     # DEBUGGING
-	# Obsolete now, use Data::Dumper
+	# data_dump obsolete now, use Data::Dumper
+
+	sub die_abstract()
+	{
+		my $s = shift;
+		my $msg = shift;
+		# ABSTRACT
+		die
+			"Subclass (" .
+			ref($s) . 
+			") not implemented correctly: " .
+			(defined($msg) ? $msg : "unknown error");
+	}
 
     # Return the gif contents
 
-    sub gifdata 
+    sub gifdata() 
 	{
         my $s = shift;
 
         return $s->{graph}->gif;
-    }
-
-    sub version 
-	{
-        return $GIFgraph::prog_version;
     }
 
 } # End of package GIFgraph
@@ -494,33 +507,41 @@ Create a pie chart.
 
 =back
 
+=head1 EXAMPLES
+
+See the samples directory in the distribution.
+
 =head1 USAGE
 
-Fill an array of arrays with the x values and the values of the data sets.
-Make sure that every array is the same size.
-B<NB.> Necessary to extend with a function setting the values in [x,y1,y2..] 
-sets?
+Fill an array of arrays with the x values and the values of the data
+sets.  Make sure that every array is the same size, otherwise
+I<GIFgraph> will complain and refuse to compile the graph.
 
     @data = ( 
         ["1st","2nd","3rd","4th","5th","6th","7th", "8th", "9th"],
         [    1,    2,    5,    6,    3,  1.5,    1,     3,     4]
+        [ sort { $a <=> $b } (1, 2, 5, 6, 3, 1.5, 1, 3, 4) ]
     );
 
-Create a new Graph object by calling the C<new> 
-operator on the graph type you want to create 
-(C<chart> is C<bars, lines, points, linespoints>
-or C<pie>).
+If you don't have a value for a point in a certain dataset, you can
+use B<undef>, and I<GIFgraph> will skip that point.
+
+Create a new I<GIFgraph> object by calling the I<new> operator on the
+graph type you want to create (I<chart> is I<bars, lines, points,
+linespoints> or I<pie>).
 
     $my_graph = new GIFgraph::chart( );
 
 Set the graph options. 
 
-    $my_graph->set( 'x_label'           => 'X Label',
-                    'y_label'           => 'Y label',
-                    'title'             => 'A Simple Line Graph',
-                    'y_max_value'       => 8,
-                    'y_tick_number'     => 8,
-                    'y_label_skip'      => 2 );
+    $my_graph->set( 
+        'x_label'           => 'X Label',
+        'y_label'           => 'Y label',
+        'title'             => 'Some simple graph',
+        'y_max_value'       => 8,
+        'y_tick_number'     => 8,
+        'y_label_skip'      => 2 
+    );
 
 Output the graph
 
@@ -535,38 +556,41 @@ Output the graph
 =item new GIFgraph::chart([width,height])
 
 Create a new object $graph with optional width and heigth. 
-Default width = 400, default height = 300. C<chart> is either
-C<bars, lines, points, linespoints, area> or C<pie>.
+Default width = 400, default height = 300. I<chart> is either
+I<bars, lines, points, linespoints, area> or I<pie>.
 
-=item set_text_clr( <colour name> )
+=item set_text_clr( I<colour name> )
 
-Set the colour of the text.
+Set the colour of the text. This will set the colour of the titles,
+labels, and axis labels to I<colour name>. Also see the options
+I<textclr>, I<labelclr> and I<axislabelclr>.
 
-=item set_title_font( <fontname> )
+=item set_title_font( I<fontname> )
 
 Set the font that will be used for the title of the chart.  Possible
-choices are defined in GD. 
+choices are defined in L<GD>. 
 B<NB.> If you want to use this function, you'll
-need to use GD. At some point I'll rewrite this, so you can give this a
-number from 1 to 4, or a string like 'large' or 'small'
+need to use L<GD>. At some point I'll rewrite this, so you can give this a
+number from 1 to 4, or a string like 'large' or 'small'. On the other
+hand, I might not, if Thomas Boutell decides to support more fonts.
 
-=item plot( <\@data> )
+=item plot( I<\@data> )
 
 Plot the chart, and return the GIF data.
 
-=item plot_to_gif( <"filename", \@data> )
+=item plot_to_gif( F<filename>, I<\@data> )
 
 Plot the chart, and write the GIF data to I<filename>.
 
 =cut
 
-# =item ReadFile ( <"filename">, I<some array of columns?> )
+# =item ReadFile ( F<"filename">, I<some array of columns?> )
 # 
-# Read data from I<filename>, which must be a data file formatted for
+# Read data from F<filename>, which must be a data file formatted for
 # GNUplot.
 # B<NB.> Have to figure out how to call the function.
 
-=item set( I<key1 => value1, key2 => value2 ....> )
+=item set( key1 => value1, key2 => value2 .... )
 
 Set chart options. See OPTIONS section.
 
@@ -580,11 +604,9 @@ Set chart options. See OPTIONS section.
 
 =item set_value_font( I<fontname> )
 
-Set the font that will be used for the vabel of the pie or the 
-values on the pie.  Possible choices are defined in GD. 
-B<NB.> If you want to use this function, you'll
-need to use GD. At some point I'll rewrite this, so you can give this a
-number from 1 to 4, or a string like 'large' or 'small'
+Set the font that will be used for the label of the pie or the 
+values on the pie.  Possible choices are defined in L<GD>. 
+See also I<set_title_font>.
 
 =back
 
@@ -601,12 +623,12 @@ number from 1 to 4, or a string like 'large' or 'small'
 
 =item set_y_axis_font ( I<font name> )
 
-Set the font for the x and y axis label, and for the x and y axis value labels.
-B<NB.> If you want to use this function, you'll
-need to use GD. At some point I'll rewrite this, so you can give this a
-number from 1 to 4, or a string like 'large' or 'small'
+Set the font for the x and y axis label, and for the x and y axis
+value labels.
+See also I<set_title_font>.
 
 =back
+
 
 =head1 OPTIONS
 
@@ -618,32 +640,35 @@ number from 1 to 4, or a string like 'large' or 'small'
 
 The width and height of the gif file in pixels
 Default: 400 x 300.
+B<NB> At the moment, these are read-only options. If you want to set
+the size of a graph, you will have to do that with the I<new> method.
 
 =item t_margin, b_margin, l_margin, r_margin
 
-Top, bottom, left and right margin of the GIF. These margins will be left blank.
+Top, bottom, left and right margin of the GIF. These margins will be
+left blank.
 Default: 0 for all.
 
 =item logo
 
-Name of the logo file. This should be a GIF file. 
+Name of a logo file. This should be a GIF file. 
 Default: no logo.
 
 =item logo_resize, logo_position
 
 Factor to resize the logo by, and the position on the canvas of the
-logo. Possible values for logo_position are 'LL', 'LR', 'UL', and 'UR'.
-(lower and upper left and right). 
+logo. Possible values for logo_position are 'LL', 'LR', 'UL', and
+'UR'.  (lower and upper left and right). 
 Default: 'LR'.
 
 =item transparent
 
-If 1, the produced GIF will have the background colour marked as
-transparent.  Default: 1.
+If set to a true value, the produced GIF will have the background
+colour marked as transparent (see also option I<bgclr>).  Default: 1.
 
 =item interlaced
 
-If 1, the produced GIF will be interlaced.
+If set to a true value, the produced GIF will be interlaced.
 Default: 1.
 
 =item bgclr, fgclr, textclr, labelclr, axislabelclr, accentclr
@@ -654,38 +679,40 @@ Background, foreground, text, label, axis label and accent colours.
 
 This controls the colours for the bars, lines, markers, or pie slices.
 This should be a reference to an array of colour names as defined in
-GIFgraph::colour (perldoc GIFgraph::colour for the names available).
+L<GIFgraph::colour> (C<S<perldoc GIFgraph::colour>> for the names available).
 
-$graph->set( 'dclrs' => [ 'green', 'pink', 'blue', 'cyan' ] );
+    $graph->set( 'dclrs' => [ qw(green pink blue cyan) ] );
 
 The first (fifth, ninth) data set will be green, the next pink, etc.
-Default: ['lred', 'lgreen', 'lblue', 'lyellow', 'lpurple', 'cyan', 'lorange'] 
+Default: [ qw(lred lgreen lblue lyellow lpurple cyan lorange) ] 
 
 =back
 
 =head2 Options for graphs with axes.
 
-options for C<bars, lines, points, linespoints> and 
-C<area> charts.
+options for I<bars>, I<lines>, I<points>, I<linespoints> and 
+I<area> charts.
 
 =over 4
 
 =item long_ticks, tick_length
 
-If I<long_ticks> = 1, ticks will be drawn the same length as the axes.
-Otherwise ticks will be drawn with length I<tick_length>.
-Default: long_ticks = 0, tick_length = 4.
-
-=item y_tick_number
-
-Number of ticks to print for the Y axis.
-Default: 5.
+If I<long_ticks> is a true value, ticks will be drawn the same length
+as the axes.  Otherwise ticks will be drawn with length
+I<tick_length>. if I<tick_length> is negative, the ticks will be drawn
+outside the axes.  Default: long_ticks = 0, tick_length = 4.
 
 =item x_ticks
 
-If I<x_ticks> = 1, ticks will be drawm for the x axis. These ticks are
-subject to the values of long_ticks and tick_length.  
-Default: 1.
+If I<x_ticks> is a true value, ticks will be drawm for the x axis.
+These ticks are subject to the values of I<long_ticks> and
+I<tick_length>.  Default: 1.
+
+=item y_tick_number
+
+Number of ticks to print for the Y axis. Use this, together with
+I<y_label_skip> to control the look of ticks on the y axis.
+Default: 5.
 
 =item x_label_skip, y_label_skip
 
@@ -695,22 +722,21 @@ Default: 1 for both.
 
 =item x_plot_values, y_plot_values
 
-If set to 1, the values of the ticks on the x or y axes will be plotted
-next to the tick. Also see I<x_label_skip, y_label_skip>.
-Default: 1 for both.
+If set to a true value, the values of the ticks on the x or y axes
+will be plotted next to the tick. Also see I<x_label_skip,
+y_label_skip>.  Default: 1 for both.
 
 =item box_axis
 
-Draw the axes as a box, if 1.
+Draw the axes as a box, if true.
 Default: 1.
 
 =item two_axes
 
-Use two separate axes for the first and second data set. The first data
-set will be set against the left axis, the second against the right
-axis. If this is set to 1, trying to use anything else than 2 datasets
-will generate an error.
-Default: 0.
+Use two separate axes for the first and second data set. The first
+data set will be set against the left axis, the second against the
+right axis. If this is set to a true value, trying to use anything
+else than 2 datasets will generate an error.  Default: 0.
 
 =item zero_axis
 
@@ -726,6 +752,22 @@ If set to a true value, the zero axis will be drawn (see
 I<zero_axis>), and no axis at the bottom of the graph will be drawn.
 The labels for X values will be placed on the zero exis.
 Default: 1.
+
+=item y_max_value, y_min_value
+
+Maximum and minimum value displayed on the y axis. If two_axes is a
+true value, then y1_min_value, y1_max_value (for the left axis),
+and y2_min_value, y2_max_value (for the right axis) take precedence
+over these.
+
+The range (y_min_value..y_max_value) has to include all the values of
+the data points, or I<GIFgraph> will die with a message.
+
+For bar and area graphs, the range (y_min_value..y_max_value) has to
+include 0. If it doesn't, the values will be adapted before attempting
+to draw the graph.
+
+Default: Computed from data sets.
 
 =cut
 
@@ -743,7 +785,7 @@ Default: 4.
 
 =item overwrite
 
-If set to 0 bars of different data sets will be drawn next to each
+If set to 0, bars of different data sets will be drawn next to each
 other. If set to 1, they will be drawn in front of each other. If set
 to 2 they will be drawn on top of each other.
 Default: 0.
@@ -755,10 +797,10 @@ effect.
 
 =item markers
 
-This controls the order of markers in points and linespoints graphs.
-This should be a reference to an array of numbers:
+This controls the order of markers in I<points> and I<linespoints>
+graphs.  This should be a reference to an array of numbers:
 
-$graph->set( 'markers' => [3, 5, 6] );
+    $graph->set( 'markers' => [3, 5, 6] );
 
 Available markers are: 1: filled square, 2: open square, 3: horizontal
 cross, 4: diagonal cross, 5: filled diamond, 6: open diamond, 7:
@@ -768,8 +810,66 @@ Default: [1,2,3,4,5,6,7,8]
 
 =item marker_size
 
-The size of the markers used in I<points> and I<linespoints> graphs, in pixels.
-Default: 4.
+The size of the markers used in I<points> and I<linespoints> graphs,
+in pixels.  Default: 4.
+
+=back
+
+=head2 Options and methods for legends (axestype graphs only)
+
+At the moment legend support is minimal.
+
+B<Methods>
+
+=over 4
+
+=item set_legend( I<@legend_keys> );
+
+Sets the keys for the legend. The elements of @legend_keys correspond
+to the data sets as provided to I<plot()> or I<plot_to_gif()>.
+
+If a key is I<undef> or an empty string, the legend entry will be skipped.
+
+=item set_legend_font( I<font name> );
+
+Sets the font for the legend text (see also I<set_title_font>).
+Default: GD::gdTinyFont.
+
+=back
+
+B<Options>
+
+=over 4
+
+=item legend_placement
+
+Where to put the legend. This should be a two letter key of the form:
+'B[LCR]|R[TCB]'. The first letter sigifies the placement (I<B>ottom or
+I<R>ight), and the second letter signifies the alignment (I<L>eft,
+I<R>ight, I<C>enter, I<T>op, or I<B>ottom).
+Defaults: B and C
+
+If the legend is placed at the bottom, some calculations will be made
+to ensure that there is some 'intelligent' wrapping going on. if the
+legend is placed at the right, all entries will be placed below each
+other.
+
+=item legend_spacing
+
+The number of pixels to place around a legend item, and between a
+legend 'marker' and the text.
+Default: 4
+
+=item legend_marker_width, legend_marker_height
+
+The width and height of a legend 'marker' in pixels.
+Defaults: 12, 8
+
+=item lg_cols
+
+If you, for some reason, need to force the legend at the bottom to
+have a specific number of columns, you can use this.
+Default: computed
 
 =back
 
@@ -780,20 +880,34 @@ Default: 4.
 
 =item 3d
 
-If 1, the pie chart will be drawn with a 3d look.
+If set to a true value, the pie chart will be drawn with a 3d look.
 Default: 1.
 
 =item pie_height
 
-The thickness of the pie when I<3d> is 1.
+The thickness of the pie when I<3d> is true.
 Default: 0.1 x GIF y size.
 
 =item start_angle
 
-The angle at which the first data slice will be displayed, with 0 degrees being "3 o'clock".
+The angle at which the first data slice will be displayed, with 0 degrees
+being "6 o'clock".
 Default: 0.
 
 =back
+
+=head1 NOTES
+
+All references to colours in the options for this module have been
+shortened to clr. The main reason for this was that I didn't want to
+support two spellings for the same word ('colour' and 'color')
+
+Wherever a colour is required, a colour name should be used from the
+package L<GIFgraph::colour>. C<S<perldoc GIFgraph::colour>> should give
+you the documentation for that module, containing all valid colour
+names.
+
+Wherever a font name is required, a font from L<GD> should be used.
 
 =head1 AUTHOR
 
@@ -801,7 +915,7 @@ Martien Verbruggen
 
 =head2 Contact info 
 
-email: mgjv@comdyn.com.au
+email: mgjv@comdyn.com.au or tgtcmv@chem.tue.nl
 
 =head2 Copyright
 
@@ -811,4 +925,4 @@ and/or modify it under the same terms as Perl itself.
 
 =cut
 
-# WWW: http://www.tcp.chem.tue.nl/~tgtcmv/
+# WWW: L<http://www.tcp.chem.tue.nl/~tgtcmv/>

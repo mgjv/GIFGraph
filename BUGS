@@ -1,20 +1,32 @@
-UNSOLVED BUGS
+UNRESOLVED BUGS
 
 + two_axes doesn't work correctly with negative numbers and zero_axis
++ y_max_value doesn't get adapted for bars and area if all negative values
++ placement of title is centered on gif, not on graph.
 
 NOT REALLY BUGS
 
-+ overwrite == 2 only makes sense if all the data is either positive,
+- overwrite == 2 only makes sense if all the data is either positive,
   or negative
-+ a positive y_min_value doesn't work with bars or area, bars and area 
+- A positive y_min_value doesn't work with bars or area, bars and area 
   always are set off against 0. Wether this is a bug, or wanted behaviour
   might be a point for discussion.
+
+FIXED IN 0.99
+
+! Cannot use any 'null' values in graphs
+	Lee Khandelwal <lee_khandelwal@il.us.swissbank.com>
+
+FIXED IN 0.95
+
+! filled markers don't fill correctly when overlapping
 
 FIXED IN 0.94
 
 ! area doesn't work with negative numbers
-! right axis doesn't get drawn when box_axis == 0 and two_axes == 1
+! Right axis doesn't get drawn when box_axis == 0 and two_axes == 1
 ! Color on front of 3D pies wrong with some data sets
+	Also changed 0 angle for pie charts
 	Reported by various people
 
 FIXED IN 0.91

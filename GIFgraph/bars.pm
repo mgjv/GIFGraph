@@ -7,19 +7,18 @@
 #	Name:
 #		GIFgraph::bars.pm
 #
-# $Id: bars.pm,v 1.1.1.2 1999-10-10 12:07:05 mgjv Exp $
+# $Id: bars.pm,v 1.1.1.3 1999-10-10 12:33:47 mgjv Exp $
 #
 #==========================================================================
  
-use strict qw(vars refs subs);
-
 package GIFgraph::bars;
+
+use strict qw(vars refs subs);
 
 use GIFgraph::axestype;
 use GIFgraph::utils qw(:all);
 
-use vars qw( @ISA );
-@ISA = qw( GIFgraph::axestype );
+@GIFgraph::bars::ISA = qw( GIFgraph::axestype );
 
 {
 	# PRIVATE
@@ -56,6 +55,8 @@ use vars qw( @ISA );
 
 			for my $j (1..$s->{numsets}) 
 			{
+				next if (!defined($$d[$j][$i]));
+
 				# get data colour
 				my $dsci = $s->set_clr( $g, $s->pick_data_clr($j) );
 
@@ -110,6 +111,8 @@ use vars qw( @ISA );
 
 			for my $i (0..$s->{numpoints}) 
 			{
+				next if (!defined($$d[$ds][$i]));
+
 				# get coordinates of top and center of bar
 				my ($xp, $t) = $s->val_to_pixel($i+1, $$d[$ds][$i], $ds);
 

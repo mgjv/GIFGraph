@@ -4,7 +4,8 @@ PERL = perl5
 LIB = ..
 OPTIONS = -Tw
 
-GIFS =  sample11.gif sample12.gif sample13.gif sample14.gif sample15.gif\
+GIFS =  sample11.gif sample12.gif sample13.gif sample14.gif \
+		sample15.gif sample16.gif \
 		sample21.gif \
 		sample31.gif \
 		sample41.gif \

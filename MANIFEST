@@ -1,7 +1,8 @@
 MANIFEST
 BUGS
-README
 CHANGES
+README
+Makefile.PL
 GIFgraph.pm
 GIFgraph/area.pm
 GIFgraph/axestype.pm
@@ -12,7 +13,6 @@ GIFgraph/linespoints.pm
 GIFgraph/pie.pm
 GIFgraph/points.pm
 GIFgraph/utils.pm
-Makefile.PL
 t/area.t
 t/area1.gif
 t/area2.gif
@@ -20,8 +20,14 @@ t/bars.t
 t/bars1.gif
 t/bars2.gif
 t/ff.pl
+t/legend.t
+t/legend1.gif
+t/legend2.gif
+t/legend3.gif
 t/lines.t
 t/lines1.gif
+t/linespoints.t
+t/linespoints1.gif
 t/logo.gif
 t/pie.t
 t/pie1.gif
@@ -33,6 +39,8 @@ samples/sample11.htm
 samples/sample12.htm
 samples/sample13.htm
 samples/sample14.htm
+samples/sample15.htm
+samples/sample16.htm
 samples/sample21.htm
 samples/sample31.htm
 samples/sample41.htm
@@ -45,6 +53,8 @@ samples/sample11.pl
 samples/sample12.pl
 samples/sample13.pl
 samples/sample14.pl
+samples/sample15.pl
+samples/sample16.pl
 samples/sample21.pl
 samples/sample31.pl
 samples/sample41.pl

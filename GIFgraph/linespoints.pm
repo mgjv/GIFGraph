@@ -7,33 +7,52 @@
 #	Name:
 #		GIFgraph::linespoints.pm
 #
-# $Id: linespoints.pm,v 1.1.1.2 1999-10-10 12:07:05 mgjv Exp $
+# $Id: linespoints.pm,v 1.1.1.3 1999-10-10 12:33:47 mgjv Exp $
 #
 #==========================================================================
 
+package GIFgraph::linespoints;
+ 
 use strict qw(vars refs subs);
  
 use GIFgraph::axestype;
 use GIFgraph::lines;
 use GIFgraph::points;
  
-package GIFgraph::linespoints;
- 
-use vars qw( @ISA );
-@ISA = qw( GIFgraph::axestype );
+# Multiple inheritance is not really a good idea in this case, 
+# since lines and points have the same parent class
+# even though it might make sense logically, and even though it
+# will actually work.
+
+# @GIFgraph::linespoints::ISA = qw( GIFgraph::lines GIFgraph::points );
+
+@GIFgraph::linespoints::ISA = qw( GIFgraph::axestype );
+
 {
 	# PRIVATE
-	sub draw_data { # GD::Image, \@data
-
+	sub draw_data($$) # GD::Image, \@data
+	{
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
 
-		GIFgraph::lines::draw_data( $s, $g, $d );
-		GIFgraph::points::draw_data( $s, $g, $d );
+		$s->GIFgraph::points::draw_data( $g, $d );
+		$s->GIFgraph::lines::draw_data( $g, $d );
 
 	}
  
+	sub draw_legend_marker($$$$) # (GD::Image, data_set_number, x, y)
+	{
+		my $s = shift;
+		my $g = shift;
+		my $n = shift;
+		my $x = shift;
+		my $y = shift;
+
+		$s->GIFgraph::points::draw_legend_marker($g, $n, $x, $y);
+		$s->GIFgraph::lines::draw_legend_marker($g, $n, $x, $y);
+	}
+
 } # End of package GIFgraph::linesPoints
 
 1;

@@ -11,32 +11,21 @@
 #		Package of colour manipulation routines, to be used 
 #		with GIFgraph.
 #
-# $Id: colour.pm,v 1.1.1.2 1999-10-10 12:07:06 mgjv Exp $
-#
-# $Log: not supported by cvs2svn $
-# Revision 1.3  1997/12/16 05:23:51  mgjv
-# final check in for 0.94
-#
-# Revision 1.2  1997/12/16 00:20:50  mgjv
-# cleaned up
-#
-# Revision 1.1  1997/02/14 02:32:49  mgjv
-# Initial revision
+# $Id: colour.pm,v 1.1.1.3 1999-10-10 12:33:47 mgjv Exp $
 #
 #==========================================================================
 
  
-use strict qw( vars refs subs );
-
 package GIFgraph::colour;
 
-use vars qw( @ISA @EXPORT_OK %EXPORT_TAGS );
-
+use vars qw( @EXPORT_OK %EXPORT_TAGS );
+use strict qw( vars refs subs );
 require Exporter;
-@ISA = qw( Exporter );
+
+@GIFgraph::colour::ISA = qw( Exporter );
 
 $GIFgraph::colour::prog_name    = 'GIFgraph::colour.pm';
-$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.2 $';
+$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.3 $';
 $GIFgraph::colour::prog_version = 
 	($GIFgraph::colour::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 

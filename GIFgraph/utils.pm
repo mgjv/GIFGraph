@@ -10,23 +10,24 @@
 #	Description:
 #		Package of general utilities.
 #
-# $Id: utils.pm,v 1.1.1.2 1999-10-10 12:07:05 mgjv Exp $
+# $Id: utils.pm,v 1.1.1.3 1999-10-10 12:33:46 mgjv Exp $
 #
 #==========================================================================
  
-use strict qw(vars subs refs);
-
 package GIFgraph::utils;
 
-use vars qw( @ISA @EXPORT_OK %EXPORT_TAGS );
+use strict qw(vars subs refs);
+
+use vars qw( @EXPORT_OK %EXPORT_TAGS );
 require Exporter;
-@ISA = qw( Exporter );
+
+@GIFgraph::utils::ISA = qw( Exporter );
  
 @EXPORT_OK = qw( _max _min _round );
 %EXPORT_TAGS = ( all => [qw(_max _min _round)],);
 
 $GIFgraph::utils::prog_name    = 'GIFgraph::utils.pm';
-$GIFgraph::utils::prog_rcs_rev = '$Revision: 1.1.1.2 $';
+$GIFgraph::utils::prog_rcs_rev = '$Revision: 1.1.1.3 $';
 $GIFgraph::utils::prog_version = 
 	($GIFgraph::utils::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 

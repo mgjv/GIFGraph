@@ -7,18 +7,18 @@
 #	Name:
 #		GIFgraph::area.pm
 #
-# $Id: area.pm,v 1.1.1.2 1999-10-10 12:07:05 mgjv Exp $
+# $Id: area.pm,v 1.1.1.3 1999-10-10 12:33:47 mgjv Exp $
 #
 #==========================================================================
+
+package GIFgraph::area;
  
 use strict qw(vars refs subs);
 
 use GIFgraph::axestype;
 
-package GIFgraph::area;
-use vars qw( @ISA );
+@GIFgraph::area::ISA = qw( GIFgraph::axestype );
 
-@ISA = qw( GIFgraph::axestype );
 {
 	# PRIVATE
 	sub draw_data { # GD::Image, \@data
@@ -29,6 +29,8 @@ use vars qw( @ISA );
 
 		foreach my $ds (1..$s->{numsets}) 
 		{
+			my $num = 0;
+
 			# Select a data colour
 			my $dsci = $s->set_clr( $g, $s->pick_data_clr($ds) );
 
@@ -42,12 +44,16 @@ use vars qw( @ISA );
 			# Add the data points
 			for my $i (0 .. $s->{numpoints}) 
 			{
+				next if (!defined($$d[$ds][$i]));
+
 				($x, $y) = $s->val_to_pixel($i + 1, $$d[$ds][$i], $ds);
 				$poly->addPt($x, $y);
+
+				$num = $i;
 			}
 
 			# Add the last zero point
-			($x, $y) = $s->val_to_pixel($s->{numpoints} + 1, 0, $ds);
+			($x, $y) = $s->val_to_pixel($num + 1, 0, $ds);
 			$poly->addPt($x, $y);
 
 			# Draw a filled and a line polygon
@@ -57,6 +63,8 @@ use vars qw( @ISA );
 			# Draw the accent lines
 			for my $i (1 .. ($s->{numpoints} - 1)) 
 			{
+				next if (!defined($$d[$ds][$i]));
+
 				($x, $y) = $s->val_to_pixel($i + 1, $$d[$ds][$i], $ds);
 				$g->dashedLine( $x, $y, $x, $s->{zeropoint}, $s->{acci} );
 		   }

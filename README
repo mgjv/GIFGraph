@@ -1,5 +1,9 @@
-This is an alpha release of GIFgraph, a package to generate GIF
+This is the first beta release of GIFgraph, a package to generate GIF
 charts, using Lincoln Stein's GD.pm.
+
+The next release, version 1.00, should support at least what is
+documented, and should run on both Unix and Win32 (still not clear
+which perl port and GD port I will work with).
 
 to install:
 	perl Makefile.PL
@@ -13,34 +17,49 @@ to see some samples:
 
 That should generate a bunch of gifs.
 
+NB: This version has been tested with perl 5.004_04 on a Solaris
+    system, using GD 1.15. I cannot guarantee that it will work
+    on a perl version below 5.004, or with GD below 1.14. You should
+    upgrade anyway.
+
 Most of the documentation available is contained in GIFgraph.pm, as
-pod. Sorry for the incompleteness of it all, and the sloppiness of the
-code in places, but remember: this is an alpha :)
+pod.
 
 Martien Verbruggen
-mgjv@comdyn.com.au
-tgtcmv@chem.tue.nl
+	mgjv@comdyn.com.au
+	tgtcmv@chem.tue.nl
 
 The latest release should normally be available from CPAN and from 
 http://www.tcp.chem.tue.nl/~tgtcmv/perl/
 
-CHANGES IN THIS VERSION
+MOST IMPORTANT CHANGES SINCE VERSION 0.91
 
-Support for negative numbers
-ticks for X axis
-lots of minor behind-the-screens changes
+- Legends!
+- Support for negative numbers
+- Ticks for X axis
+- Allow entries in data set to be undef (to skip them)
+- Changed 0 angle for pie charts (was right, now is front/bottom)
+- A bit more documentation and samples
 
 TODO
 
-- LEGENDS!
-- 3d look for graphics
+- 3d look for graphs
 - numerical X axes
 - Autoloading/splitting, etc
-- lots and lots of stuff
+- More options, split up some options.
+- Mixed Graphs
+- 'Preset options' for certain graph types
+- line widths/brushes
 
 BUG FIXES IN THIS VERSION
 
 See file BUGS
+
+NOTES FOR WIN32
+
+I am currently working on a version that will run on win32, but there
+are some nasty issues with some ports of GD for win32. I will try to
+resolve them asap.
 
 COPYRIGHT
 

@@ -1,3 +1,7 @@
+Thu Dec 18 1997
+
+- Allow undef values in data sets, and skip them
+- Added prototyping of functions
 - Legends, finally
   requests from Petter Reinholdtsen <pere@link.no
   				Giorgos Andreadakis <gand@forthnet.gr>
@@ -14,16 +18,20 @@ Mon Dec 15 1997
 - Added support for negative numbers in lines, points and linespoints 
   graphs
 - Added new options: zero_axis, and zero_axis_only (code and documentation)
+- Added new options: y_min_value, y1_min_value, y2_min_value
 
 Fri Dec 12 1997
 
+- Changed 0 angle for pies to be at front/bottom, to make calculations a 
+  bit easier
 - Added test scripts for 'make test'
 
 Before Fri Dec 05 1997
 
 - Lots of minor tuning
 - Added x_ticks option 
-  (request Will Mitayai Keeso Rowe - thelab@nmarcom.com)
+  requests from Will Mitayai Keeso Rowe - thelab@nmarcom.com
+			    mparvataneni@quadravision.com (Murali Parvataneni)
 - Added binmode() here and there to accommodate for platforms that need
   it.
 

@@ -1,5 +1,5 @@
 # This -*- perl -*- script makes the Makefile
-# $Id: Makefile.PL,v 1.1.1.2 1999-10-10 12:07:03 mgjv Exp $
+# $Id: Makefile.PL,v 1.1.1.3 1999-10-10 12:33:43 mgjv Exp $
  
 #--- Distribution section ---
  
@@ -28,7 +28,7 @@ use ExtUtils::MakeMaker;
  
 #--- Write the Makefile
  
-my @clean = qw(*% *.html *.b[ac]k *.old);
+my @clean = qw(*% *.html *.b[ac]k *.old .[A-z]* tags);
  
 push @clean, map { "*/$_" } @clean;
  
