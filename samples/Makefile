@@ -1,7 +1,7 @@
 PERL = perl
 .SUFFIXES: .gif .pl
 .SILENT:
-LIB = ..
+LIB = -I.. -I/home/mgjv/lib/perl5/site_perl/5.005/i386-linux
 OPTIONS = -Tw
 
 GIFS =  sample11.gif sample12.gif sample13.gif \
@@ -16,7 +16,7 @@ GIFS =  sample11.gif sample12.gif sample13.gif \
 all: $(GIFS)
 
 .pl.gif:
-	$(PERL) $(OPTIONS) -I$(LIB) $<
+	$(PERL) $(OPTIONS) $(LIB) $<
 
 clean:
 	rm -f $(GIFS)
