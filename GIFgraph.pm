@@ -18,7 +18,7 @@
 #		GIFgraph::pie
 #		GIFgraph::mixed
 #
-# $Id: GIFgraph.pm,v 1.6 1999-12-29 12:17:44 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.7 1999-12-29 12:36:06 mgjv Exp $
 #
 #==========================================================================
 
@@ -97,8 +97,6 @@ a conversion step. The default distribution of GIFgraph uses
 Image::Magick for this. If you'd like to use something else, please
 replace the sub png2gif in GIFgraph::Convert with something more to your
 liking.
-
-=head1 EXAMPLE
 
 =head1 NOTES
 
