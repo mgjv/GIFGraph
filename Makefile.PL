@@ -1,5 +1,5 @@
 # This -*- perl -*- script makes the Makefile
-# $Id: Makefile.PL,v 1.4 1999-12-26 11:08:17 mgjv Exp $
+# $Id: Makefile.PL,v 1.5 1999-12-30 04:13:34 mgjv Exp $
  
 #--- Distribution section ---
 
@@ -35,8 +35,9 @@ require GD;
 
 # REMOVE THE FOLLOWING CHECKS IF YOU DON'T USE Image::Magick AND YOU
 # HAVE EDITED GIFgraph::Convert.
-if (GD::Image->can('gif'))
+if (GD::Image->can('png'))
 {
+	print "Checking for conversion of PNG to GIF\n";
 	require GIFgraph::Convert;
 	GIFgraph::Convert::checkImageMagick();
 }
