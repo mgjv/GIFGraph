@@ -1,3 +1,8 @@
+Fri Jan  9 1998
+
+- Fixed some bugs (see file BUGS, version 1.01)
+- Added formatting for y labels (option y_label_format)
+
 Tue Dec 23 1997
 
 - Changed PERL=perl5 to PERL=perl in samples/Makefile (D'OH!)

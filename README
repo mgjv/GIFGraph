@@ -1,5 +1,5 @@
-This is the first beta release of GIFgraph, a package to generate GIF
-charts, using Lincoln Stein's GD.pm.
+This is GIFgraph, a package to generate GIF charts, using Lincoln Stein's
+GD.pm.
 
 INSTALLATION
 
@@ -35,6 +35,7 @@ http://www.tcp.chem.tue.nl/~tgtcmv/perl/
 TESTED PLATFORMS (also see NOTES FOR WIN32)
 
 - perl 5.004_04 on Solaris 2.5.1, GD 1.15
+- perl 5.003 on Solaris 2.5.1 (Brian Eitrem)
 - perl 5.004_02 for win32 by Gurusamy Sarathy, GD (1.14 I think)
 
 AUTHOR
@@ -53,10 +54,11 @@ MOST IMPORTANT CHANGES SINCE VERSION 0.91
 - Changed 'zero' angle for pie charts (was right, now is front/bottom)
 - Definition of colours now possible. See GIFgraph::colour::read_rgb
   for details
+- See file CHANGES for more
 
 TODO
 
-- 3d look for graphs (don't hold your breath for this one)
+- 3d look for graphs
 - logarithmic scaling
 - numerical X axes
 - Autoloading/splitting, etc

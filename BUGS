@@ -12,6 +12,15 @@ NOT REALLY BUGS
   always are set off against 0. Wether this is a bug, or wanted behaviour
   might be a point for discussion.
 
+FIXED IN 1.01
+
+! for loops break in 5.003 because of 'my' scoping (grrrr) 
+	(reported: Brian Eitrem <beitrem@digitalriver.com>)
+! ticks get drawn in front of the data set 
+	(reported: Honza Pazdziora <adelton@informatics.muni.cz>)
+! length estimate of y labels needs to be done better
+	(reported: Honza Pazdziora <adelton@informatics.muni.cz>)
+
 FIXED IN 1.00
 
 ! GIFgraph::colour::sorted_colour_list() syntax error

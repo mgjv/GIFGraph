@@ -7,7 +7,7 @@
 #	Name:
 #		GIFgraph::linespoints.pm
 #
-# $Id: linespoints.pm,v 1.1.1.4 1999-10-10 12:36:58 mgjv Exp $
+# $Id: linespoints.pm,v 1.1.1.5 1999-10-10 12:37:16 mgjv Exp $
 #
 #==========================================================================
 

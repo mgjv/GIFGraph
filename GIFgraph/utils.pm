@@ -10,7 +10,7 @@
 #	Description:
 #		Package of general utilities.
 #
-# $Id: utils.pm,v 1.1.1.3 1999-10-10 12:33:46 mgjv Exp $
+# $Id: utils.pm,v 1.1.1.4 1999-10-10 12:37:15 mgjv Exp $
 #
 #==========================================================================
  
@@ -27,7 +27,7 @@ require Exporter;
 %EXPORT_TAGS = ( all => [qw(_max _min _round)],);
 
 $GIFgraph::utils::prog_name    = 'GIFgraph::utils.pm';
-$GIFgraph::utils::prog_rcs_rev = '$Revision: 1.1.1.3 $';
+$GIFgraph::utils::prog_rcs_rev = '$Revision: 1.1.1.4 $';
 $GIFgraph::utils::prog_version = 
 	($GIFgraph::utils::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 

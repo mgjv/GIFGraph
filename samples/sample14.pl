@@ -19,6 +19,7 @@ $my_graph->set(
 	'y2_max_value' => 8,
 	'y_tick_number' => 8,
 	'y_label_skip' => 2,
+	'long_ticks' => 1,
 	'two_axes' => 1,
 	'legend_placement' => 'RT',
 );

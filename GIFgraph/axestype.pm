@@ -7,7 +7,7 @@
 #	Name:
 #		GIFgraph::axestype.pm
 #
-# $Id: axestype.pm,v 1.1.1.4 1999-10-10 12:36:58 mgjv Exp $
+# $Id: axestype.pm,v 1.1.1.5 1999-10-10 12:37:15 mgjv Exp $
 #
 #==========================================================================
 
@@ -82,6 +82,10 @@ my %Defaults = (
 	legend_marker_width		=> 12,
 	legend_spacing			=> 4,
 	legend_placement		=> 'BC',		# '[B][LCR]'
+
+	# Format of the numbers on the y axis
+
+	y_number_format			=> undef,
 );
 
 {
@@ -98,8 +102,8 @@ my %Defaults = (
 		$self->init_graph($self->{graph});
 		$self->draw_text($self->{graph});
 		$self->draw_axes($self->{graph}, $data);
-		$self->draw_data($self->{graph}, $data);
 		$self->draw_ticks($self->{graph}, $data);
+		$self->draw_data($self->{graph}, $data);
 		$self->draw_legend($self->{graph});
 
 		return $self->{graph}->gif;
@@ -168,7 +172,8 @@ my %Defaults = (
  
 		$self->SUPER::initialise();
  
-		foreach my $key (keys %Defaults) 
+		my $key;
+		foreach $key (keys %Defaults) 
 		{
 			$self->set( $key => $Defaults{$key} );
 		}
@@ -231,13 +236,17 @@ my %Defaults = (
  
 		$s->set_max_min($data);
 
+		# Create the labels for the y_axes, and calculate the max length
+
+		$s->create_y_labels();
+
 		# calculate the left and right of the bounding box for the graph
-		my $ls = $s->{yafw} * length($s->{y_max}[1]);
+		my $ls = $s->{yafw} * $s->{y_label_len}[1];
 		$s->{left} = $s->{l_margin} +
 					 ( ( $ls ) ? $ls + $s->{axis_space} : 0 ) +
 					 ( ( $s->{ylfh1} ) ? $s->{ylfh}+$s->{text_space} : 0 );
 
-		$ls = $s->{yafw}*length($s->{y_max}[2]) if $s->{two_axes};
+		$ls = $s->{yafw} * $s->{y_label_len}[2] if $s->{two_axes};
 		$s->{right} = $s->{gifx} - $s->{r_margin} - 1 -
 					  $s->{two_axes}* (
 						  ( ( $ls ) ? $ls + $s->{axis_space} : 0 ) +
@@ -267,6 +276,37 @@ my %Defaults = (
 		$s->{x_label_skip} = 1 if ( $s->{x_label_skip} < 1 );
 		$s->{y_label_skip} = 1 if ( $s->{y_label_skip} < 1 );
 		$s->{y_tick_number} = 1 if ( $s->{y_tick_number} < 1 );
+	}
+
+	sub create_y_labels
+	{
+		my $s = shift;
+
+		$s->{y_label_len}[1] = 0;
+		$s->{y_label_len}[2] = 0;
+
+		my $t;
+		foreach $t (0..$s->{y_tick_number})
+		{
+			my $a;
+			foreach $a (1 .. ($s->{two_axes} + 1))
+			{
+				my $label = 
+					$s->{y_min}[$a] +
+					$t *
+					($s->{y_max}[$a] - $s->{y_min}[$a])/$s->{y_tick_number};
+				
+				$label = sprintf($s->{y_number_format}, $label)
+					if (defined($s->{y_number_format}));
+				
+				my $len = length($label);
+
+				$s->{y_labels}[$a][$t] = $label;
+
+				($len > $s->{y_label_len}[$a]) and 
+					$s->{y_label_len}[$a] = $len;
+			}
+		}
 	}
  
 	# inherit open_graph from GIFgraph
@@ -361,14 +401,17 @@ my %Defaults = (
 		#
 		# Ticks and values for y axes
 		#
-		foreach my $t (0..$s->{y_tick_number}) 
+		my $t;
+		foreach $t (0..$s->{y_tick_number}) 
 		{
-			foreach my $a (1 .. ($s->{two_axes} + 1)) 
+			my $a;
+			foreach $a (1 .. ($s->{two_axes} + 1)) 
 			{
 				my $label = 
-					$s->{y_min}[$a] + 
-					$t * 
-					($s->{y_max}[$a] - $s->{y_min}[$a])/$s->{y_tick_number};
+					$s->{y_labels}[$a][$t];
+			#		$s->{y_min}[$a] + 
+			#		$t * 
+			#		($s->{y_max}[$a] - $s->{y_min}[$a])/$s->{y_tick_number};
 				
 				my ($x, $y) = $s->val_to_pixel( 
 					($a-1) * ($s->{numpoints} + 2), 
@@ -410,7 +453,8 @@ my %Defaults = (
 		#
 		# Ticks and values for X axis
 		#
-		for my $i (0.. $s->{numpoints}) 
+		my $i;
+		for $i (0.. $s->{numpoints}) 
 		{
 			my ($x, $y) = $s->val_to_pixel($i + 1, 0, 1);
 
@@ -464,7 +508,8 @@ my %Defaults = (
 
 		if ( $s->{two_axes} ) 
 		{
-			for my $i (1..2) 
+			my $i;
+			for $i (1..2) 
 			{
 				$s->{y_max}[$i] = up_bound( get_max_y(@{$$d[$i]}) );
 				$s->{y_min}[$i] = down_bound( get_min_y(@{$$d[$i]}) );
@@ -491,7 +536,8 @@ my %Defaults = (
 
 		if ( $s->{y_min_value} ) 
 		{
-			for my $i (1 .. 2)
+			my $i;
+			for $i (1 .. 2)
 			{
 				$s->{y_min}[$i] = $s->{y_min_value};
 			}
@@ -499,7 +545,8 @@ my %Defaults = (
 
 		if ( $s->{y_max_value} ) 
 		{
-			for my $i (1 .. 2)
+			my $i;
+			for $i (1 .. 2)
 			{
 				$s->{y_max}[$i] = $s->{y_max_value};
 			}
@@ -521,7 +568,8 @@ my %Defaults = (
 
 		if ( $s->{two_axes} ) 
 		{
-			for my $i (1 .. 2)
+			my $i;
+			for $i (1 .. 2)
 			{
 				die "Minimum for y" . $i . " too large\n"
 					if ( $s->{y_min}[$i] > get_min_y(@{$$d[$i]}) );
@@ -544,7 +592,8 @@ my %Defaults = (
 	{
 		my $max = undef;
 
-		foreach my $i (@_) 
+		my $i;
+		foreach $i (@_) 
 		{ 
 			next if (!defined($i));
 			$max = (defined($max) && $max >= $i) ? $max : $i; 
@@ -557,7 +606,8 @@ my %Defaults = (
 	{
 		my $min = undef;
 
-		foreach my $i (@_) 
+		my $i;
+		foreach $i (@_) 
 		{ 
 			next if (!defined($i));
 			$min = ( defined($min) and $min <= $i) ? $min : $i;
@@ -578,11 +628,13 @@ my %Defaults = (
 
 		if ($s->{overwrite} == 2) 
 		{
-			for my $i (0..$s->{numpoints}) 
+			my $i;
+			for $i (0..$s->{numpoints}) 
 			{
 				my $sum = 0;
 
-				for my $j (1..$s->{numsets}) 
+				my $j;
+				for $j (1..$s->{numsets}) 
 				{ 
 					$sum += $$d[$j][$i]; 
 				}
@@ -593,7 +645,8 @@ my %Defaults = (
 		}
 		else 
 		{
-			for my $i ( 1 .. $s->{numsets} ) 
+			my $i;
+			for $i ( 1 .. $s->{numsets} ) 
 			{
 				$max = _max( $max, get_max_y(@{$$d[$i]}) );
 				$min = _min( $min, get_min_y(@{$$d[$i]}) );
@@ -673,7 +726,8 @@ my %Defaults = (
 		my $maxlen = 0;
 		my $num = 0;
 
-		foreach my $legend (@{$s->{legend}})
+		my $legend;
+		foreach $legend (@{$s->{legend}})
 		{
 			if (defined($legend) and $legend ne "")
 			{
@@ -785,7 +839,8 @@ my %Defaults = (
 		my $row = 1;
 		my $x = $xl;	# start position of current element
 
-		foreach my $legend (@{$s->{legend}})
+		my $legend;
+		foreach $legend (@{$s->{legend}})
 		{
 			$i++;
 			last if ($i > $s->{numsets});

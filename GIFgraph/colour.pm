@@ -11,7 +11,7 @@
 #		Package of colour manipulation routines, to be used 
 #		with GIFgraph.
 #
-# $Id: colour.pm,v 1.1.1.4 1999-10-10 12:36:58 mgjv Exp $
+# $Id: colour.pm,v 1.1.1.5 1999-10-10 12:37:16 mgjv Exp $
 #
 #==========================================================================
 
@@ -25,7 +25,7 @@ require Exporter;
 @GIFgraph::colour::ISA = qw( Exporter );
 
 $GIFgraph::colour::prog_name    = 'GIFgraph::colour.pm';
-$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.4 $';
+$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.5 $';
 $GIFgraph::colour::prog_version = 
 	($GIFgraph::colour::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
@@ -124,7 +124,8 @@ $GIFgraph::colour::prog_version =
 		my $max = $_[0] ? $_[0] : keys %RGB;
 		my $n = 0;
 
-		foreach my $clr (sorted_colour_list($max))
+		my $clr;
+		foreach $clr (sorted_colour_list($max))
 		{
 			last if $n > $max;
 			print "colour: $clr, " . 

@@ -7,7 +7,7 @@
 #	Name:
 #		GIFgraph::pie.pm
 #
-# $Id: pie.pm,v 1.1.1.4 1999-10-10 12:36:58 mgjv Exp $
+# $Id: pie.pm,v 1.1.1.5 1999-10-10 12:37:15 mgjv Exp $
 #
 #==========================================================================
 
@@ -90,7 +90,8 @@ my %Defaults = (
  
 		$self->SUPER::initialise();
  
-		foreach my $key (keys %Defaults) 
+		my $key;
+		foreach $key (keys %Defaults) 
 		{
 			$self->set( $key => $Defaults{$key} );
 		}
@@ -213,7 +214,8 @@ my %Defaults = (
 		my $total = 0;
 		my $j = 1; 						# for now, only one pie..
  
-		for my $i (0 .. $s->{numpoints}) 
+		my $i;
+		for $i (0 .. $s->{numpoints}) 
 		{ 
 			$total += $data->[$j][$i]; 
 		}
@@ -224,7 +226,7 @@ my %Defaults = (
 
 		my $val = 0;
 
-		for my $i ( 0..$s->{numpoints} ) 
+		for $i ( 0..$s->{numpoints} ) 
 		{
 			# Set the data colour
 			my $dc = $s->set_clr_uniq( $g, $s->pick_data_clr($i) );
