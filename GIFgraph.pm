@@ -18,7 +18,7 @@
 #		GIFgraph::area
 #		GIFgraph::pie
 #
-# $Id: GIFgraph.pm,v 1.1.1.3 1999-10-10 12:33:43 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.1.1.4 1999-10-10 12:36:54 mgjv Exp $
 #
 #==========================================================================
 
@@ -39,11 +39,11 @@ use GD;
 package GIFgraph;
 
 $GIFgraph::prog_name    = 'GIFgraph.pm';
-$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.3 $';
+$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.4 $';
 $GIFgraph::prog_version = 
 	($GIFgraph::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
-$GIFgraph::VERSION = '0.99';
+$GIFgraph::VERSION = '1.00';
 
 # Some tools and utils
 use GIFgraph::colour qw(:colours);
@@ -83,61 +83,59 @@ unless ($OS) {
 
 $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
 
-# Start of the package methods
+my %GIFsize = ( 
+	'x' => 400, 
+	'y' => 300 
+);
+
+my %Defaults = (
+
+	# Set the top, bottom, left and right margin for the GIF. These 
+	# margins will be left empty.
+
+	t_margin      => 0,
+	b_margin      => 0,
+	l_margin      => 0,
+	r_margin      => 0,
+
+	# Set the factor with which to resize the logo in the GIF (need to
+	# automatically compute something nice for this, really), set the 
+	# default logo file name, and set the logo position (UR, BR, UL, BL)
+
+	logo_resize   => 1.0,
+	logo          => undef,
+	logo_position => 'LR',
+
+	# Write a transparent GIF?
+
+	transparent   => 1,
+
+	# Write an interlaced GIF?
+
+	interlaced    => 1,
+
+	# Set the background colour, the default foreground colour (used 
+	# for axes etc), the textcolour, the colour for labels, the colour 
+	# for numbers on the axes, the colour for accents (extra lines, tick
+	# marks, etc..)
+
+	bgclr         => 'white',
+	fgclr         => 'dblue',
+	textclr       => 'dblue',
+	labelclr      => 'dblue',
+	axislabelclr  => 'dblue',
+	accentclr     => 'gray',
+
+	# number of pixels to use as text spacing
+
+	text_space    => 8,
+);
+
 {
-	#
-	# GIF size
-	#
-
-	my %GIFsize = ( 'x' => 400, 'y' => 300 );
-
-	my %Defaults = (
-
-		# Set the top, bottom, left and right margin for the GIF. These 
-		# margins will be left empty.
-
-		't_margin'      => 0,
-		'b_margin'      => 0,
-		'l_margin'      => 0,
-		'r_margin'      => 0,
-
-		# Set the factor with which to resize the logo in the GIF (need to
-		# automatically compute something nice for this, really), set the 
-		# default logo file name, and set the logo position (UR, BR, UL, BL)
-
-		'logo_resize'   => 1.0,
-		'logo'          => undef,
-		'logo_position' => 'LR',
-
-		# Write a transparent GIF?
-
-		'transparent'   => 1,
-
-		# Write an interlaced GIF?
-
-		'interlaced'    => 1,
-
-		# Set the background colour, the default foreground colour (used 
-		# for axes etc), the textcolour, the colour for labels, the colour 
-		# for numbers on the axes, the colour for accents (extra lines, tick
-		# marks, etc..)
-
-		'bgclr'         => 'white',
-		'fgclr'         => 'dblue',
-		'textclr'       => 'dblue',
-		'labelclr'      => 'dblue',
-		'axislabelclr'  => 'dblue',
-		'accentclr'     => 'gray',
-
-		# number of pixels to use as text spacing
-
-		'text_space'    => 8,
-	);
-
     #
     # PUBLIC methods, documented in pod.
     #
-    sub new(;$$)  # [ width, height ] optional;
+    sub new  # ( width, height ) optional;
 	{
         my $type = shift;
         my $self = {};
@@ -166,7 +164,7 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
         return $self;
     }
 
-    sub set(@)
+    sub set
 	{
         my $s = shift;
         my %args = @_;
@@ -183,37 +181,37 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     # But.. it's not nice to require the user to include GD.pm
     # just because she might want to change the font.
 
-    sub set_title_font($) # fontname
+    sub set_title_font # (fontname)
 	{
         my $self = shift;
 
         $self->{tf} = shift;
         $self->set( 
-			'tfw' => $self->{tf}->width,
-			'tfh' => $self->{tf}->height,
+			tfw => $self->{tf}->width,
+			tfh => $self->{tf}->height,
 		);
     }
 
-    sub set_text_clr($) # colour name
+    sub set_text_clr # (colour name)
 	{
         my $s = shift;
         my $c = shift;
 
         $s->set(
-            'textclr'       => $c,
-            'labelclr'      => $c,
-            'axislabelclr'  => $c,
+            textclr       => $c,
+            labelclr      => $c,
+            axislabelclr  => $c,
         );
     }
 
-	sub plot($) # \@data
+	sub plot # (\@data)
 	{
 		# ABSTRACT
 		my $s = shift;
 		$s->die_abstract( "sub plot missing," );
 	}
 
-    sub plot_to_gif($$) # "file.gif", \@data
+    sub plot_to_gif # ("file.gif", \@data)
 	{
         my $s = shift;
         my $file = shift;
@@ -277,7 +275,7 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     # This is called by the default initialise methods 
     # from the objects further down the tree.
 
-    sub defaults()
+    sub initialise()
 	{
         my $self = shift;
 
@@ -287,6 +285,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
 		}
 
         $self->set_title_font(GD::gdLargeFont);
+
+		$self->open_graph();
     }
 
 
@@ -303,8 +303,8 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
         my $self = shift;
         my $data = shift;
 
-        $self->set('numsets' => $#$data);
-        $self->set('numpoints' => $#{@$data[0]});
+        $self->set(numsets => $#$data);
+        $self->set(numpoints => $#{@$data[0]});
 
         ( $self->{numsets} < 1 || $self->{numpoints} < 0 ) && die "No Data";
 
@@ -320,8 +320,16 @@ $GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
     sub open_graph()
 	{
         my $self = shift;
-        my $graph = new GD::Image($self->{gifx}, $self->{gify});
-        return $graph;
+		if ( !exists $self->{graph} )
+		{
+			my $graph = new GD::Image($self->{gifx}, $self->{gify});
+			$self->{graph} = $graph;
+			return $graph;
+		}
+		else
+		{
+			return $self->{graph};
+		}
     }
 
     # Initialise the graph output canvas, setting colours (and getting back
@@ -535,12 +543,12 @@ linespoints> or I<pie>).
 Set the graph options. 
 
     $my_graph->set( 
-        'x_label'           => 'X Label',
-        'y_label'           => 'Y label',
-        'title'             => 'Some simple graph',
-        'y_max_value'       => 8,
-        'y_tick_number'     => 8,
-        'y_label_skip'      => 2 
+        x_label           => 'X Label',
+        y_label           => 'Y label',
+        title             => 'Some simple graph',
+        y_max_value       => 8,
+        y_tick_number     => 8,
+        y_label_skip      => 2 
     );
 
 Output the graph
@@ -681,7 +689,7 @@ This controls the colours for the bars, lines, markers, or pie slices.
 This should be a reference to an array of colour names as defined in
 L<GIFgraph::colour> (C<S<perldoc GIFgraph::colour>> for the names available).
 
-    $graph->set( 'dclrs' => [ qw(green pink blue cyan) ] );
+    $graph->set( dclrs => [ qw(green pink blue cyan) ] );
 
 The first (fifth, ninth) data set will be green, the next pink, etc.
 Default: [ qw(lred lgreen lblue lyellow lpurple cyan lorange) ] 
@@ -769,15 +777,6 @@ to draw the graph.
 
 Default: Computed from data sets.
 
-=cut
-
-# Removed for now
-#
-# =item line_width
-#
-# The width of the line used in I<lines> and I<linespoints> graphs, in pixels.
-# Default: 2.
-
 =item axis_space
 
 This space will be left blank between the axes and the text.
@@ -795,12 +794,45 @@ might produce odd results. Of course, the graph itself would be quite
 meaningless, because overwrite = 2 is meant to show some cumulative
 effect.
 
+=back
+
+B<graphs with lines>
+
+=over 4
+
+=item line_types
+
+Which line types to use for I<lines> and I<linespoints> graphs. This
+should be a reference to an array of numbers:
+
+    $graph->set( line_types => [3, 2, 4] );
+
+Available line types are 1: solid, 2: dashed, 3: dotted, 4:
+dot-dashed.
+
+Default: [1] (always use solid)
+
+=item line_type_scale
+
+Controls the length of the dashes in the line types. default: 6.
+
+=item line_width
+
+The width of the line used in I<lines> and I<linespoints> graphs, in pixels.
+Default: 1.
+
+=back
+
+B<graphs with points>
+
+=over 4
+
 =item markers
 
 This controls the order of markers in I<points> and I<linespoints>
 graphs.  This should be a reference to an array of numbers:
 
-    $graph->set( 'markers' => [3, 5, 6] );
+    $graph->set( markers => [3, 5, 6] );
 
 Available markers are: 1: filled square, 2: open square, 3: horizontal
 cross, 4: diagonal cross, 5: filled diamond, 6: open diamond, 7:
@@ -905,7 +937,8 @@ support two spellings for the same word ('colour' and 'color')
 Wherever a colour is required, a colour name should be used from the
 package L<GIFgraph::colour>. C<S<perldoc GIFgraph::colour>> should give
 you the documentation for that module, containing all valid colour
-names.
+names. I will probably change this to read the systems rgb.txt file if 
+it is available.
 
 Wherever a font name is required, a font from L<GD> should be used.
 

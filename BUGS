@@ -2,7 +2,7 @@ UNRESOLVED BUGS
 
 + two_axes doesn't work correctly with negative numbers and zero_axis
 + y_max_value doesn't get adapted for bars and area if all negative values
-+ placement of title is centered on gif, not on graph.
++ init_graph does too much work for pies. Needs to be split up.
 
 NOT REALLY BUGS
 
@@ -11,6 +11,14 @@ NOT REALLY BUGS
 - A positive y_min_value doesn't work with bars or area, bars and area 
   always are set off against 0. Wether this is a bug, or wanted behaviour
   might be a point for discussion.
+
+FIXED IN 1.00
+
+! GIFgraph::colour::sorted_colour_list() syntax error
+! GIFgraph::colour pod documentation fixed
+! placement of title is centered on gif, not on graph.
+! linespoints graph type initialises two GD::Image objects
+! 'make test' fails on all tests on win32. binmode() needed.
 
 FIXED IN 0.99
 
@@ -26,7 +34,6 @@ FIXED IN 0.94
 ! area doesn't work with negative numbers
 ! Right axis doesn't get drawn when box_axis == 0 and two_axes == 1
 ! Color on front of 3D pies wrong with some data sets
-	Also changed 0 angle for pie charts
 	Reported by various people
 
 FIXED IN 0.91

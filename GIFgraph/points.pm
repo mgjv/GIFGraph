@@ -7,7 +7,7 @@
 #	Name:
 #		GIFgraph::points.pm
 #
-# $Id: points.pm,v 1.1.1.3 1999-10-10 12:33:47 mgjv Exp $
+# $Id: points.pm,v 1.1.1.4 1999-10-10 12:36:58 mgjv Exp $
 #
 #==========================================================================
 
@@ -20,7 +20,27 @@ use GIFgraph::utils qw(:all);
 
 @GIFgraph::points::ISA = qw( GIFgraph::axestype );
 
+my %Defaults = (
+
+	# The size of the marker to use in the points and linespoints graphs
+	# in pixels
+ 
+	marker_size	=> 4,
+);
+ 
 {
+	sub initialise()
+	{
+		my $self = shift;
+
+		$self->SUPER::initialise();
+
+		foreach my $key (keys %Defaults)
+		{
+			$self->set( $key => $Defaults{$key} );
+		}
+	}
+	
 	# PRIVATE
 	sub draw_data($$) # GD::Image, \@data
 	{
@@ -32,15 +52,102 @@ use GIFgraph::utils qw(:all);
 		{
 			# Pick a colour
 			my $dsci = $s->set_clr( $g, $s->pick_data_clr($ds) );
+			my $type = $s->pick_marker($ds);
 
 			for my $i (0 .. $s->{numpoints}) 
 			{
 				next if (!defined($$d[$ds][$i]));
 				my ($xp, $yp) = $s->val_to_pixel($i+1, $$d[$ds][$i], $ds);
-				$s->marker( $g, $xp, $yp, $s->pick_marker($ds), $dsci );
+				$s->marker( $g, $xp, $yp, $type, $dsci );
 			}
 		}
 	}
+
+	# Pick a marker type
+ 
+	sub pick_marker($) # number
+	{
+		my $s = shift;
+		my $num = shift;
+
+		if ( exists $s->{markers} ) 
+		{
+			return $s->{markers}[ $num % (1 + $#{$s->{markers}}) - 1 ];
+		}
+
+		return $num % 8 ? $num % 8 : 8;
+	}
+ 
+	# Draw a marker
+ 
+	sub marker($$$$$) # $graph, $xp, $yp, type (1-7), $colourindex
+	{
+		my $self = shift;
+
+		my ($graph, $xp, $yp, $mtype, $mclr) = @_;
+
+		my $l = $xp - $self->{marker_size};
+		my $r = $xp + $self->{marker_size};
+		my $b = $yp + $self->{marker_size};
+		my $t = $yp - $self->{marker_size};
+
+		MARKER: {
+
+			($mtype == 1) && do 
+			{ # Square, filled
+				$graph->filledRectangle( $l, $t, $r, $b, $mclr );
+				last MARKER;
+			};
+			($mtype == 2) && do 
+			{ # Square, open
+				$graph->rectangle( $l, $t, $r, $b, $mclr );
+				last MARKER;
+			};
+			($mtype == 3) && do 
+			{ # Cross, horizontal
+				$graph->line( $l, $yp, $r, $yp, $mclr );
+				$graph->line( $xp, $t, $xp, $b, $mclr );
+				last MARKER;
+			};
+			($mtype == 4) && do 
+			{ # Cross, diagonal
+				$graph->line( $l, $b, $r, $t, $mclr );
+				$graph->line( $l, $t, $r, $b, $mclr );
+				last MARKER;
+			};
+			($mtype == 5) && do 
+			{ # Diamond, filled
+				$graph->line( $l, $yp, $xp, $t, $mclr );
+				$graph->line( $xp, $t, $r, $yp, $mclr );
+				$graph->line( $r, $yp, $xp, $b, $mclr );
+				$graph->line( $xp, $b, $l, $yp, $mclr );
+				$graph->fillToBorder( $xp, $yp, $mclr, $mclr );
+				last MARKER;
+			};
+			($mtype == 6) && do 
+			{ # Diamond, open
+				$graph->line( $l, $yp, $xp, $t, $mclr );
+				$graph->line( $xp, $t, $r, $yp, $mclr );
+				$graph->line( $r, $yp, $xp, $b, $mclr );
+				$graph->line( $xp, $b, $l, $yp, $mclr );
+				last MARKER;
+			};
+			($mtype == 7) && do 
+			{ # Circle, filled
+				$graph->arc( $xp, $yp, 2 * $self->{marker_size},
+							 2 * $self->{marker_size}, 0, 360, $mclr );
+				$graph->fillToBorder( $xp, $yp, $mclr, $mclr );
+				last MARKER;
+			};
+			($mtype == 8) && do 
+			{ # Circle, open
+				$graph->arc( $xp, $yp, 2 * $self->{marker_size},
+							 2 * $self->{marker_size}, 0, 360, $mclr );
+				last MARKER;
+			};
+		}
+	}
+ 
  
 	sub draw_legend_marker($$$$) # (GD::Image, data_set_number, x, y)
 	{

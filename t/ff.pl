@@ -11,6 +11,7 @@ sub get_test_data
 	undef $/;
 
 	open(GIF, $fn) or die "Cannot open $fn: $!\n";
+	binmode(GIF);
 	my $im = <GIF>;
 	close (GIF);
 
@@ -27,6 +28,7 @@ sub write_file
 
 	print "writing\n";
 	open(GIF, '>' . $fn) or die "Cannot open $fn: $!\n";
+	binmode(GIF);
 	print GIF $im;
 	close (GIF);
 }

@@ -1,4 +1,4 @@
-PERL = perl5
+PERL = perl
 .SUFFIXES: .gif .pl
 .SILENT:
 LIB = ..

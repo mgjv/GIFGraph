@@ -7,7 +7,7 @@
 #	Name:
 #		GIFgraph::linespoints.pm
 #
-# $Id: linespoints.pm,v 1.1.1.3 1999-10-10 12:33:47 mgjv Exp $
+# $Id: linespoints.pm,v 1.1.1.4 1999-10-10 12:36:58 mgjv Exp $
 #
 #==========================================================================
 
@@ -19,16 +19,21 @@ use GIFgraph::axestype;
 use GIFgraph::lines;
 use GIFgraph::points;
  
-# Multiple inheritance is not really a good idea in this case, 
-# since lines and points have the same parent class
-# even though it might make sense logically, and even though it
-# will actually work.
+# Even though multiple inheritance is not really a good idea,
+# since lines and points have the same parent class, I will do it here,
+# because I need the functionality of the markers and the line types
 
-# @GIFgraph::linespoints::ISA = qw( GIFgraph::lines GIFgraph::points );
-
-@GIFgraph::linespoints::ISA = qw( GIFgraph::axestype );
+@GIFgraph::linespoints::ISA = qw( GIFgraph::lines GIFgraph::points );
 
 {
+	sub initialise()
+	{
+		my $self = shift;
+
+		$self->GIFgraph::lines::initialise();
+		$self->GIFgraph::points::initialise();
+	}
+
 	# PRIVATE
 	sub draw_data($$) # GD::Image, \@data
 	{

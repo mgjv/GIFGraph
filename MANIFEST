@@ -19,6 +19,8 @@ t/area2.gif
 t/bars.t
 t/bars1.gif
 t/bars2.gif
+t/colour.t
+t/colour_rgb.txt
 t/ff.pl
 t/legend.t
 t/legend1.gif
@@ -63,4 +65,5 @@ samples/sample52.pl
 samples/sample91.pl
 samples/sample92.pl
 samples/sample93.pl
+samples/rgb.txt
 samples/Makefile

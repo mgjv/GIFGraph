@@ -7,7 +7,7 @@
 #	Name:
 #		GIFgraph::axestype.pm
 #
-# $Id: axestype.pm,v 1.1.1.3 1999-10-10 12:33:46 mgjv Exp $
+# $Id: axestype.pm,v 1.1.1.4 1999-10-10 12:36:58 mgjv Exp $
 #
 #==========================================================================
 
@@ -24,74 +24,64 @@ my %Defaults = (
  
 	# Set the length for the 'short' ticks on the axes.
  
-	'tick_length'	=> 4,
+	tick_length			=> 4,
  
 	# Do you want ticks to span the entire width of the graph?
  
-	'long_ticks'	=> 0,
+	long_ticks			=> 0,
  
 	# Number of ticks for the y axis
  
-	'y_tick_number' => 5,
+	y_tick_number		=> 5,
  
 	# Skip every nth label. if 1 will print every label on the axes,
 	# if 2 will print every second, etc..
  
-	'x_label_skip'	=> 1,
-	'y_label_skip'	=> 1,
+	x_label_skip		=> 1,
+	y_label_skip		=> 1,
 
 	# Do we want ticks on the x axis?
 
-	'x_ticks'		=> 1,
+	x_ticks				=> 1,
  
 	# Draw axes as a box? (otherwise just left and bottom)
  
-	'box_axis'		=> 1,
+	box_axis			=> 1,
  
 	# Use two different axes for the first and second dataset. The first
 	# will be displayed using the left axis, the second using the right
 	# axis. You cannot use more than two datasets when this option is on.
  
-	'two_axes'		=> 0,
- 
-	# The size of the marker to use in the points and linespoints graphs
-	# in pixels
- 
-	'marker_size'	=> 4,
- 
-	# The width of the line to use in the lines and linespoints graphs
-	# in pixels
- 
-	'line_width'	=> 2,
+	two_axes			=> 0,
  
 	# Print values on the axes?
  
-	'x_plot_values' => 1,
-	'y_plot_values' => 1,
+	x_plot_values 		=> 1,
+	y_plot_values 		=> 1,
  
 	# Space between axis and text
  
-	'axis_space'	=> 4,
+	axis_space			=> 4,
  
 	# Do you want bars to be drawn on top of each other, or side by side?
  
-	'overwrite' 	=> 0,
+	overwrite 			=> 0,
 
 	# Draw the zero axis in the graph in case there are negative values
 
-	'zero_axis'			=>	1,
+	zero_axis			=>	1,
 
 	# Draw the zero axis, but do not draw the bottom axis, in case
 	# box-axis == 0
 	# This also moves the x axis labels to the zero axis
-	'zero_axis_only'	=>	1,
+	zero_axis_only		=>	1,
 
 	# Size of the legend markers
 
-	'legend_marker_height'	=> 8,
-	'legend_marker_width'	=> 12,
-	'legend_spacing'		=> 4,
-	'legend_placement'		=> 'BC',		# '[B][LCR]'
+	legend_marker_height	=> 8,
+	legend_marker_width		=> 12,
+	legend_spacing			=> 4,
+	legend_placement		=> 'BC',		# '[B][LCR]'
 );
 
 {
@@ -120,8 +110,8 @@ my %Defaults = (
 		my $self = shift;
 		$self->{xlf} = shift;
 		$self->set( 
-			'xlfw' => $self->{xlf}->width,
-			'xlfh' => $self->{xlf}->height,
+			xlfw => $self->{xlf}->width,
+			xlfh => $self->{xlf}->height,
 		);
 	}
 	sub set_y_label_font($) # (fontname)
@@ -129,8 +119,8 @@ my %Defaults = (
 		my $self = shift;
 		$self->{ylf} = shift;
 		$self->set( 
-			'ylfw' => $self->{ylf}->width,
-			'ylfh' => $self->{ylf}->height,
+			ylfw => $self->{ylf}->width,
+			ylfh => $self->{ylf}->height,
 		);
 	}
 	sub set_x_axis_font($) # (fontname)
@@ -138,8 +128,8 @@ my %Defaults = (
 		my $self = shift;
 		$self->{xaf} = shift;
 		$self->set( 
-			'xafw' => $self->{xaf}->width,
-			'xafh' => $self->{xaf}->height,
+			xafw => $self->{xaf}->width,
+			xafh => $self->{xaf}->height,
 		);
 	}
 	sub set_y_axis_font($) # (fontname)
@@ -147,15 +137,15 @@ my %Defaults = (
 		my $self = shift;
 		$self->{yaf} = shift;
 		$self->set( 
-			'yafw' => $self->{yaf}->width,
-			'yafh' => $self->{yaf}->height,
+			yafw => $self->{yaf}->width,
+			yafh => $self->{yaf}->height,
 		);
 	}
 
 	sub set_legend(@) # List of legend keys
 	{
 		my $self = shift;
-		$self->set( 'legend' => [@_]);
+		$self->set( legend => [@_]);
 	}
 
 	sub set_legend_font($) # (font name)
@@ -163,8 +153,8 @@ my %Defaults = (
 		my $self = shift;
 		$self->{lgf} = shift;
 		$self->set( 
-			'lgfw' => $self->{lgf}->width,
-			'lgfh' => $self->{lgf}->height,
+			lgfw => $self->{lgf}->width,
+			lgfh => $self->{lgf}->height,
 		);
 	}
  
@@ -176,7 +166,7 @@ my %Defaults = (
 	{
 		my $self = shift;
  
-		$self->defaults( @_ );
+		$self->SUPER::initialise();
  
 		foreach my $key (keys %Defaults) 
 		{
@@ -188,8 +178,6 @@ my %Defaults = (
 		$self->set_x_axis_font(GD::gdTinyFont);
 		$self->set_y_axis_font(GD::gdTinyFont);
 		$self->set_legend_font(GD::gdTinyFont);
- 
-		$self->{graph} = $self->open_graph();
 	}
  
 	# inherit check_data from GIFgraph
@@ -206,25 +194,25 @@ my %Defaults = (
 		delete $s->{y_label2} unless ($s->{two_axes});
 
 		# Set some heights for text
-		$s->set( 'tfh' => 0 ) unless ( $s->{title} );
-		$s->set( 'xlfh' => 0 ) unless ( $s->{x_label} );
+		$s->set( tfh => 0 ) unless ( $s->{title} );
+		$s->set( xlfh => 0 ) unless ( $s->{x_label} );
 
 		if ( ! $s->{y1_label} && $s->{y_label} ) 
 		{
 			$s->{y1_label} = $s->{y_label};
 		}
 
-		$s->set( 'ylfh1' => $s->{y1_label} ? 1 : 0 );
-		$s->set( 'ylfh2' => $s->{y2_label} ? 1 : 0 );
+		$s->set( ylfh1 => $s->{y1_label} ? 1 : 0 );
+		$s->set( ylfh2 => $s->{y2_label} ? 1 : 0 );
 
 		unless ( $s->{x_plot_values} ) 
 		{ 
-			$s->set( 'xafh' => 0 ); 
+			$s->set( xafh => 0 ); 
 		}
 		unless ( $s->{y_plot_values} ) 
 		{
-			$s->set( 'yafh' => 0 );
-			$s->set( 'yafw' => 0 );
+			$s->set( yafh => 0 );
+			$s->set( yafw => 0 );
 		}
 
 		my $lbl = ($s->{xlfh} ? 1 : 0) + ($s->{xafh} ? 1 : 0);
@@ -272,10 +260,7 @@ my %Defaults = (
  
 		# set up the data colour list if it doesn't exist yet.
 		$s->set( 
-			'dclrs' => [ 
-				'lred', 'lgreen', 'lblue', 'lyellow',
-				'lpurple', 'cyan', 'lorange' 
-			] 
+			dclrs => [ qw( lred lgreen lblue lyellow lpurple cyan lorange )] 
 		) unless ( exists $s->{dclrs} );
  
 		# More sanity checks
@@ -294,14 +279,19 @@ my %Defaults = (
 		# Title
 		if ($s->{tfh}) 
 		{
-			my $tx = $s->{gifx}/2 - length($s->{title}) * $s->{tfw}/2;
+			my $tx = 
+				$s->{left} + 
+				($s->{right} - $s->{left})/2 - 
+				length($s->{title}) * $s->{tfw}/2;
 			my $ty = $s->{top} - $s->{text_space} - $s->{tfh};
+
 			$g->string($s->{tf}, $tx, $ty, $s->{title}, $s->{tci});
 		}
 
 		# X label
 		if ($s->{xlfh}) 
 		{
+			# TODO Need more control for placement
 			my $tx = 
 				3 * ($s->{left}+$s->{right})/4 - 
 				length($s->{x_label}) * $s->{xlfw}/2;
@@ -313,6 +303,7 @@ my %Defaults = (
 		# Y labels
 		if ($s->{ylfh1}) 
 		{
+			# TODO Need more control for placement
 			my $tx = $s->{l_margin};
 			my $ty = 
 				($s->{bottom}+$s->{top})/2 + 
@@ -322,6 +313,7 @@ my %Defaults = (
 		}
 		if ( $s->{two_axes} && $s->{ylfh2} ) 
 		{
+			# TODO Need more control for placement
 			my $tx = $s->{gifx} - $s->{ylfh} - $s->{r_margin};
 			my $ty = 
 				($s->{bottom} + $s->{top})/2 + 
@@ -358,7 +350,6 @@ my %Defaults = (
 			my ($x, $y) = $s->val_to_pixel(0, 0, 1);
 			$g->line($l, $y, $r, $y, $s->{fgci});
 		}
-
 	}
  
 	sub draw_ticks($$) # GD::Image, \@data
@@ -443,12 +434,11 @@ my %Defaults = (
 			}
 
 			next 
-				if ( $i%($s->{x_label_skip}) && $i != $s->{numpoints} );
+				if ( $i%($s->{x_label_skip}) and $i != $s->{numpoints} );
 
 			$x -= $s->{xafw} * length($$d[0][$i])/2;
 			my $yt = $y + $s->{text_space}/2;
 			$g->string($s->{xaf}, $x, $yt, $$d[0][$i], $s->{alci});
-
 		}
 	}
  
@@ -483,10 +473,8 @@ my %Defaults = (
 		else 
 		{
 			@max_min = $s->get_max_min_y_all($d);
-			# print "- max: $max_min[0], min: $max_min[1]\n";
 			$s->{y_max}[1] = up_bound( $max_min[0] );
 			$s->{y_min}[1] = down_bound( $max_min[1] );
-			# print "+ max: $s->{y_max}[1], min: $s->{y_min}[1]\n";
 		}
 
 		# Make sure bars and area always have a zero offset
@@ -498,8 +486,6 @@ my %Defaults = (
 				$s->{y_min}[1] = 0; 
 			}
 		}
-
-		# print "* max: $s->{y_max}[1], min: $s->{y_min}[1]\n";
 
 		# Overwrite these with any user supplied ones
 
@@ -545,7 +531,6 @@ my %Defaults = (
 		} 
 		else 
 		{
-			# print "min: $s->{y_min}[1], test: ".get_min_y(@{$$d[1]})."\n";
 			die "Minimum for y too large\n"
 				if ( $s->{y_min}[1] > $max_min[1] );
 			die "Maximum for y too small\n"
@@ -654,90 +639,6 @@ my %Defaults = (
 		return _bound($val, $offset);
 	}
 
-	# Pick a marker type
- 
-	sub pick_marker($) # number
-	{
-		my $s = shift;
-
-		if ( exists $s->{markers} ) 
-		{
-			return $s->{markers}[ $_[0] % (1+$#{$s->{markers}}) -1 ];
-		}
-
-		return $_[0]%8;
-	}
- 
-	# Draw a marker
- 
-	sub marker($$$$$) # $graph, $xp, $yp, type (1-7), $colourindex
-	{
-		my $self = shift;
-
-		my ($graph, $xp, $yp, $mtype, $mclr) = @_;
-
-		my $l = $xp - $self->{marker_size};
-		my $r = $xp + $self->{marker_size};
-		my $b = $yp + $self->{marker_size};
-		my $t = $yp - $self->{marker_size};
-
-		MARKER: {
-
-			($mtype == 1) && do 
-			{ # Square, filled
-				$graph->filledRectangle( $l, $t, $r, $b, $mclr );
-				last MARKER;
-			};
-			($mtype == 2) && do 
-			{ # Square, open
-				$graph->rectangle( $l, $t, $r, $b, $mclr );
-				last MARKER;
-			};
-			($mtype == 3) && do 
-			{ # Cross, horizontal
-				$graph->line( $l, $yp, $r, $yp, $mclr );
-				$graph->line( $xp, $t, $xp, $b, $mclr );
-				last MARKER;
-			};
-			($mtype == 4) && do 
-			{ # Cross, diagonal
-				$graph->line( $l, $b, $r, $t, $mclr );
-				$graph->line( $l, $t, $r, $b, $mclr );
-				last MARKER;
-			};
-			($mtype == 5) && do 
-			{ # Diamond, filled
-				$graph->line( $l, $yp, $xp, $t, $mclr );
-				$graph->line( $xp, $t, $r, $yp, $mclr );
-				$graph->line( $r, $yp, $xp, $b, $mclr );
-				$graph->line( $xp, $b, $l, $yp, $mclr );
-				$graph->fillToBorder( $xp, $yp, $mclr, $mclr );
-				last MARKER;
-			};
-			($mtype == 6) && do 
-			{ # Diamond, open
-				$graph->line( $l, $yp, $xp, $t, $mclr );
-				$graph->line( $xp, $t, $r, $yp, $mclr );
-				$graph->line( $r, $yp, $xp, $b, $mclr );
-				$graph->line( $xp, $b, $l, $yp, $mclr );
-				last MARKER;
-			};
-			($mtype == 7) && do 
-			{ # Circle, filled
-				$graph->arc( $xp, $yp, 2 * $self->{marker_size},
-							 2 * $self->{marker_size}, 0, 360, $mclr );
-				$graph->fillToBorder( $xp, $yp, $mclr, $mclr );
-				last MARKER;
-			};
-			($mtype == 8) && do 
-			{ # Circle, open
-				$graph->arc( $xp, $yp, 2 * $self->{marker_size},
-							 2 * $self->{marker_size}, 0, 360, $mclr );
-				last MARKER;
-			};
-		}
-	}
- 
 	# Convert value coordinates to pixel coordinates on the canvas.
  
 	sub val_to_pixel($$$)	# ($x, $y, $i) in real coords ($Dataspace), 

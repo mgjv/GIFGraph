@@ -11,7 +11,7 @@
 #		Package of colour manipulation routines, to be used 
 #		with GIFgraph.
 #
-# $Id: colour.pm,v 1.1.1.3 1999-10-10 12:33:47 mgjv Exp $
+# $Id: colour.pm,v 1.1.1.4 1999-10-10 12:36:58 mgjv Exp $
 #
 #==========================================================================
 
@@ -25,18 +25,23 @@ require Exporter;
 @GIFgraph::colour::ISA = qw( Exporter );
 
 $GIFgraph::colour::prog_name    = 'GIFgraph::colour.pm';
-$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.3 $';
+$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.4 $';
 $GIFgraph::colour::prog_version = 
 	($GIFgraph::colour::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
-@EXPORT_OK = qw( _rgb _luminance _hue colour_list sorted_colour_list);
+@EXPORT_OK = qw( 
+	_rgb _luminance _hue 
+	colour_list sorted_colour_list
+	read_rgb
+);
 %EXPORT_TAGS = ( 
-		colours => [qw(_rgb _luminance _hue)],
-		lists => [qw(colour_list sorted_colour_list)]
+		colours => [qw( _rgb _luminance _hue )],
+		lists => [qw( colour_list sorted_colour_list )],
+		files => [qw( read_rgb )],
 	);
 
 {
-    my %rgb = (
+    my %RGB = (
         white	=> [0xFF,0xFF,0xFF], 
         lgray	=> [0xBF,0xBF,0xBF], 
 		gray	=> [0x7F,0x7F,0x7F],
@@ -68,36 +73,100 @@ $GIFgraph::colour::prog_version =
 		dbrown	=> [0xA5,0x2A,0x2A],
     );
 
-    sub colour_list { # number of colours
-        my $n = ( $_[0] ) ? $_[0] : keys %rgb;
-		return (keys %rgb)[0..$n-1]; 
+    sub colour_list 
+	{
+        my $n = ( $_[0] ) ? $_[0] : keys %RGB;
+		return (keys %RGB)[0..$n-1]; 
     }
 
-    sub sorted_colour_list { # number of colours
-        my $n = ( $_[0] ) ? $_[0] : keys %rgb;
-        return (sort by_luminance keys %rgb)[0..$n-1];
+    sub sorted_colour_list 
+	{
+        my $n = ( $_[0] ) ? $_[0] : keys %RGB;
+        return (sort by_luminance keys %RGB)[0..$n-1];
 #        return (sort by_hue keys %rgb)[0..$n-1];
 
-        sub by_luminance { luminance(@{$rgb{$b}}) <=> _luminance(@{$rgb{$a}}); }
-        sub by_hue { _hue(@{$rgb{$b}}) <=> _hue(@{$rgb{$a}}); }
+        sub by_luminance 
+        { 
+            _luminance(@{$RGB{$b}}) <=> _luminance(@{$RGB{$a}}); 
+        }
+        sub by_hue 
+        { 
+            _hue(@{$RGB{$b}}) <=> _hue(@{$RGB{$a}}); 
+        }
 
     }
 
-    sub _luminance { 
+	# return the luminance of the colour (RGB)
+    sub _luminance 
+	{ 
 		(0.212671*$_[0] + 0.715160*$_[1] + 0.072169*$_[2])/0xFF; 
 	}
 
-    sub _hue { 
+	# return the hue of the colour (RGB)
+    sub _hue 
+	{ 
 		($_[0] + $_[1] + $_[2])/(3*0xFF); 
 	}
 
-    sub _rgb { 
-		@{$rgb{$_[0]}}; 
+	# return the RGB values of the colour name
+    sub _rgb 
+	{ 
+		@{$RGB{$_[0]}}; 
 	}
 
-    sub version {
+    sub version 
+	{
         return $GIFgraph::colour::prog_version;
     }
+
+	sub dump_colours
+	{
+		my $max = $_[0] ? $_[0] : keys %RGB;
+		my $n = 0;
+
+		foreach my $clr (sorted_colour_list($max))
+		{
+			last if $n > $max;
+			print "colour: $clr, " . 
+				"${$RGB{$clr}}[0], ${$RGB{$clr}}[1], ${$RGB{$clr}}[2]\n"
+		}
+	}
+
+	#
+	# Read a rgb.txt file (X11)
+	#
+	# Expected format of the file:
+	#
+	# R G B colour name
+	#
+	# Fields can be separated by any number of whitespace
+	#
+	# returns number of colours read
+
+	sub read_rgb($) # (filename)
+	{
+		my $fn = shift;
+		my $n = 0;
+
+		open(RGB, "$fn") or return 0;
+
+		while (defined(my $line = <RGB>))
+		{
+			chomp($line);
+			$line =~ s/^\s+//;
+			my ($r, $g, $b, $name) = split(/\s+/, $line, 4);
+			
+			# Ignore bad lines
+			next if (!defined($name));
+
+			$RGB{$name} = [$r, $g, $b];
+			$n++;
+		}
+
+		close(RGB);
+
+		return $n;
+	}
  
     $GIFgraph::colour::prog_name;
 
@@ -111,7 +180,7 @@ Colour - Colour manipulation routines for use with GIFgraph
 
 =head1 SYNOPSIS
 
-see functions
+use GIFgraph::colour qw( :colours :lists :files );
 
 =head1 DESCRIPTION
 
@@ -119,36 +188,54 @@ The B<Colour> Package provides a few routines to convert some colour
 names to RGB values. Also included are some functions to calculate
 the hue and luminance of the colours, mainly to be able to sort them.
 
+The :colours tags can be used to import the I<_rgb>, I<_hue>, and
+I<_luminance> functions, the :lists tag for I<colour_list> and
+I<sorted_colour_list>, and the :files tag exports the I<read_rgb>
+function.
+
 =head1 FUNCTIONS
 
 =over 4
 
-=item Colour::list( I<number of colours> )
+=item Colour::colour_list( I<number of colours> )
 
 Returns a list of I<number of colours> colour names known to the package.
 
-=item Colour::sorted_list( I<number of colours> )
+=item Colour::sorted_colour_list( I<number of colours> )
 
 Returns a list of I<number of colours> colour names known to the package, 
 sorted by luminance or hue.
 B<NB.> Right now it always sorts by luminance. Will add an option in a later
 stage to decide sorting method at run time.
 
-=item Colour::rgb( I<colour name> )
+=item Colour::_rgb( I<colour name> )
 
 Returns a list of the RGB values of I<colour name>.
 
-=item Colour::hue( I<[R,G,B]> )
+=item Colour::_hue( I<R,G,B> )
 
 Returns the hue of the colour with the specified RGB values.
 
-=item Colour::luminance( I<[R,G,B]> )
+=item Colour::_luminance( I<R,G,B> )
 
 Returns the luminance of the colour with the specified RGB values.
 
+=item Colour::read_rgb( F<file name> )
+
+Reads in colours from a rgb file as used by the X11 system.
+
+Doing something like:
+
+    use GIFgraph::bars;
+    use GIFgraph::colour;
+
+    GIFgraph::colour::read_rgb("rgb.txt") or die "cannot read colours";
+
+Will allow you to use any colours defined in rgb.txt in your graph.
+
 =back 
 
-=head1 COLOUR NAMES
+=head1 PREDEFINED COLOUR NAMES
 
 white,
 lgray,

@@ -24,6 +24,7 @@ my @opts = (
 		'axis_space'	=> 8,
 		'transparent'	=> 1,
 		'interlaced'	=> 1,
+		'line_types'	=> [3,4,1,2],
 	},
 );
 

@@ -1,4 +1,5 @@
 use GIFgraph::bars;
+use GIFgraph::colour;
 
 print STDERR "Processing sample 1-1\n";
 

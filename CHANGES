@@ -1,9 +1,25 @@
+Tue Dec 23 1997
+
+- Changed PERL=perl5 to PERL=perl in samples/Makefile (D'OH!)
+- Added read_rgb to GIFgraph::colour to allow definition of own colours
+- Added t/colour.t
+- Removed a lot of unnecessary quotes all over the place
+
+Mon Dec 22 1997
+
+- Center graph titles on axes, not on gif
+- Added line types
+- Moved initialise() to each module with $self->SUPER inheritance
+- Added check for duplicate GD::Image object initialisation
+- Added binmode() to t/ff.pl to make tests compatible with Win32 
+  platforms (D'OH).
+
 Thu Dec 18 1997
 
 - Allow undef values in data sets, and skip them
 - Added prototyping of functions
 - Legends, finally
-  requests from Petter Reinholdtsen <pere@link.no
+  requests from Petter Reinholdtsen <pere@link.no>
   				Giorgos Andreadakis <gand@forthnet.gr>
 
 Tue Dec 16 1997

@@ -21,6 +21,7 @@ $my_graph->set(
 	'y_tick_number' => 14,
 	'y_label_skip' => 2,
 	'box_axis' => 0,
+	'line_width' => 3,
 );
 
 $my_graph->plot_to_gif( "sample51.gif", \@data );

@@ -7,7 +7,7 @@
 #	Name:
 #		GIFgraph::pie.pm
 #
-# $Id: pie.pm,v 1.1.1.3 1999-10-10 12:33:46 mgjv Exp $
+# $Id: pie.pm,v 1.1.1.4 1999-10-10 12:36:58 mgjv Exp $
 #
 #==========================================================================
 
@@ -29,7 +29,7 @@ my %Defaults = (
 	# Because of the dependency of this on runtime information, this
 	# is being set in GIFgraph::pie::initialise
  
-	#   'pie_height' => _round(0.1*${'gifx'}),
+	#   pie_height => _round(0.1*${'gifx'}),
  
 	# Do you want a 3D pie?
  
@@ -38,7 +38,7 @@ my %Defaults = (
 	# The angle at which to start the first data set
 	# 0 is at the front/bottom
  
-	'start_angle' => 0,
+	start_angle => 0,
 );
 
 {
@@ -50,13 +50,12 @@ my %Defaults = (
 
 		$self->check_data($data);
 		$self->setup_coords();
-		my $g = $self->open_graph();
-		$self->init_graph($g);
-		$self->draw_text($g);
-		$self->draw_pie($g);
-		$self->draw_data($data, $g);
+		$self->init_graph($self->{graph});
+		$self->draw_text($self->{graph});
+		$self->draw_pie($self->{graph});
+		$self->draw_data($data, $self->{graph});
 
-		return $g->gif;
+		return $self->{graph}->gif;
 	}
  
 	sub set_label_font($) # (fontname)
@@ -65,8 +64,8 @@ my %Defaults = (
 
 		$self->{lf} = shift;
 		$self->set( 
-			'lfw' => $self->{lf}->width,
-			'lfh' => $self->{lf}->height,
+			lfw => $self->{lf}->width,
+			lfh => $self->{lf}->height,
 		);
 	}
  
@@ -76,8 +75,8 @@ my %Defaults = (
 
 		$self->{vf} = shift;
 		$self->set( 
-			'vfw' => $self->{vf}->width,
-			'vfh' => $self->{vf}->height,
+			vfw => $self->{vf}->width,
+			vfh => $self->{vf}->height,
 		);
 	}
  
@@ -85,23 +84,23 @@ my %Defaults = (
  
 	# PRIVATE
 	# called on construction by new.
-	sub initialise(%) # (key => value, key => value, ...)
+	sub initialise()
 	{
 		my $self = shift;
  
-		$self->defaults();
+		$self->SUPER::initialise();
  
 		foreach my $key (keys %Defaults) 
 		{
 			$self->set( $key => $Defaults{$key} );
 		}
  
-		$self->set( 'pie_height' => _round(0.1*$self->{gify}) );
+		$self->set( pie_height => _round(0.1*$self->{gify}) );
  
 		$self->set_value_font(GD::gdTinyFont);
 		$self->set_label_font(GD::gdSmallFont);
 	}
- 
+
 	# inherit checkdata from GIFgraph
  
 	# Setup the coordinate system and colours, calculate the
@@ -112,10 +111,10 @@ my %Defaults = (
 		my $s = shift;
  
 		# Make sure we're not reserving space we don't need.
-		unless ( $s->{title} ) { $s->set( 'tfh' => 0 ); }
-		unless ( $s->{label} ) { $s->set( 'lfh' => 0 ); }
+		unless ( $s->{title} ) { $s->set( tfh => 0 ); }
+		unless ( $s->{label} ) { $s->set( lfh => 0 ); }
 		if ( $s->{pie_height} <= 0 ) { $s->set( '3d' => 0 ); }
-		unless ( $s->{'3d'} ) { $s->set( 'pie_height' => 0 ); }
+		unless ( $s->{'3d'} ) { $s->set( pie_height => 0 ); }
  
 		# Calculate the bounding box for the pie, and
 		# some width, height, and centre parameters
@@ -143,10 +142,7 @@ my %Defaults = (
 
 		# set up the data colour list if it doesn't exist yet.
 		$s->set( 
-			'dclrs' => [ 
-				'lred', 'lgreen', 'lblue', 'lyellow',
-				'lpurple', 'cyan', 'lorange' 
-			] 
+			dclrs => [qw( lred lgreen lblue lyellow lpurple cyan lorange )] 
 		) unless ( exists $s->{dclrs} );
 	}
  
