@@ -1,0 +1,34 @@
+This is an alpha release of GIFgraph, a package to generate GIF charts,
+based on Lincoln Stein's GD.pm.
+
+to install:
+	perl Makefile.PL
+	make
+	make install
+
+to test:
+	cd samples
+	make
+
+That should generate a bunch of gifs.
+
+Most of the documentation available is contained in GIFgraph.pm, as pod. Sorry for the incompleteness of it all, and the sloppiness of the code in places, but remember: this is an alpha :)
+
+Martien Verbruggen
+mgjv@comdyn.com.au
+
+The latest release should normally be available from CPAN and from 
+http://www.tcp.chem.tue.nl/~tgtcmv/perl/
+
+TODO
+
+- 3d look for graphics
+- numerical X axes
+- Autoloading/splitting, etc
+- lots and lots of stuff
+
+COPYRIGHT
+
+Copyright (c) 1996 Martien Verbruggen. All rights reserved.
+	This package is free software; you can redistribute it and/or
+	modify it under the same terms as Perl itself.
