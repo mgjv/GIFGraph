@@ -1,3 +1,22 @@
+Fri August 14 1998
+
+- Finally able to make some fixes
+- Changed defaults for zero_axis and zero_axis_only to 0. Were both 1.
+  Needed to do this, because of all the confusion they cause
+- Test for defined $s->{y_(min|max)_value} 
+	(Honza Pazdziora <adelton@informatics.muni.cz>)
+	(Vegard Vesterheim <vegardv@runit.sintef.no>)
+- Fixed handling of negative values (I hope)
+	(brian d foy <comdog@computerdog.com>)
+- From now on, require 5.004. 5.003 is dead, and should be deprecated
+  now that 5.005 is out.
+- Added 5.005 specific MakeMaker fields to Makefile.PL
+
+Tue May 12 1998
+
+- Cleaned up a bit, finalised version 1.02, because of time
+  contraints, and the need to get these bug fixes out. Didn't succeed.
+
 Mon Jan 19 1998
 
 - Fixed some bugs (see file BUGS, version 1.02)

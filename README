@@ -5,8 +5,8 @@ INSTALLATION
 
 needed to install (also see TESTED PLATFORMS):
 
-	perl 5.003 (perl5.004 recommended)
-	GD 1.14 (GD 1.15 recommended)
+	perl 5.004
+	GD > 1.14
 
 to install:
 
@@ -15,9 +15,11 @@ to install:
 	make test
 	make install
 
-NB: If you don't use GD 1.15, but another version, some of the tests
-may fail (specifically, the area test). You should be able to ignore
-this failure, if the samples files give you good results.
+NB: If you don't use the same version of GD that I have (1.18), some
+of the tests may fail (specifically, the area test). You should be
+able to ignore this failure, if the samples files give you good
+results. IOW: Check the samples in the samples directory. If they look
+good, then GIFgraph will work fine.
 
 to see some samples:
 
@@ -35,14 +37,25 @@ http://www.tcp.chem.tue.nl/~tgtcmv/perl/
 TESTED PLATFORMS (also see NOTES FOR WIN32)
 
 - perl 5.004_04 on Solaris 2.5.1, GD 1.15
-- perl 5.003 on Solaris 2.5.1 (Brian Eitrem)
+- perl 5.004_04 on Solaris 2.6, GD 1.18
+- perl 5.005_01 on Solaris 2.6, GD 1.18
 - perl 5.004_02 for win32 by Gurusamy Sarathy, GD (1.14 I think)
+- perl 5.004_04 HP-UX 10.20, GD 1.18 (Ronald Post)
 
 AUTHOR
 
 Martien Verbruggen
 mgjv@comdyn.com.au
 tgtcmv@chem.tue.nl
+
+MOST IMPORTANT CHANGES SINCE VERSION 1.01
+
+- Vertical printing of X axis labels
+- CHANGED DEFAULTS for zero_axis and zero_axis_only
+- Fixed problems with negative values, data ranges without 0, and
+  printing of the x axis labels (I hope)
+- No more support for perl 5.003. Since perl 5.005 is out, and I don't
+  have a 5.003 here to test all the time, I won't support it anymore.
 
 MOST IMPORTANT CHANGES SINCE VERSION 0.91
 
@@ -64,7 +77,7 @@ TODO
 - Autoloading/splitting, etc
 - More options, split up some options.
 - Mixed Graphs
-- Preset options for certain graph types
+- Better preset options for certain graph types
 
 BUG FIXES IN THIS VERSION
 
@@ -84,6 +97,13 @@ work.
 This means that until someone ports GD for the ActiveState perl with
 full support for all its functionality, GIFgraph will not work on
 ActiveState's port.
+
+THANKS
+
+	brian d foy
+	Honza Pazdziora
+	DBelcher
+	Vegard Vesterheim
 
 COPYRIGHT
 

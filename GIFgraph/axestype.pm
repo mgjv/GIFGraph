@@ -7,7 +7,7 @@
 #	Name:
 #		GIFgraph::axestype.pm
 #
-# $Id: axestype.pm,v 1.1.1.6 1999-10-10 12:37:36 mgjv Exp $
+# $Id: axestype.pm,v 1.1.1.7 1999-10-10 12:39:49 mgjv Exp $
 #
 #==========================================================================
 
@@ -74,12 +74,12 @@ my %Defaults = (
 
 	# Draw the zero axis in the graph in case there are negative values
 
-	zero_axis			=>	1,
+	zero_axis			=>	0,
 
 	# Draw the zero axis, but do not draw the bottom axis, in case
 	# box-axis == 0
 	# This also moves the x axis labels to the zero axis
-	zero_axis_only		=>	1,
+	zero_axis_only		=>	0,
 
 	# Size of the legend markers
 
@@ -582,7 +582,7 @@ my %Defaults = (
 			}
 		}
 
-		if ( $s->{y_max_value} ) 
+		if ( defined $s->{y_max_value} ) 
 		{
 			my $i;
 			for $i (1 .. 2)
@@ -744,7 +744,7 @@ my %Defaults = (
 		my $y_max = 
 			($s->{two_axes} && $i == 2) ? $s->{y_max}[2] : $s->{y_max}[1];
 
-		my $y_step = ($s->{bottom} - $s->{top})/($y_max - $y_min);
+		my $y_step = abs(($s->{bottom} - $s->{top})/($y_max - $y_min));
 
 		return ( 
 			_round( $s->{left} + $x * $s->{x_step} ),

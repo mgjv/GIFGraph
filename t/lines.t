@@ -7,7 +7,7 @@ require 'ff.pl';
 
 my @data = ( 
 	["1st","2nd","3rd","4th","5th","6th","7th", "8th", "9th"],
-	[    1,    2,    5,    6,    3,  1.5,    1,     3,     4],
+	[    9,    2,    5,    6,    3,  1.5,    9,     3,     4],
 	[    3,    7,    8,    2,    4,  1.5,    2,     5,     1]
 );
 
@@ -17,7 +17,8 @@ my @opts = (
 		'x_label' 		=> 'X Label',
 		'y_label' 		=> 'Y label',
 		'title' 		=> 'A line chart',
-		'y_max_value' 	=> 10,
+		'y_max_value' 	=> 11,
+		'y_min_value'	=> 1,
 		'y_tick_number'	=> 5,
 		'y_label_skip' 	=> 2,
 		'x_ticks'		=> 1,

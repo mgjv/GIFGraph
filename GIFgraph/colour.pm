@@ -11,7 +11,7 @@
 #		Package of colour manipulation routines, to be used 
 #		with GIFgraph.
 #
-# $Id: colour.pm,v 1.1.1.6 1999-10-10 12:37:37 mgjv Exp $
+# $Id: colour.pm,v 1.1.1.7 1999-10-10 12:39:50 mgjv Exp $
 #
 #==========================================================================
 
@@ -25,7 +25,7 @@ require Exporter;
 @GIFgraph::colour::ISA = qw( Exporter );
 
 $GIFgraph::colour::prog_name    = 'GIFgraph::colour.pm';
-$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.6 $';
+$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.7 $';
 $GIFgraph::colour::prog_version = 
 	($GIFgraph::colour::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 

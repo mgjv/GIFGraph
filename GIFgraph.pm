@@ -18,11 +18,11 @@
 #		GIFgraph::area
 #		GIFgraph::pie
 #
-# $Id: GIFgraph.pm,v 1.1.1.6 1999-10-10 12:37:32 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.1.1.7 1999-10-10 12:39:45 mgjv Exp $
 #
 #==========================================================================
 
-require 5.003;
+require 5.004;
 
 use strict qw(vars refs);
 #use strict;		# TODO work with file handles, GIFLOGO
@@ -41,11 +41,11 @@ use GD;
 package GIFgraph;
 
 $GIFgraph::prog_name    = 'GIFgraph.pm';
-$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.6 $';
+$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.7 $';
 $GIFgraph::prog_version = 
 	($GIFgraph::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
-$GIFgraph::VERSION = '1.02';
+$GIFgraph::VERSION = '1.03';
 
 # Some tools and utils
 use GIFgraph::colour qw(:colours);
@@ -772,14 +772,14 @@ If set to a true value, the axis for y values of 0 will always be
 drawn. This might be useful in case your graph contains negative
 values, but you want it to be clear where the zero value is. (see also
 I<zero_axis_only> and I<box_axes>).
-Default: 1.
+Default: 0.
 
 =item zero_axis_only
 
 If set to a true value, the zero axis will be drawn (see
 I<zero_axis>), and no axis at the bottom of the graph will be drawn.
 The labels for X values will be placed on the zero exis.
-Default: 1.
+Default: 0.
 
 =item y_max_value, y_min_value
 

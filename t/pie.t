@@ -13,7 +13,7 @@ my @data = (
 my @opts = (
 	{},
 	{
-		# 'start_angle'	=> 90,
+		 'start_angle'	=> 90,
 		'title' 		=> 'A pie chart',
 		'label'			=> 'Just data',
 	},

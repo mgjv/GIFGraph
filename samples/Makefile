@@ -9,7 +9,7 @@ GIFS =  sample11.gif sample12.gif sample13.gif sample14.gif \
 		sample21.gif \
 		sample31.gif \
 		sample41.gif sample42.gif\
-		sample51.gif sample52.gif \
+		sample51.gif sample52.gif sample53.gif \
 		sample91.gif sample92.gif sample93.gif
 
 all: $(GIFS)

@@ -10,12 +10,11 @@ $my_graph = new GIFgraph::linespoints( );
 $my_graph->set( 
 	x_label => 'X Label',
 	y_label => 'Y label',
-	title => 'A Lines and Points Graph',
+	title => 'A Lines and Points Graph, reading a CSV file',
 	y_max_value => 80,
 	y_tick_number => 8,
 	y_label_skip => 2,
 	markers => [ 1, 5 ],
-	#zero_axis_only => 0,
 );
 
 $my_graph->set_legend( 'data set 1', 'data set 2' );
