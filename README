@@ -5,8 +5,12 @@ INSTALLATION
 
 needed to install (also see TESTED PLATFORMS):
 
-	perl 5.004
-	GD > 1.14
+	perl 5.005
+	GD > 1.18
+	GD::Graph
+	GDTextUtils
+
+	Potentially something to convert PNG to GIF (see later)
 
 to install:
 
@@ -14,136 +18,35 @@ to install:
 	make
 	make install
 
-NB: make test is no longer available. Because of the differences in
-the versions of GD, it was almost impossible to make a set of reliable
-tests. If everybody out there had a recent version of GD, there would
-be no problem. Instead of 'make test', Just have a look at the
-samples. If they look ok, then GIFgraph will work.
+IMPORTANT CHANGE SINCE VERSION 1.10
 
-to see some samples:
+GIFgraph no longer contains any of the code to generate charts. Instead
+it has become a wrapper around GD::Graph. The main reason for this is
+that since version 1.20 GD does not support generation of GIF images
+directly anymore. Dropping support for GIFgraph alltogether was not
+really an option, and having a module called GIFgraph that produces PNG
+was a bit silly. So I decided to create GD::Graph, and recommend the use
+of that directly, and make GIFgraph a wrapper around that, its only
+function being to provide a backward compatible interface to GD.
+XXX MORE
 
-	cd samples
-	make
+GD VERSIONS
 
-or, if you have a decent make, try
-
-	make samples
-
-from this directory
-
-That should generate a set of gifs, which you can view using the HTML
-pages in the same directory (or whichever other way pleases you).
-
-The documentation available is contained in GIFgraph.pm, as pod.
-
-The latest release should normally be available from CPAN. Older
-version may still be available from
-http://www.tcp.chem.tue.nl/~tgtcmv/perl/, but that location will no
-longer be maintained
-
-TESTED PLATFORMS (also see NOTES FOR WIN32)
-
-1.11:
-
-1.10:
-- perl 5.005_03 on Linux (RedHat 6.0), GD 1.19
-- perl 5.005_02 on Solaris 2.6, GD 1.19
-- perl 5.004_04 on Solaris 2.6, GD 1.18
-- perl 5.005_02 on Solaris 2.6, GD 1.18
-1.01:
-- perl 5.004_04 on Solaris 2.5.1, GD 1.15
-- perl 5.004_02 for win32 by Gurusamy Sarathy, GD (1.14 I think)
-- perl 5.004_04 HP-UX 10.20, GD 1.18 (Ronald Post)
+If you want to use a GD version 1.20 or up, you will need to have
+something installed that can do an on-the-fly conversion of PNG to GIF. 
+I recommend that you use Image::Magick, since that is what the GIfgraph
+module has been setup to use. If you don't want to, or can't install
+Image::Magick, you will have to edit the file GIFgraph.pm to provide a
+different sub _png2gif.
 
 AUTHOR
 
 Martien Verbruggen
 mgjv@comdyn.com.au
 
-MOST IMPORTANT CHANGES SINCE VERSION 1.10
-
-- plot_to_gd method added
-- some bug fixes
-- worked on some samples
-- removed tests from distribution
-
-MOST IMPORTANT CHANGES SINCE VERSION 1.04
-
-- added bar_spacing option
-- added limited support for numerical X axis for equidistant X values
-  (NOT for a real numerical graph!), thanks to Scott Prahl.
-- routines to automatically 'guess' nice upper and lower values for
-  graphs have been replaced by one written by Scott Prahl
-
-MOST IMPORTANT CHANGES SINCE VERSION 1.03
-
-- Added mixed type graph.
-  GIFgraph::mixed
-  options types and default_type
-- Added callback functionality to format y values
-  option y_number_format
-- Added control over axis label placement
-  option [xy]_label_position
-
-MOST IMPORTANT CHANGES SINCE VERSION 1.01
-
-- Vertical printing of X axis labels
-- CHANGED DEFAULTS for zero_axis and zero_axis_only
-- Fixed problems with negative values, data ranges without 0, and
-  printing of the x axis labels (I hope)
-- No more support for perl 5.003. Since perl 5.005 is out, and I don't
-  have a 5.003 here to test all the time, I won't support it anymore.
-
-MOST IMPORTANT CHANGES SINCE VERSION 0.91
-
-- Legends
-- Support for negative numbers
-- Ticks for X axis
-- line types and widths
-- Allow entries in data set to be undef (to skip them)
-- Changed 'zero' angle for pie charts (was right, now is front/bottom)
-- Definition of colours now possible. See GIFgraph::colour::read_rgb
-  for details
-
-TODO
-
-- Allow settings for individual data sets
-- For mixed graphs, calculate the number of bar sets
-- make overwrite = 2 work everywhere
-- 3d look for graphs
-- logarithmic scaling
-- numerical X axes (halfway there)
-- Autoloading/splitting, etc
-
-BUG FIXES IN THIS VERSION
-
-See file BUGS
-
-NOTES FOR WIN32
-
-GIFgraph installs and runs well under Gurusamy Sarathy's port of perl
-for win32, and its usage is exactly the same as documented.
-
-The ActiveState port 5.003 for win32 can be used with Dave Roth's port
-of GD for win32. This port, however has a peculiarity. It is
-impossible to manipulate the gif data in memory (the GD::Image::gif()
-method always writes to a file descriptor, instead of returning the
-data). This makes the use of GIFgraph with that port impossible
-without a lot of work.
-This means that until someone ports GD for the ActiveState perl with
-full support for all its functionality, GIFgraph will not work on
-ActiveState's port 5.003. 
-
-It may very well, and _should_ work on the 5.005 ports, although I
-have personally not tested that yet.
-
-THANKS
-
-	See documentation in GIFgraph.pm
-
 COPYRIGHT
 
-Copyright (c) 1995-1997 Martien Verbruggen. All rights reserved.
+Copyright (c) 1995-1999 Martien Verbruggen. All rights reserved.
 
 This package is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.

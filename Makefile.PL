@@ -1,36 +1,25 @@
 # This -*- perl -*- script makes the Makefile
-# $Id: Makefile.PL,v 1.2 1999-10-10 13:03:19 mgjv Exp $
+# $Id: Makefile.PL,v 1.3 1999-12-26 04:39:12 mgjv Exp $
  
 #--- Distribution section ---
- 
-$MODNAME = 'GIFgraph';
- 
-BEGIN { require 5.004 }
- 
+
 use ExtUtils::MakeMaker;
-use Config;
- 
-my @clean = qw(*% *.b[ac]k *.old tags samples/sample??.gif);
-opendir(DD, 'samples') || die 'samples directory missing';
-my @samples = 
-	sort
-	map { s/\.pl$/.gif/; $_ } 
-	grep { /^sample..\.pl$/ } 
-	readdir(DD);
-closedir(DD);
 
 WriteMakefile(
-		'VERSION_FROM'		=> $MODNAME . '.pm',	#finds $VERSION
-        'DISTNAME'  		=> $MODNAME,
-        'NAME'      		=> $MODNAME,
+		'VERSION_FROM'		=> 'GIFgraph.pm',
+        'DISTNAME'  		=> 'GIFgraph',
+        'NAME'      		=> 'GIFgraph',
 
 		($] >= 5.005 ?
-			('ABSTRACT'		=> 'Produces GIF graph plots',
+			('ABSTRACT'		=> 'Produce GIF charts with GD',
 			 'AUTHOR'		=> 'Martien Verbruggen (mgjv@comdyn.com.au)',
 			) : ()
 		),
 
-		'PREREQ_PM'			=> { 'GD' => 0, },
+		'PREREQ_PM'			=> { 
+			'GD::Graph' => '1.20',
+			'GD'		=> '1.14'
+		},
  
         'dist'    			=> {
 			'COMPRESS' 		=> 'gzip -9f',
@@ -38,18 +27,22 @@ WriteMakefile(
 		},
  
         'clean'   	=> { 'FILES' => q(*% *.b[ac]k *.old tags) },
-        'realclean'	=> { 'FILES' => q(samples/sample??.gif) },
-
-		'macro'	  => { 'SAMPLES' => "@samples" },
 );
 
-sub MY::postamble {
-	my $postamble =<<END;
-samples: all
-	@(cd samples && make PERL=$Config{'perl'})
-	echo Samples have been created in samples directory
-END
+# GD has already been 'required' by the WriteMakeFile call, but it
+# doesn't hurt to do it again.
+require GD;
 
-	$postamble;
+if (GD::Image->can('gif'))
+{
+	require GIFgraph::Convert;
+	GIFgraph::Convert::checkImageMagick();
 }
 
+print <<END;
+
+Please read the README. GIFgraph is now a wrapper around GD::Graph, and
+requires GD::Graph and GDTextUtils to be installed. it also requires
+some conversion software for use with GD >= 1.20.
+
+END
