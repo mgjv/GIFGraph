@@ -5,7 +5,7 @@
 #	Name:
 #		GIFgraph::Convert.pm
 #
-# $Id: Convert.pm,v 1.3 1999-12-26 11:08:17 mgjv Exp $
+# $Id: Convert.pm,v 1.4 1999-12-30 03:34:58 mgjv Exp $
 #
 #==========================================================================
 package GIFgraph::Convert;
@@ -26,9 +26,7 @@ sub png2gif
 	my $rc = $im->BlobToImage($png);
 	carp $rc if $rc;
 	$rc = $im->Set(magick => 'gif');
-	my @blobs = $im->ImageToBlob();
-	die "What? " . scalar @blobs if (@blobs != 1);
-	return $blobs[0];
+	return $im->ImageToBlob();
 }
 
 sub checkImageMagick
