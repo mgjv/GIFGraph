@@ -25,6 +25,8 @@ $my_graph->set(
 	x_labels_vertical => 1,
 	x_label_position => 1/2,
 
+	bar_spacing => 2,
+
 	logo => 'logo.gif',
 	logo_position => 'BR',
 );

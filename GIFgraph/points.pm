@@ -5,7 +5,7 @@
 #	Name:
 #		GIFgraph::points.pm
 #
-# $Id: points.pm,v 1.1.1.7 1999-10-10 12:40:28 mgjv Exp $
+# $Id: points.pm,v 1.1.1.8 1999-10-10 12:40:47 mgjv Exp $
 #
 #==========================================================================
 
@@ -29,31 +29,18 @@ my %Defaults = (
 {
 	sub initialise()
 	{
-		my $self = shift;
+		my $s = shift;
 
-		$self->SUPER::initialise();
+		$s->SUPER::initialise();
 
 		my $key;
 		foreach $key (keys %Defaults)
 		{
-			$self->set( $key => $Defaults{$key} );
+			$s->set( $key => $Defaults{$key} );
 		}
 	}
 	
 	# PRIVATE
-	sub draw_data($$) # GD::Image, \@data
-	{
-		my $s = shift;
-		my $g = shift;
-		my $d = shift;
-
-		my $ds;
-		foreach $ds (1..$s->{numsets}) 
-		{
-			$s->draw_data_set($g, $$d[$ds], $ds);
-		}
-	}
-
 	sub draw_data_set($$$) # GD::Image, \@data
 	{
 		my $s = shift;
@@ -68,8 +55,8 @@ my %Defaults = (
 		my $i;
 		for $i (0 .. $s->{numpoints}) 
 		{
-			next if (!defined($$d[$i]));
-			my ($xp, $yp) = $s->val_to_pixel($i+1, $$d[$i], $ds);
+			next unless (defined $d->[$i]);
+			my ($xp, $yp) = $s->val_to_pixel($i+1, $d->[$i], $ds);
 			$s->marker( $g, $xp, $yp, $type, $dsci );
 		}
 	}
@@ -86,7 +73,7 @@ my %Defaults = (
 			return $s->{markers}[ $num % (1 + $#{$s->{markers}}) - 1 ];
 		}
 
-		return $num % 8 ? $num % 8 : 8;
+		return ($num % 8) || 8;
 	}
  
 	# Draw a marker

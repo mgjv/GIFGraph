@@ -1,3 +1,17 @@
+Tue August 25 1998
+
+- Fixed bug with undef values for first value in lines graphs
+- Changed one or two samples, and samples Makefile dependencies
+
+Tue August 25 1998
+
+- Added bar_spacing option.
+- Fixed a slight drawing 'bug' while doing that.
+- Changed a few of the samples to use bar_spacing
+- Implemented numerical X axis, based on a changed axestype.pm from
+  Scott Prahl <prahl@ece.ogi.edu>. many thanks.
+- Added sample54 to illustrate
+
 Tue August 18 1998
 
 - Added rudimentary mixed type graph

@@ -5,7 +5,7 @@
 #	Name:
 #		GIFgraph::linespoints.pm
 #
-# $Id: linespoints.pm,v 1.1.1.7 1999-10-10 12:40:28 mgjv Exp $
+# $Id: linespoints.pm,v 1.1.1.8 1999-10-10 12:40:46 mgjv Exp $
 #
 #==========================================================================
 
@@ -26,10 +26,10 @@ use GIFgraph::points;
 {
 	sub initialise()
 	{
-		my $self = shift;
+		my $s = shift;
 
-		$self->GIFgraph::lines::initialise();
-		$self->GIFgraph::points::initialise();
+		$s->GIFgraph::lines::initialise();
+		$s->GIFgraph::points::initialise();
 	}
 
 	# PRIVATE

@@ -13,7 +13,9 @@ $my_graph->set(
 	x_label => 'Day',
 	y_label => 'AUD',
 	title => 'Credits and Debits',
-	y_tick_number => 12,
+	y_max_value => 35,
+	y_min_value => -15,
+	y_tick_number => 10,
 	y_label_skip => 2,
 	overwrite => 1, 
 	dclrs => [ qw( green lred ) ],
@@ -24,7 +26,7 @@ $my_graph->set(
 	x_label_position => 1/2,
 );
 
-my $refit = 1.8;
+my $refit = 4;
 
 sub y_format
 {

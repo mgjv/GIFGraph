@@ -5,7 +5,7 @@
 #	Name:
 #		GIFgraph::lines.pm
 #
-# $Id: lines.pm,v 1.1.1.7 1999-10-10 12:40:28 mgjv Exp $
+# $Id: lines.pm,v 1.1.1.8 1999-10-10 12:40:46 mgjv Exp $
 #
 #==========================================================================
 
@@ -58,17 +58,21 @@ my %Defaults = (
 		my $ds = shift;
 
 		my $dsci = $s->set_clr( $g, $s->pick_data_clr($ds) );
-		my ($xb, $yb) = $s->val_to_pixel( 1, $$d[0], $ds);
 		my $type = $s->pick_line_type($ds);
+		my ($xb, $yb) = (defined $d->[0]) ?
+			$s->val_to_pixel( 1, $d->[0], $ds) :
+			(undef, undef);
+
 
 		my $i;
 		for $i (1 .. $s->{numpoints}) 
 		{
-			next if (!defined($$d[$i]));
-			my ($xe, $ye) = $s->val_to_pixel($i+1, $$d[$i], $ds);
+			next unless (defined $d->[$i]);
 
-			#$g->line( $xb, $yb, $xe, $ye, $dsci );
-			$s->draw_line( $g, $xb, $yb, $xe, $ye, $type, $dsci );
+			my ($xe, $ye) = $s->val_to_pixel($i+1, $d->[$i], $ds);
+
+			$s->draw_line( $g, $xb, $yb, $xe, $ye, $type, $dsci ) 
+				if defined $xb;
 			($xb, $yb) = ($xe, $ye);
 	   }
 	}
@@ -103,8 +107,8 @@ my %Defaults = (
 			($type == 2) && do {
 				# dashed
 
-				for (1..$lts) { push( @pattern, $clr ); }
-				for (1..$lts) { push( @pattern, gdTransparent ); }
+				for (1 .. $lts) { push(@pattern, $clr) }
+				for (1 .. $lts) { push(@pattern, gdTransparent) }
 
 				$g->setStyle(@pattern);
 
@@ -114,8 +118,8 @@ my %Defaults = (
 			($type == 3) && do {
 				# dotted,
 
-				for (1..2) { push( @pattern, $clr ); }
-				for (1..2) { push( @pattern, gdTransparent ); }
+				for (1 .. 2) { push(@pattern, $clr) }
+				for (1 .. 2) { push(@pattern, gdTransparent) }
 
 				$g->setStyle(@pattern);
 
@@ -125,10 +129,10 @@ my %Defaults = (
 			($type == 4) && do {
 				# dashed and dotted
 
-				for (1..$lts) { push( @pattern, $clr ); }
-				for (1..2) { push( @pattern, gdTransparent ); }
-				for (1..2) { push( @pattern, $clr ); }
-				for (1..2) { push( @pattern, gdTransparent ); }
+				for (1 .. $lts) { push(@pattern, $clr) }
+				for (1 .. 2) 	{ push(@pattern, gdTransparent) }
+				for (1 .. 2) 	{ push(@pattern, $clr) }
+				for (1 .. 2) 	{ push(@pattern, gdTransparent) }
 
 				$g->setStyle(@pattern);
 

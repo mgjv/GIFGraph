@@ -5,7 +5,7 @@
 #	Name:
 #		GIFgraph::bars.pm
 #
-# $Id: bars.pm,v 1.1.1.6 1999-10-10 12:40:28 mgjv Exp $
+# $Id: bars.pm,v 1.1.1.7 1999-10-10 12:40:46 mgjv Exp $
 #
 #==========================================================================
  
@@ -18,7 +18,26 @@ use GIFgraph::utils qw(:all);
 
 @GIFgraph::bars::ISA = qw( GIFgraph::axestype );
 
+my %Defaults = (
+	
+	# Spacing between the bars
+	bar_spacing 	=> 0,
+);
+
 {
+	sub initialise()
+	{
+		my $self = shift;
+
+		$self->SUPER::initialise();
+
+		my $key;
+		foreach $key (keys %Defaults)
+		{
+			$self->set( $key => $Defaults{$key} );
+		}
+	}
+	
 	# PRIVATE
 	sub draw_data{
 
@@ -49,35 +68,36 @@ use GIFgraph::utils qw(:all);
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
+		my $bar_s = _round($s->{bar_spacing}/2);
 
 		my $zero = $s->{zeropoint};
 
 		my $i;
-		for $i (0..$s->{numpoints}) 
+		for $i (0 .. $s->{numpoints}) 
 		{
 			my $bottom = $zero;
 			my ($xp, $t);
 
 			my $j;
-			for $j (1..$s->{numsets}) 
+			for $j (1 .. $s->{numsets}) 
 			{
-				next if (!defined($$d[$j][$i]));
+				next unless (defined $d->[$j][$i]);
 
 				# get data colour
 				my $dsci = $s->set_clr( $g, $s->pick_data_clr($j) );
 
 				# get coordinates of top and center of bar
-				($xp, $t) = $s->val_to_pixel($i+1, $$d[$j][$i], $j);
+				($xp, $t) = $s->val_to_pixel($i + 1, $d->[$j][$i], $j);
 
 				# calculate left and right of bar
-				my $l = $xp - _round($s->{x_step}/2);
-				my $r = $xp + _round($s->{x_step}/2);
+				my $l = $xp - _round($s->{x_step}/2) + $bar_s;
+				my $r = $xp + _round($s->{x_step}/2) - $bar_s;
 
 				# calculate new top
 				$t -= ($zero - $bottom) if ($s->{overwrite} == 2);
 
 				# draw the bar
-				if ($$d[$j][$i] >= 0)
+				if ($d->[$j][$i] >= 0)
 				{
 					# positive value
 					$g->filledRectangle( $l, $t, $r, $bottom, $dsci );
@@ -102,36 +122,41 @@ use GIFgraph::utils qw(:all);
 		my $g = shift;
 		my $d = shift;
 		my $ds = shift;
+		my $bar_s = _round($s->{bar_spacing}/2);
 
 		# Pick a data colour
 		my $dsci = $s->set_clr( $g, $s->pick_data_clr($ds) );
 
 		my $i;
-		for $i (0..$s->{numpoints}) 
+		for $i (0 .. $s->{numpoints}) 
 		{
-			next if (!defined($$d[$i]));
+			next unless (defined $d->[$i]);
 
 			# get coordinates of top and center of bar
-			my ($xp, $t) = $s->val_to_pixel($i+1, $$d[$i], $ds);
+			my ($xp, $t) = $s->val_to_pixel($i + 1, $d->[$i], $ds);
 
 			# calculate left and right of bar
 			my ($l, $r);
 
 			if ($s->{mixed})
 			{
-				$l = $xp - _round($s->{x_step}/2);
-				$r = $xp + _round($s->{x_step}/2);
+				$l = $xp - _round($s->{x_step}/2) + $bar_s;
+				$r = $xp + _round($s->{x_step}/2) - $bar_s;
 			}
 			else
 			{
-				$l = $xp - $s->{x_step}/2 +
-					_round(($ds-1) * $s->{x_step}/$s->{numsets});
-				$r = $xp - $s->{x_step}/2 +
-					_round($ds * $s->{x_step}/$s->{numsets});
+				$l = $xp 
+					- _round($s->{x_step}/2)
+					+ _round(($ds - 1) * $s->{x_step}/$s->{numsets})
+					+ $bar_s;
+				$r = $xp 
+					- _round($s->{x_step}/2)
+					+ _round($ds * $s->{x_step}/$s->{numsets})
+					- $bar_s;
 			}
 
 			# draw the bar
-			if ($$d[$i] >= 0)
+			if ($d->[$i] >= 0)
 			{
 				# positive value
 				$g->filledRectangle( $l, $t, $r, $s->{zeropoint}, $dsci );

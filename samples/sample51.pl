@@ -7,7 +7,7 @@ print STDERR "Processing sample 5-1\n";
 
 @data = ( 
     [ qw( Jan Feb Mar Apr May Jun Jul Aug Sep ) ],
-    [ reverse(4, 3, 5, 6, 3,  1.5, -1, -3, -4)]
+    [ reverse(4, 3, 5, 6, 3,  1.5, -1, -3, -4)],
 );
 
 $my_graph = new GIFgraph::lines();

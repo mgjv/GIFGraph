@@ -9,7 +9,7 @@
 #		Package of colour manipulation routines, to be used 
 #		with GIFgraph.
 #
-# $Id: colour.pm,v 1.1.1.8 1999-10-10 12:40:28 mgjv Exp $
+# $Id: colour.pm,v 1.1.1.9 1999-10-10 12:40:46 mgjv Exp $
 #
 #==========================================================================
 
@@ -23,7 +23,7 @@ require Exporter;
 @GIFgraph::colour::ISA = qw( Exporter );
 
 $GIFgraph::colour::prog_name    = 'GIFgraph::colour.pm';
-$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.8 $';
+$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.9 $';
 $GIFgraph::colour::prog_version = 
 	($GIFgraph::colour::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
@@ -74,13 +74,13 @@ $GIFgraph::colour::prog_version =
     sub colour_list 
 	{
         my $n = ( $_[0] ) ? $_[0] : keys %RGB;
-		return (keys %RGB)[0..$n-1]; 
+		return (keys %RGB)[0 .. $n-1]; 
     }
 
     sub sorted_colour_list 
 	{
-        my $n = ( $_[0] ) ? $_[0] : keys %RGB;
-        return (sort by_luminance keys %RGB)[0..$n-1];
+        my $n = $_[0] ? $_[0] : keys %RGB;
+        return (sort by_luminance keys %RGB)[0 .. $n-1];
 #        return (sort by_hue keys %rgb)[0..$n-1];
 
         sub by_luminance 
@@ -97,13 +97,13 @@ $GIFgraph::colour::prog_version =
 	# return the luminance of the colour (RGB)
     sub _luminance 
 	{ 
-		(0.212671*$_[0] + 0.715160*$_[1] + 0.072169*$_[2])/0xFF; 
+		(0.212671 * $_[0] + 0.715160 * $_[1] + 0.072169 * $_[2])/0xFF; 
 	}
 
 	# return the hue of the colour (RGB)
     sub _hue 
 	{ 
-		($_[0] + $_[1] + $_[2])/(3*0xFF); 
+		($_[0] + $_[1] + $_[2])/(3 * 0xFF); 
 	}
 
 my %WarnedColours = ();
@@ -176,7 +176,7 @@ my %WarnedColours = ();
 			my ($r, $g, $b, $name) = split(/\s+/, $line, 4);
 			
 			# Ignore bad lines
-			next if (!defined($name));
+			next unless (defined $name);
 
 			$RGB{$name} = [$r, $g, $b];
 			$n++;

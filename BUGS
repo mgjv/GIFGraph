@@ -2,9 +2,11 @@ UNRESOLVED BUGS
 
 + two_axes doesn't work correctly with negative numbers and zero_axis
 + y_max_value doesn't get adapted for bars and area if all negative values
-+ y_min_value doesn't automatically get adapted for bars and area if 0
-  is not included in the range
 + init_graph does too much work for pies. Needs to be split up.
++ area chart doesn't do overwrite? Workaround: sum up your data sets, 
+  and order them backwards (highest one first). Output graph will look 
+  like it's incremental.
++ only bar charts do overwrite. Necessary to implement generally?
 
 NOT REALLY BUGS
 
@@ -15,6 +17,15 @@ NOT REALLY BUGS
 - A positive y_min_value doesn't work with bars or area, bars and area 
   always are set off against 0. Wether this is a bug, or wanted behaviour
   might be a point for discussion.
+- y_min_value doesn't automatically get adapted for bars and area if 0
+  is not included in the range, but only if user sets it. If left to
+  figure it out itself, GIFgraph does it right.
+
+FIXED IN 1.10
+
+! When first value of a dataset is undef for a lines graph, things go 
+  wrong.
+  (report by Arto Nurmela <arto.nurmela@nmp.nokia.com>)
 
 FIXED IN 1.04
 

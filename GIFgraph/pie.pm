@@ -5,7 +5,7 @@
 #	Name:
 #		GIFgraph::pie.pm
 #
-# $Id: pie.pm,v 1.1.1.7 1999-10-10 12:40:27 mgjv Exp $
+# $Id: pie.pm,v 1.1.1.8 1999-10-10 12:40:45 mgjv Exp $
 #
 #==========================================================================
 
@@ -94,7 +94,7 @@ my %Defaults = (
 			$self->set( $key => $Defaults{$key} );
 		}
  
-		$self->set( pie_height => _round(0.1*$self->{gify}) );
+		$self->set( pie_height => _round(0.1 * $self->{gify}) );
  
 		$self->set_value_font(GD::gdTinyFont);
 		$self->set_label_font(GD::gdSmallFont);
@@ -110,19 +110,19 @@ my %Defaults = (
 		my $s = shift;
  
 		# Make sure we're not reserving space we don't need.
-		unless ( $s->{title} ) { $s->set( tfh => 0 ); }
-		unless ( $s->{label} ) { $s->set( lfh => 0 ); }
-		if ( $s->{pie_height} <= 0 ) { $s->set( '3d' => 0 ); }
-		unless ( $s->{'3d'} ) { $s->set( pie_height => 0 ); }
+		$s->set(tfh => 0) 			unless ( $s->{title} );
+		$s->set(lfh => 0) 			unless ( $s->{label} );
+		$s->set('3d' => 0) 			if     ( $s->{pie_height} <= 0 );
+		$s->set(pie_height => 0)	unless ( $s->{'3d'} );
  
 		# Calculate the bounding box for the pie, and
 		# some width, height, and centre parameters
 		$s->{bottom} = 
 			$s->{gify} - $s->{pie_height} - $s->{b_margin} -
-			( ($s->{lfh}) ? $s->{lfh} + $s->{text_space} : 0 );
+			( $s->{lfh} ? $s->{lfh} + $s->{text_space} : 0 );
 
 		$s->{top} = 
-			$s->{t_margin} + ( ($s->{tfh}) ? $s->{tfh} + $s->{text_space} : 0 );
+			$s->{t_margin} + ( $s->{tfh} ? $s->{tfh} + $s->{text_space} : 0 );
 
 		$s->{left} = $s->{l_margin};
 
@@ -155,13 +155,13 @@ my %Defaults = (
  
 		if ( $s->{tfh} ) 
 		{
-			my $tx = $s->{xc} - length($s->{title})*$s->{tfw}/2;
+			my $tx = $s->{xc} - length($s->{title}) * $s->{tfw}/2;
 			$g->string($s->{tf}, $tx, $s->{t_margin}, $s->{title}, $s->{tci});
 		}
 
 		if ( $s->{lfh} ) 
 		{
-			my $tx = $s->{xc} - length($s->{label})*$s->{lfw}/2;
+			my $tx = $s->{xc} - length($s->{label}) * $s->{lfw}/2;
 			my $ty = $s->{gify} - $s->{b_margin} - $s->{lfh};
 			$g->string($s->{lf}, $tx, $ty, $s->{label}, $s->{lci});
 		}
@@ -213,7 +213,7 @@ my %Defaults = (
 		my $j = 1; 						# for now, only one pie..
  
 		my $i;
-		for $i (0 .. $s->{numpoints}) 
+		for $i ( 0 .. $s->{numpoints} ) 
 		{ 
 			$total += $data->[$j][$i]; 
 		}
@@ -231,7 +231,7 @@ my %Defaults = (
 
 			# Set the angles of the pie slice
 			my $pa = $pb;
-			$pb += 360*$data->[1][$i]/$total;
+			$pb += 360 * $data->[1][$i]/$total;
 
 			# Calculate the end points of the lines at the boundaries of
 			# the pie slice
@@ -257,7 +257,7 @@ my %Defaults = (
 
 			$g->fillToBorder($xe, $ye, $ac, $dc);
 
-			$s->put_label($g, $xe, $ye, $$data[0][$i]);
+			$s->put_label($g, $xe, $ye, $data->[0][$i]);
 
 			# If it's 3d, colour the front ones as well
 			if ( $s->{'3d'} ) 
@@ -265,7 +265,7 @@ my %Defaults = (
 				my ($xe, $ye) = $s->_get_pie_front_coords($pa, $pb);
 
 				$g->fillToBorder($xe, $ye + $s->{pie_height}/2, $ac, $dc)
-					if (defined($xe) and defined($ye));
+					if (defined($xe) && defined($ye));
 			}
 		}
 	} #GIFgraph::pie::draw_data
@@ -317,7 +317,7 @@ my %Defaults = (
 	sub in_front($) # (angle)
 	{
 		my $a = level_angle( shift );
-		( $a > ($ANGLE_OFFSET - 180) and $a < $ANGLE_OFFSET ) ? 1 : 0;
+		( $a > ($ANGLE_OFFSET - 180) && $a < $ANGLE_OFFSET ) ? 1 : 0;
 	}
  
 	# return a value for angle between -180 and 180
@@ -339,7 +339,7 @@ my %Defaults = (
 
 		my ($x, $y, $label) = @_;
 
-		$x -= length($label)*$s->{vfw}/2;
+		$x -= length($label) * $s->{vfw}/2;
 		$y -= $s->{vfw}/2;
 		$g->string($s->{vf}, $x, $y, $label, $s->{alci});
 	}
@@ -350,17 +350,19 @@ my %Defaults = (
 	# $ANGLE_OFFSET is used to define where 0 is meant to be
 	sub cartesian($$$$$) 
 	{
-		my ($r, $phi, $xi, $yi, $cr) = @_; my $PI=4*atan2(1, 1);
+		my ($r, $phi, $xi, $yi, $cr) = @_; 
+		my $PI=4*atan2(1, 1);
+
 		return (
-			$xi+$r*cos($PI*($phi + $ANGLE_OFFSET)/180), 
-			$yi+$cr*$r*sin($PI*($phi + $ANGLE_OFFSET)/180)
+			$xi + $r * cos($PI * ($phi + $ANGLE_OFFSET)/180), 
+			$yi + $cr * $r * sin($PI * ($phi + $ANGLE_OFFSET)/180)
 		);
 	}
  
 	sub pick_data_clr($) # (number)
 	{
 		my $s = shift;
-		return _rgb( $s->{dclrs}[ $_[0] % (1+$#{$s->{dclrs}}) ] );
+		return _rgb( $s->{dclrs}[ $_[0] % (1 + $#{$s->{dclrs}}) ] );
 	}
 
 } # End of package GIFgraph::pie

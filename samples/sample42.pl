@@ -12,7 +12,7 @@ $my_graph->set(
 	y_label => 'Y label',
 	title => 'A Lines and Points Graph, reading a CSV file',
 	y_max_value => 80,
-	y_tick_number => 8,
+	y_tick_number => 6,
 	y_label_skip => 2,
 	markers => [ 1, 5 ],
 );

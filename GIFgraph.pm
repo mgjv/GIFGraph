@@ -18,7 +18,7 @@
 #		GIFgraph::pie
 #		GIFgraph::mixed
 #
-# $Id: GIFgraph.pm,v 1.1.1.8 1999-10-10 12:40:22 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.1.1.9 1999-10-10 12:40:40 mgjv Exp $
 #
 #==========================================================================
 
@@ -40,11 +40,11 @@ use GD;
 package GIFgraph;
 
 $GIFgraph::prog_name    = 'GIFgraph.pm';
-$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.8 $';
+$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.9 $';
 $GIFgraph::prog_version = 
 	($GIFgraph::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
-$GIFgraph::VERSION = '1.04';
+$GIFgraph::VERSION = '1.10';
 
 # Some tools and utils
 use GIFgraph::colour qw(:colours);
@@ -866,7 +866,56 @@ effect.
 
 =back
 
-B<graphs with lines>
+=head2 Options for graphs with a numerical X axis
+
+First of all: GIFgraph does B<not> support numerical x axis the way it
+should. Data for X axes should be equally spaced. That understood:
+There is some support to make the printing of graphs with numerical X
+axis values a bit better, thanks to Scott Prahl. If the option
+C<x_tick_number> is set to a defined value, GIFgraph will attempt to
+treat the X data as numerical.
+
+Extra options are:
+
+=over 4
+
+=item x_tick_number
+
+If set to I<'auto'>, GIFgraph will attempt to format the X axis in a
+nice way, based on the actual X values. If set to a number, that's the
+number of ticks you will get. If set to undef, GIFgraph will treat X
+data as labels.
+Default: undef.
+
+=item x_min_value, x_max_value
+
+The minimum and maximum value to use for the X axis.
+Default: computed.
+
+=item x_number_format
+
+See y_number_format
+
+=item x_label_skip
+
+See y_label_skip
+
+=back
+
+
+=head2 Options for graphs with bars
+
+=over 4
+
+=item bar_spacing
+
+Number of pixels to leave open between bars. This works well in most
+cases, but on some platforms, a value of 1 will be rounded off to 0.
+Default: 0
+
+=back
+
+=head2 Options for graphs with lines
 
 =over 4
 
@@ -893,7 +942,7 @@ Default: 1.
 
 =back
 
-B<graphs with points>
+=head2 Options for graphs with points
 
 =over 4
 
@@ -917,7 +966,7 @@ in pixels.  Default: 4.
 
 =back
 
-B<mixed graphs>
+=head2 Options for mixed graphs
 
 =over 4
 
@@ -942,7 +991,7 @@ Default: lines
 
 =back
 
-=head2 Options and methods for legends (axestype graphs only)
+=head2 Graph legends (axestype graphs only)
 
 At the moment legend support is minimal.
 

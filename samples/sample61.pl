@@ -20,20 +20,26 @@ $my_graph->set(
 );
 
 $my_graph->set( 
+
 	x_label => 'X Label',
 	y_label => 'Y label',
 	title => 'A Mixed Type Graph',
+
 	y_max_value => 10,
 	y_min_value => -5,
 	y_tick_number => 3,
 	y_label_skip => 1,
-	zero_axis_only => 0,
+	x_plot_values => 0,
+	y_plot_values => 0,
+
 	long_ticks => 1,
 	x_ticks => 0,
+
 	legend_marker_width => 24,
 	line_width => 3,
 	marker_size => 5,
-	overwrite => 1,
+
+	bar_spacing => 8,
 );
 
 $my_graph->set_legend( qw( one two three four five six ) );

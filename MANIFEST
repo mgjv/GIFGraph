@@ -51,7 +51,9 @@ samples/sample42.htm
 samples/sample51.htm
 samples/sample52.htm
 samples/sample53.htm
+samples/sample54.htm
 samples/sample61.htm
+samples/sample62.htm
 samples/sample91.htm
 samples/sample92.htm
 samples/sample93.htm
@@ -68,11 +70,14 @@ samples/sample42.pl
 samples/sample51.pl
 samples/sample52.pl
 samples/sample53.pl
+samples/sample54.pl
 samples/sample61.pl
+samples/sample62.pl
 samples/sample91.pl
 samples/sample92.pl
 samples/sample93.pl
 samples/sample42.dat
+samples/sample54.dat
 samples/rgb.txt
 samples/logo.gif
 samples/Makefile
