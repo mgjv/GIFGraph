@@ -1,0 +1,29 @@
+- Legends, finally
+  requests from Petter Reinholdtsen <pere@link.no
+  				Giorgos Andreadakis <gand@forthnet.gr>
+
+Tue Dec 16 1997
+
+- Added documentation for dclrs and markers options
+- removed line_width and ReadFile from the documentation (unimplemented)
+- Started on port to win32
+- Changed Area to use Polygon and to work with negative numbers
+
+Mon Dec 15 1997
+
+- Added support for negative numbers in lines, points and linespoints 
+  graphs
+- Added new options: zero_axis, and zero_axis_only (code and documentation)
+
+Fri Dec 12 1997
+
+- Added test scripts for 'make test'
+
+Before Fri Dec 05 1997
+
+- Lots of minor tuning
+- Added x_ticks option 
+  (request Will Mitayai Keeso Rowe - thelab@nmarcom.com)
+- Added binmode() here and there to accommodate for platforms that need
+  it.
+

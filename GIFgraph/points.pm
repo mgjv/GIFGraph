@@ -1,16 +1,13 @@
 #==========================================================================
 #			   Copyright (c) 1995 Martien Verbruggen
 #			   Copyright (c) 1996 Commercial Dynamics Pty Ltd
+#			   Copyright (c) 1997 Martien Verbruggen
 #--------------------------------------------------------------------------
 #
 #	Name:
 #		GIFgraph::points.pm
 #
-# $Id: points.pm,v 1.1.1.1 1999-10-10 12:01:40 mgjv Exp $
-#
-# $Log: not supported by cvs2svn $
-# Revision 1.1  1997/02/14 02:32:49  mgjv
-# Initial revision
+# $Id: points.pm,v 1.1.1.2 1999-10-10 12:07:06 mgjv Exp $
 #
 #==========================================================================
 
@@ -25,16 +22,21 @@ use vars qw( @ISA );
 {
 	# PRIVATE
 	sub draw_data { # GD::Image, \@data
+
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
-		my $ds;
-		foreach $ds (1..$s->{numsets}) {
+
+		foreach my $ds (1..$s->{numsets}) 
+		{
+			# Pick a colour
 			my $dsci = $s->set_clr( $g, $s->pick_data_clr($ds) );
-			for (0..$s->{numpoints}) {
-				my ($xp, $yp) = $s->val_to_pixel($_+1, $$d[$ds][$_], $ds);
+
+			for my $i (0 .. $s->{numpoints}) 
+			{
+				my ($xp, $yp) = $s->val_to_pixel($i+1, $$d[$ds][$i], $ds);
 				$s->marker( $g, $xp, $yp, $s->pick_marker($ds), $dsci );
-		   }
+			}
 		}
 	}
  

@@ -11,8 +11,7 @@ $my_graph = new GIFgraph::bars( );
 
 $my_graph->set( 'x_label' => 'X Label',
                 'y_label' => 'Y label',
-                'title' => 'Bars on top of each other',
-                'y_max_value' => 40,
+                'title' => 'Bars in front of each other',
                 'y_tick_number' => 8,
                 'y_label_skip' => 2,
                 'overwrite' => 1 );

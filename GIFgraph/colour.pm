@@ -1,6 +1,7 @@
 #==========================================================================
 #              Copyright (c) 1995 Martien Verbruggen
 #              Copyright (c) 1996 Commercial Dynamics Pty Ltd
+#              Copyright (c) 1997 Martien Verbruggen
 #--------------------------------------------------------------------------
 #
 #	Name:
@@ -10,9 +11,15 @@
 #		Package of colour manipulation routines, to be used 
 #		with GIFgraph.
 #
-# $Id: colour.pm,v 1.1.1.1 1999-10-10 12:01:40 mgjv Exp $
+# $Id: colour.pm,v 1.1.1.2 1999-10-10 12:07:06 mgjv Exp $
 #
 # $Log: not supported by cvs2svn $
+# Revision 1.3  1997/12/16 05:23:51  mgjv
+# final check in for 0.94
+#
+# Revision 1.2  1997/12/16 00:20:50  mgjv
+# cleaned up
+#
 # Revision 1.1  1997/02/14 02:32:49  mgjv
 # Initial revision
 #
@@ -29,7 +36,7 @@ require Exporter;
 @ISA = qw( Exporter );
 
 $GIFgraph::colour::prog_name    = 'GIFgraph::colour.pm';
-$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.1 $';
+$GIFgraph::colour::prog_rcs_rev = '$Revision: 1.1.1.2 $';
 $GIFgraph::colour::prog_version = 
 	($GIFgraph::colour::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
@@ -41,33 +48,35 @@ $GIFgraph::colour::prog_version =
 
 {
     my %rgb = (
-        white =>   [0xFF,0xFF,0xFF], 
-        lgray =>   [0xBF,0xBF,0xBF], 
-		gray =>    [0x7F,0x7F,0x7F],
-		black =>   [0x00,0x00,0x00],
-        lblue =>   [0x00,0x00,0xFF], 
-		blue =>    [0x00,0x00,0xBF],
-        dblue =>   [0x00,0x00,0x7F], 
-		gold =>    [0xFF,0xD7,0x00],
-        lyellow => [0xFF,0xFF,0x00], 
-		dyellow => [0x7F,0x7F,0x00],
-        lgreen =>  [0x00,0xFF,0x00], 
-        green =>   [0x00,0xBF,0x00], 
-		dgreen =>  [0x00,0x7F,0x00],
-        lred =>    [0xFF,0x00,0x00], 
-		red =>     [0xBF,0x00,0x00],
-		dred =>    [0x7F,0x00,0x00],
-        lpurple => [0xFF,0x00,0xFF], 
-        purple =>  [0xBF,0x00,0xBF],
-		dpurple => [0x7F,0x00,0x7F],
-        lorange => [0xFF,0xB7,0x00], 
-		orange =>  [0xFF,0x7F,0x00],
-        pink =>    [0xFF,0xB7,0xC1], 
-		dpink =>   [0xFF,0x69,0xB4],
-        marine =>  [0x7F,0x7F,0xFF], 
-		cyan =>    [0x00,0xFF,0xFF],
-        lbrown =>  [0xD2,0xB4,0x8C], 
-		dbrown =>  [0xA5,0x2A,0x2A],
+        white	=> [0xFF,0xFF,0xFF], 
+        lgray	=> [0xBF,0xBF,0xBF], 
+		gray	=> [0x7F,0x7F,0x7F],
+		dgray	=> [0x3F,0x3F,0x3F],
+		black	=> [0x00,0x00,0x00],
+        lblue	=> [0x00,0x00,0xFF], 
+		blue	=> [0x00,0x00,0xBF],
+        dblue	=> [0x00,0x00,0x7F], 
+		gold	=> [0xFF,0xD7,0x00],
+        lyellow	=> [0xFF,0xFF,0x00], 
+        yellow	=> [0xBF,0xBF,0x00], 
+		dyellow	=> [0x7F,0x7F,0x00],
+        lgreen	=> [0x00,0xFF,0x00], 
+        green	=> [0x00,0xBF,0x00], 
+		dgreen	=> [0x00,0x7F,0x00],
+        lred	=> [0xFF,0x00,0x00], 
+		red		=> [0xBF,0x00,0x00],
+		dred	=> [0x7F,0x00,0x00],
+        lpurple	=> [0xFF,0x00,0xFF], 
+        purple	=> [0xBF,0x00,0xBF],
+		dpurple	=> [0x7F,0x00,0x7F],
+        lorange	=> [0xFF,0xB7,0x00], 
+		orange	=> [0xFF,0x7F,0x00],
+        pink	=> [0xFF,0xB7,0xC1], 
+		dpink	=> [0xFF,0x69,0xB4],
+        marine	=> [0x7F,0x7F,0xFF], 
+		cyan	=> [0x00,0xFF,0xFF],
+        lbrown	=> [0xD2,0xB4,0x8C], 
+		dbrown	=> [0xA5,0x2A,0x2A],
     );
 
     sub colour_list { # number of colours
@@ -111,6 +120,10 @@ __END__
 
 Colour - Colour manipulation routines for use with GIFgraph
 
+=head1 SYNOPSIS
+
+see functions
+
 =head1 DESCRIPTION
 
 The B<Colour> Package provides a few routines to convert some colour
@@ -145,6 +158,38 @@ Returns the hue of the colour with the specified RGB values.
 Returns the luminance of the colour with the specified RGB values.
 
 =back 
+
+=head1 COLOUR NAMES
+
+white,
+lgray,
+gray,
+dgray,
+black,
+lblue,
+blue,
+dblue,
+gold,
+lyellow,
+yellow,
+dyellow,
+lgreen,
+green,
+dgreen,
+lred,
+red,
+dred,
+lpurple,
+purple,
+dpurple,
+lorange,
+orange,
+pink,
+dpink,
+marine,
+cyan,
+lbrown,
+dbrown.
 
 =cut
 

@@ -15,7 +15,8 @@ $my_graph->set( 'x_label' => 'X Label',
                 'title' => 'Two data sets',
                 'y_max_value' => 40,
                 'y_tick_number' => 8,
-                'y_label_skip' => 2 );
+                'y_label_skip' => 2,
+			);
 
 $my_graph->plot_to_gif( "sample12.gif", \@data );
 

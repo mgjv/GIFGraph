@@ -18,18 +18,11 @@
 #		GIFgraph::area
 #		GIFgraph::pie
 #
-# $Id: GIFgraph.pm,v 1.1.1.1 1999-10-10 12:01:40 mgjv Exp $
-#
-# $Log: not supported by cvs2svn $
-# Revision 1.2  1997/02/14 02:31:33  mgjv
-# split up modules
-#
-# Revision 1.1  1996/11/26 23:37:24  mgjv
-# Initial revision
+# $Id: GIFgraph.pm,v 1.1.1.2 1999-10-10 12:07:03 mgjv Exp $
 #
 #==========================================================================
 
-require 5.001;
+require 5.003;
 
 #use strict qw(vars refs subs);
 use strict qw(vars refs);
@@ -46,13 +39,51 @@ use GD;
 package GIFgraph;
 
 $GIFgraph::prog_name    = 'GIFgraph.pm';
-$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.1 $';
-$GIFgraph::prog_version = ($GIFgraph::prog_rcs_rev =~ 
-							/\s+(\d*\.\d*)/) ? $1 : "0.0";
+$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.2 $';
+$GIFgraph::prog_version = 
+	($GIFgraph::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
+
+$GIFgraph::VERSION = '0.94';
 
 # Some tools and utils
 use GIFgraph::colour qw(:colours);
 
+my $OS;
+
+# Let's guess what the OS is
+# (from CGI.pm by Lincoln Stein)
+# OVERRIDE THE OS HERE IF THE GUESS IS WRONG
+
+# $OS = 'UNIX';
+# $OS = 'MACINTOSH';
+# $OS = 'WINDOWS';
+# $OS = 'VMS';
+# $OS = 'OS2';
+
+# FIGURE OUT THE OS WE'RE RUNNING UNDER
+# Some systems support the $^O variable.  If not
+# available then require() the Config library
+unless ($OS) {
+    unless ($OS = $^O) {
+        require Config;
+        $OS = $Config::Config{'osname'};
+    }
+	if ($OS=~/Win/i) {
+		$OS = 'WINDOWS';
+	} elsif ($OS=~/vms/i) {
+		$OS = 'VMS';
+	} elsif ($OS=~/Mac/i) {
+		$OS = 'MACINTOSH';
+	} elsif ($OS=~/os2/i) {
+		$OS = 'OS2';
+	} else {
+		$OS = 'UNIX';
+	}
+}
+
+$GIFgraph::needs_binmode = $OS=~/^(WINDOWS|VMS|OS2)/;
+
+# Start of the package methods
 {
 	#
 	# GIF size
@@ -75,7 +106,7 @@ use GIFgraph::colour qw(:colours);
 		# default logo file name, and set the logo position (UR, BR, UL, BL)
 
 		'logo_resize'   => 1.0,
-		'logo'          => '\nologo/',
+		'logo'          => undef,
 		'logo_position' => 'LR',
 
 		# Write a transparent GIF?
@@ -106,31 +137,45 @@ use GIFgraph::colour qw(:colours);
     #
     # PUBLIC methods, documented in pod.
     #
-    sub new { # [ width, height ] optional;
+    sub new 
+	{ # [ width, height ] optional;
+
         my $type = shift;
         my $self = {};
         bless $self, $type;
-        if ( @_ ) {
+
+        if (@_) 
+		{
             # If there are any parameters, they should be the size
             $self->{gifx} = shift;
+
             # If there's an x size, there should also be a y size.
             die "Usage: GIFgraph::<type>::new( [x_size, y_size] )\n" unless @_;
             $self->{gify} = shift;
-        } else {
+        } 
+		else 
+		{
             # There were obviously no parameters, so use defaults
             $self->{gifx} = $GIFsize{'x'};
             $self->{gify} = $GIFsize{'y'};
         }
+
         # Initialise all relevant parameters to defaults
         # These are defined in the subclasses. See there.
         $self->initialise( );
+
         return $self;
     }
 
-    sub set {
+    sub set 
+	{
         my $s = shift;
         my %args = @_;
-        foreach (keys %args) { $s->{$_} = $args{$_}; }
+
+        foreach (keys %args) 
+		{ 
+			$s->{$_} = $args{$_}; 
+		}
     }
 
     # These should probably not be used, or be rewritten to 
@@ -139,55 +184,83 @@ use GIFgraph::colour qw(:colours);
     # But.. it's not nice to require the user to include GD.pm
     # just because she might want to change the font.
 
-    sub set_title_font { # fontname
+    sub set_title_font 
+	{ # fontname
         my $self = shift;
+
         $self->{tf} = shift;
-        $self->set( 'tfw' => $self->{tf}->width,
-                    'tfh' => $self->{tf}->height );
+        $self->set( 
+			'tfw' => $self->{tf}->width,
+			'tfh' => $self->{tf}->height,
+		);
     }
 
-    sub set_text_clr { # colour name
+    sub set_text_clr 
+	{ # colour name
         my $s = shift;
         my $c = shift;
+
         $s->set(
             'textclr'       => $c,
             'labelclr'      => $c,
-            'axislabelclr'  => $c
+            'axislabelclr'  => $c,
         );
     }
 
-    sub plot_to_gif { # "file.gif", \@data
+    sub plot_to_gif 
+	{ # "file.gif", \@data
         my $s = shift;
         my $file = shift;
         my $data = shift;
-#        print STDERR "Plot to gif: $data, @$data\n";
-        open (GIFPLOT,">$file") || do { warn "Cannot open $file for writing";
-                                    return 0; };
+
+        open (GIFPLOT,">$file") || do 
+		{ 
+			warn "Cannot open $file for writing: $!";
+			return 0; 
+		};
+		binmode GIFPLOT if ($GIFgraph::needs_binmode);
         print GIFPLOT $s->plot( $data );
-        close GIFPLOT;
+        close(GIFPLOT);
     }
 
     # Routine to read GNU style data files
+	# NOT USEABLE
 
-    sub ReadFile {
-        my $file = shift; my @cols = @_; my (@out, $i, $j);
-        if ( $#cols < 1 ) { @cols = 1; }
-        open (DATA, $file) || do { warn "Cannot open file: $file"; return []; };
+    sub ReadFile 
+	{
+        my $file = shift; 
+		my @cols = @_; 
+		my (@out, $i, $j);
+
+        @cols = 1 if ( $#cols < 1 );
+
+        open (DATA, $file) || do { 
+			warn "Cannot open file: $file"; 
+			return []; 
+		};
+
         $i=0; 
-        while ($_=<DATA>) { 
-            s/[ \t]*(.*)[ \t\n]*/$1/;
+        while (defined(<DATA>)) 
+		{ 
+            s/^\s+|\s+$//;
             next if ( /^#/ || /^!/ || /^[ \t]*$/ );
             @_ = split(/[ \t]+/);
             $out[0][$i] = $_[0];
             $j=1;
-            foreach (@cols) {
-                if ( $_ > $#_ ) { warn "Data column $_ not present"; return []; }
+            foreach (@cols) 
+			{
+                if ( $_ > $#_ ) { 
+					warn "Data column $_ not present"; 
+					return []; 
+				}
                 $out[$j][$i] = $_[$_]; $j++;
             }
             $i++;
         }
-        close DATA;
+        close(DATA);
+
         return @out;
+
     } # ReadFile
 
     #
@@ -198,12 +271,14 @@ use GIFgraph::colour qw(:colours);
     # This is called by the default initialise methods 
     # from the objects further down the tree.
 
-    sub defaults { # -
+    sub defaults 
+	{
         my $self = shift;
 
-	foreach (keys %Defaults) {
-	    $self->set( $_ => $Defaults{$_} );
-	}
+		foreach (keys %Defaults) 
+		{
+			$self->set( $_ => $Defaults{$_} );
+		}
 
         $self->set_title_font(GD::gdLargeFont);
     }
@@ -217,30 +292,27 @@ use GIFgraph::colour qw(:colours);
     # per set, and kills the process if there are no datapoints
     # in the sets, or if there are no data sets.
 
-    sub check_data { # \@data
+    sub check_data 
+	{ # \@data
         my $self = shift;
         my $data = shift;
-#        print STDERR "Check Data: $data, @$data\n";
+
         $self->set('numsets' => $#$data);
         $self->set('numpoints' => $#{@$data[0]});
-#        print STDERR "NUMSETS: $self->{numsets} POINTS: $self->{numpoints}\n";
-#        for ( 0..$self->{numsets} ) {
-#            my $i;
-#            for ($i=0; $i <= $self->{numpoints}; $i++) {
-#                print "$i $_ $$data[$_][$i]\n";
-#            }
-#        }
+
         ( $self->{numsets} < 1 || $self->{numpoints} < 0 ) && die "No Data";
-        for ( 1..$self->{numsets} ) {
-             if ( $self->{numpoints} != $#{@$data[$_]} ) {
-                die "Data array $_: length misfit"
-            }
+
+        for my $i ( 1..$self->{numsets} ) 
+		{
+			die "Data array $i: length misfit"
+				unless ( $self->{numpoints} == $#{@$data[$i]} );
         }
     }
 
     # Open the graph output canvas by creating a new GD object.
 
-    sub open_graph { # -
+    sub open_graph 
+	{
         my $self = shift;
         my $graph = new GD::Image($self->{gifx}, $self->{gify});
         return $graph;
@@ -250,18 +322,17 @@ use GIFgraph::colour qw(:colours);
     # index numbers for them) setting the graph to transparent, and 
     # interlaced, putting a logo (if defined) on there.
 
-    sub init_graph { # GD::Image
+    sub init_graph 
+	{ # GD::Image
         my $self = shift;
         my $graph = shift;
+
         $self->{bgci} = $self->set_clr( $graph, _rgb($self->{bgclr}) );
         $self->{fgci} = $self->set_clr( $graph, _rgb($self->{fgclr}) );
         $self->{tci}  = $self->set_clr( $graph, _rgb($self->{textclr}) );
-        $self->{lci}  = $self->set_clr( $graph, 
-										_rgb($self->{labelclr}) );
-        $self->{alci} = $self->set_clr( $graph, 
-										_rgb($self->{axislabelclr}) );
-        $self->{acci} = $self->set_clr( $graph, 
-										_rgb($self->{accentclr}) );
+        $self->{lci}  = $self->set_clr( $graph, _rgb($self->{labelclr}) );
+        $self->{alci} = $self->set_clr( $graph, _rgb($self->{axislabelclr}) );
+        $self->{acci} = $self->set_clr( $graph, _rgb($self->{accentclr}) );
         $graph->transparent($self->{bgci}) if $self->{transparent};
         $graph->interlaced($self->{interlaced});
         $self->put_logo($graph);
@@ -269,16 +340,26 @@ use GIFgraph::colour qw(:colours);
 
     # read in the logo, and paste it on the graph canvas
 
-    sub put_logo { # GD::Image
+    sub put_logo 
+	{ # GD::Image
         my $self = shift;
         my $graph = shift;
+
+		return unless(defined($self->{logo}));
+
         my ($x, $y, $glogo);
         my $r = $self->{logo_resize};
-        open ( GIFLOGO, $self->{logo} ) || return;
-        unless ( $glogo = newFromGif GD::Image( GIFLOGO ) ) {
-            warn "Problems reading $self->{logo}"; close GIFLOGO; return;
+
+        open(GIFLOGO, $self->{logo}) || return;
+		binmode(GIFLOGO) if ($GIFgraph::needs_binmode);
+        unless ( $glogo = newFromGif GD::Image(GIFLOGO) ) 
+		{
+            warn "Problems reading $self->{logo}"; 
+			close(GIFLOGO); 
+			return;
         }
-        close GIFLOGO;
+        close(GIFLOGO);
+
         my ($w, $h) = $glogo->getBounds;
         LOGO: for ($self->{logo_position}) {
             /UL/i && do {
@@ -287,33 +368,36 @@ use GIFgraph::colour qw(:colours);
                 last LOGO;
             };
             /UR/i && do {
-                $x = $self->{gifx} - $self->{r_margin} - $w*$r;
+                $x = $self->{gifx} - $self->{r_margin} - $w * $r;
                 $y = $self->{t_margin};
                 last LOGO;
             };
             /LL/i && do {
                 $x = $self->{l_margin};
-                $y = $self->{gify} - $self->{b_margin} - $h*$r;
+                $y = $self->{gify} - $self->{b_margin} - $h * $r;
                 last LOGO;
             };
             # default "LR"
-            $x = $self->{gifx} - $self->{r_margin} - $r*$w;
-            $y = $self->{gify} - $self->{b_margin} - $r*$h;
+            $x = $self->{gifx} - $self->{r_margin} - $r * $w;
+            $y = $self->{gify} - $self->{b_margin} - $r * $h;
             last LOGO;
         }
-        $graph->copyResized($glogo,$x,$y,0,0,$r*$w,$r*$h,$w,$h);
+        $graph->copyResized($glogo, $x, $y, 0, 0, $r * $w, $r * $h, $w, $h);
         undef $glogo;
     }
 
     # Set a colour to work with on the canvas, by rgb value. 
     # Return the colour index in the palette
 
-    sub set_clr { # GD::Image, r, g, b
+    sub set_clr 
+	{ # GD::Image, r, g, b
         my $s = shift; 
-	my $g = shift; 
-	my $i;
+		my $g = shift; 
+		my $i;
+
         # Check if this colour already exists on the canvas
-        if ( ( $i = $g->colorExact( @_ ) ) < 0 ) {
+        if ( ( $i = $g->colorExact( @_ ) ) < 0 ) 
+		{
             # if not, allocate a new one, and return it's index
             return $g->colorAllocate( @_ );
         } 
@@ -322,44 +406,37 @@ use GIFgraph::colour qw(:colours);
     
     # Set a colour, disregarding wether or not it already exists.
 
-    sub set_clr_uniq { # GD::Image, r, g, b
+    sub set_clr_uniq 
+	{ # GD::Image, r, g, b
         my $s=shift; 
         my $g=shift; 
+
         $g->colorAllocate( @_ ); 
     }
 
-    # ????
-    # Return an array of rgb values for a colour number?
+    # Return an array of rgb values for a colour number
 
-    sub pick_data_clr { # number
+    sub pick_data_clr 
+	{ # number
         my $s = shift;
+
         return _rgb( $s->{dclrs}[ $_[0] % (1+$#{$s->{dclrs}}) -1 ] );
     }
 
     # DEBUGGING
-
-    sub DEBUG_dump {
-        my $s = shift;
-        print STDERR "Dumping all variables:\n";
-        foreach (sort keys %$s) {
-            print STDERR "$_ : $s->{$_}\n";
-        }
-    }
+	# Obsolete now, use Data::Dumper
 
     # Return the gif contents
-    # Don't think this is in use anymore, find out
-    # It's not.. maybe dump it? could be useful for direct
-    # data streaming in CGI processes, although plot
-    # should actually do that. Leave it here for debugging 
-    # purposes for now.
-    # ???
 
-    sub gifdata {
+    sub gifdata 
+	{
         my $s = shift;
+
         return $s->{graph}->gif;
     }
 
-    sub version {
+    sub version 
+	{
         return $GIFgraph::prog_version;
     }
 
@@ -372,6 +449,10 @@ __END__
 =head1 NAME
 
 GIFgraph - Graph Plotting Module for Perl 5
+
+=head1 SYNOPSIS
+
+use GIFgraph::moduleName;
 
 =head1 DESCRIPTION
 
@@ -457,11 +538,11 @@ Create a new object $graph with optional width and heigth.
 Default width = 400, default height = 300. C<chart> is either
 C<bars, lines, points, linespoints, area> or C<pie>.
 
-=item set_text_clr( I<colour name> )
+=item set_text_clr( <colour name> )
 
 Set the colour of the text.
 
-=item set_title_font( I<fontname> )
+=item set_title_font( <fontname> )
 
 Set the font that will be used for the title of the chart.  Possible
 choices are defined in GD. 
@@ -469,19 +550,21 @@ B<NB.> If you want to use this function, you'll
 need to use GD. At some point I'll rewrite this, so you can give this a
 number from 1 to 4, or a string like 'large' or 'small'
 
-=item plot( \@data> )
+=item plot( <\@data> )
 
 Plot the chart, and return the GIF data.
 
-=item plot_to_gif( I<"filename", \@data> )
+=item plot_to_gif( <"filename", \@data> )
 
 Plot the chart, and write the GIF data to I<filename>.
 
-=item ReadFile ( I<"filename">, I<some array of columns?> )
+=cut
 
-Read data from I<filename>, which must be a data file formatted for
-GNUplot.
-B<NB.> Have to figure out how to call the function.
+# =item ReadFile ( <"filename">, I<some array of columns?> )
+# 
+# Read data from I<filename>, which must be a data file formatted for
+# GNUplot.
+# B<NB.> Have to figure out how to call the function.
 
 =item set( I<key1 => value1, key2 => value2 ....> )
 
@@ -555,8 +638,8 @@ Default: 'LR'.
 
 =item transparent
 
-If 1, the produced GIF will have the background colour marked as transparent.
-Default: 1.
+If 1, the produced GIF will have the background colour marked as
+transparent.  Default: 1.
 
 =item interlaced
 
@@ -566,6 +649,17 @@ Default: 1.
 =item bgclr, fgclr, textclr, labelclr, axislabelclr, accentclr
 
 Background, foreground, text, label, axis label and accent colours.
+
+=item dclrs (short for datacolours)
+
+This controls the colours for the bars, lines, markers, or pie slices.
+This should be a reference to an array of colour names as defined in
+GIFgraph::colour (perldoc GIFgraph::colour for the names available).
+
+$graph->set( 'dclrs' => [ 'green', 'pink', 'blue', 'cyan' ] );
+
+The first (fifth, ninth) data set will be green, the next pink, etc.
+Default: ['lred', 'lgreen', 'lblue', 'lyellow', 'lpurple', 'cyan', 'lorange'] 
 
 =back
 
@@ -586,6 +680,12 @@ Default: long_ticks = 0, tick_length = 4.
 
 Number of ticks to print for the Y axis.
 Default: 5.
+
+=item x_ticks
+
+If I<x_ticks> = 1, ticks will be drawm for the x axis. These ticks are
+subject to the values of long_ticks and tick_length.  
+Default: 1.
 
 =item x_label_skip, y_label_skip
 
@@ -612,15 +712,29 @@ axis. If this is set to 1, trying to use anything else than 2 datasets
 will generate an error.
 Default: 0.
 
-=item marker_size
+=item zero_axis
 
-The size of the markers used in I<points> and I<linespoints> graphs, in pixels.
-Default: 4.
+If set to a true value, the axis for y values of 0 will always be
+drawn. This might be useful in case your graph contains negative
+values, but you want it to be clear where the zero value is. (see also
+I<zero_axis_only> and I<box_axes>).
+Default: 1.
 
-=item line_width
+=item zero_axis_only
 
-The width of the line used in I<lines> and I<linespoints> graphs, in pixels.
-Default: 2.
+If set to a true value, the zero axis will be drawn (see
+I<zero_axis>), and no axis at the bottom of the graph will be drawn.
+The labels for X values will be placed on the zero exis.
+Default: 1.
+
+=cut
+
+# Removed for now
+#
+# =item line_width
+#
+# The width of the line used in I<lines> and I<linespoints> graphs, in pixels.
+# Default: 2.
 
 =item axis_space
 
@@ -629,9 +743,33 @@ Default: 4.
 
 =item overwrite
 
-In bar graphs, if this is set to 1, bars will be drawn on top of each
-other, otherwise next to eeach other.
+If set to 0 bars of different data sets will be drawn next to each
+other. If set to 1, they will be drawn in front of each other. If set
+to 2 they will be drawn on top of each other.
 Default: 0.
+
+If you have negative values in your data sets, setting overwrite to 2
+might produce odd results. Of course, the graph itself would be quite
+meaningless, because overwrite = 2 is meant to show some cumulative
+effect.
+
+=item markers
+
+This controls the order of markers in points and linespoints graphs.
+This should be a reference to an array of numbers:
+
+$graph->set( 'markers' => [3, 5, 6] );
+
+Available markers are: 1: filled square, 2: open square, 3: horizontal
+cross, 4: diagonal cross, 5: filled diamond, 6: open diamond, 7:
+filled circle, 8: open circle.
+
+Default: [1,2,3,4,5,6,7,8]
+
+=item marker_size
+
+The size of the markers used in I<points> and I<linespoints> graphs, in pixels.
+Default: 4.
 
 =back
 

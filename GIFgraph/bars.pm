@@ -1,17 +1,13 @@
 #==========================================================================
 #			   Copyright (c) 1995 Martien Verbruggen
 #			   Copyright (c) 1996 Commercial Dynamics Pty Ltd
+#			   Copyright (c) 1997 Martien Verbruggen
 #--------------------------------------------------------------------------
 #
 #	Name:
 #		GIFgraph::bars.pm
 #
-# $Id: bars.pm,v 1.1.1.1 1999-10-10 12:01:40 mgjv Exp $
-#
-# $Log: not supported by cvs2svn $
-# Revision 1.1  1997/02/14 02:32:49  mgjv
-# Initial revision
-#
+# $Id: bars.pm,v 1.1.1.2 1999-10-10 12:07:05 mgjv Exp $
 #
 #==========================================================================
  
@@ -28,68 +24,125 @@ use vars qw( @ISA );
 {
 	# PRIVATE
 	sub draw_data{
+
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
-		if ( $s->{overwrite} ) {
+
+		if ( $s->{overwrite} ) 
+		{
 			$s->draw_data_overwrite($g,$d);
-		} else {
+		} 
+		else 
+		{
 			$s->draw_data_side_by_side($g,$d);
 		}
 	}
  
 	# Draws the bars on top of each other
  
-	sub draw_data_overwrite{
+	sub draw_data_overwrite {
+
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
-		my $ds;
-		foreach $ds (1..$s->{numsets}) {
-			my $dsci = $s->set_clr( $g, $s->pick_data_clr($ds) );
-			for (0..$s->{numpoints}) {
-				my ($xp, $t) = $s->val_to_pixel($_+1, $$d[$ds][$_], $ds);
-				my $l = $xp-_round($s->{x_step}/2);
-				my $r = $xp+_round($s->{x_step}/2);
-				$g->filledRectangle( $l, $t, $r, $s->{bottom}, $dsci );
-				$g->rectangle( $l, $t, $r, $s->{bottom}, $s->{acci} );
-				$g->line( $l, $s->{bottom}, $r, $s->{bottom}, $s->{fgci} );
+
+		my $zero = $s->{zeropoint};
+
+		for my $i (0..$s->{numpoints}) 
+		{
+			my $bottom = $zero;
+			my ($xp, $t);
+
+			for my $j (1..$s->{numsets}) 
+			{
+				# get data colour
+				my $dsci = $s->set_clr( $g, $s->pick_data_clr($j) );
+
+				# get coordinates of top and center of bar
+				($xp, $t) = $s->val_to_pixel($i+1, $$d[$j][$i], $j);
+
+				# calculate left and right of bar
+				my $l = $xp - _round($s->{x_step}/2);
+				my $r = $xp + _round($s->{x_step}/2);
+
+				# calculate new top
+				$t -= ($zero - $bottom) if ($s->{overwrite} == 2);
+
+				# draw the bar
+				if ($$d[$j][$i] >= 0)
+				{
+					# positive value
+					$g->filledRectangle( $l, $t, $r, $bottom, $dsci );
+					$g->rectangle( $l, $t, $r, $bottom, $s->{acci} );
+				}
+				else
+				{
+					# negative value
+					$g->filledRectangle( $l, $bottom, $r, $t, $dsci );
+					$g->rectangle( $l, $bottom, $r, $t, $s->{acci} );
+				}
+
+				# reset $bottom to the top
+				$bottom = $t if ($s->{overwrite} == 2);
 			}
 		}
-		$g->line( $s->{left}, $s->{bottom}, 
-				  $s->{right}, $s->{bottom}, 
-				  $s->{fgci} );
-		$g->line( $s->{left}, $s->{top}, 
-				  $s->{right}, $s->{top}, 
-				  $s->{fgci} );
+
+		# redraw the 'zero' axis
+		$g->line( 
+			$s->{left}, $s->{zeropoint}, 
+			$s->{right}, $s->{zeropoint}, 
+			$s->{fgci} );
 	 }
- 
+
 	# Draw the bars side by side
  
 	sub draw_data_side_by_side { # GD::Image, \@data
+
 		my $s = shift;
 		my $g = shift;
 		my $d = shift;
-		my $ds;
-		foreach $ds (1..$s->{numsets}) {
+
+		foreach my $ds (1..$s->{numsets}) 
+		{
+			# Pick a data colour
 			my $dsci = $s->set_clr( $g, $s->pick_data_clr($ds) );
-			for (0..$s->{numpoints}) {
-				my ($xp, $t) = $s->val_to_pixel($_+1, $$d[$ds][$_], $ds);
-				my $l = $xp-$s->{x_step}/2+
-						_round(($ds-1)*$s->{x_step}/$s->{numsets});
-				my $r = $xp-$s->{x_step}/2+
-						_round($ds*$s->{x_step}/$s->{numsets});
-				$g->filledRectangle( $l, $t, $r, $s->{bottom}, $dsci );
-				$g->rectangle( $l, $t, $r, $s->{bottom}, $s->{acci} );
-				$g->line( $l, $s->{bottom}, $r, $s->{bottom}, $s->{fgci} );
+
+			for my $i (0..$s->{numpoints}) 
+			{
+				# get coordinates of top and center of bar
+				my ($xp, $t) = $s->val_to_pixel($i+1, $$d[$ds][$i], $ds);
+
+				# calculate left and right of bar
+				my $l = 
+					$xp - $s->{x_step}/2 +
+					_round(($ds-1) * $s->{x_step}/$s->{numsets});
+				my $r = 
+					$xp - $s->{x_step}/2 +
+					_round($ds * $s->{x_step}/$s->{numsets});
+
+				# draw the bar
+				if ($$d[$ds][$i] >= 0)
+				{
+					# positive value
+					$g->filledRectangle( $l, $t, $r, $s->{zeropoint}, $dsci );
+					$g->rectangle( $l, $t, $r, $s->{zeropoint}, $s->{acci} );
+				}
+				else
+				{
+					# negative value
+					$g->filledRectangle( $l, $s->{zeropoint}, $r, $t, $dsci );
+					$g->rectangle( $l, $s->{zeropoint}, $r, $t, $s->{acci} );
+				}
+
 			}
 		}
-		$g->line( $s->{left}, $s->{bottom}, 
-				  $s->{right}, $s->{bottom}, 
-				  $s->{fgci} );
-		$g->line( $s->{left}, $s->{top}, 
-				  $s->{right}, $s->{top}, 
-				  $s->{fgci} );
+
+		# redraw the 'zero' axis
+		$g->line( 
+			$s->{left}, $s->{zeropoint}, 
+			$s->{right}, $s->{zeropoint}, 
+			$s->{fgci} );
 	}
  
 } # End of package GIFgraph::bars
