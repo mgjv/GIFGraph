@@ -1,16 +1,20 @@
 This is GIFgraph a package to generate GIF charts, using Lincoln
 Stein's GD.pm.
 
+This package is deprecated. I would recommend that you use GD::Graph
+directly. I also do not recommend the use of GIF images anymore, since
+Unisys has decided to be childish about their patent on LZW compression.
+
 INSTALLATION
 
 needed to install (also see TESTED PLATFORMS):
 
-	perl 5.005
+	perl 5.005 (5.004 might work)
 	GD > 1.18
 	GD::Graph
-	GDTextUtils
+	GDTextUtils (for GD::Graph)
 
-	Potentially something to convert PNG to GIF (see later)
+	Image::Magick, or edit GIFgraph/Convert.pm And Makefile.PL
 
 to install:
 
@@ -28,7 +32,6 @@ really an option, and having a module called GIFgraph that produces PNG
 was a bit silly. So I decided to create GD::Graph, and recommend the use
 of that directly, and make GIFgraph a wrapper around that, its only
 function being to provide a backward compatible interface to GD.
-XXX MORE
 
 GD VERSIONS
 
@@ -46,7 +49,7 @@ mgjv@comdyn.com.au
 
 COPYRIGHT
 
-Copyright (c) 1995-1999 Martien Verbruggen. All rights reserved.
+Copyright (c) 1995-2000 Martien Verbruggen. All rights reserved.
 
 This package is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.

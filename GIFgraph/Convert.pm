@@ -5,7 +5,7 @@
 #	Name:
 #		GIFgraph::Convert.pm
 #
-# $Id: Convert.pm,v 1.2 1999-12-26 10:59:19 mgjv Exp $
+# $Id: Convert.pm,v 1.3 1999-12-26 11:08:17 mgjv Exp $
 #
 #==========================================================================
 package GIFgraph::Convert;
@@ -13,6 +13,8 @@ package GIFgraph::Convert;
 use strict;
 use Carp;
 
+# Change this sub if you want to use something else to convert from PNG
+# to GIF.
 sub png2gif
 {
 	my $png  = shift;
