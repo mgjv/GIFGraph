@@ -1,14 +1,15 @@
 use GIFgraph::linespoints;
+use strict;
 
 print STDERR "Processing sample 4-1\n";
 
-@data = ( 
+my @data = ( 
     ["1st","2nd","3rd","4th","5th","6th","7th", "8th", "9th"],
     [undef,  52,  53,  54,  55,  56,  undef,  58,  59],
     [60,  61,  61,  undef,  68,  66,  65,  61, undef],
 );
 
-$my_graph = new GIFgraph::linespoints( );
+my $my_graph = new GIFgraph::linespoints( );
 
 $my_graph->set( 
 	x_label => 'X Label',

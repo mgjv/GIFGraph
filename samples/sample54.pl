@@ -1,14 +1,15 @@
 use GIFgraph::lines;
+use strict;
 
 print STDERR "Processing sample 5-4\n";
 
 # The reverse is in here, because I thought the falling line was 
 # depressing, but I was too lazy to retype the data set
 
-@data = read_data("sample54.dat") 
+my @data = read_data("sample54.dat") 
 	or die "Cannot read data from sample54.dat";
 
-$my_graph = new GIFgraph::lines();
+my $my_graph = new GIFgraph::lines();
 
 $my_graph->set( 
 	x_label => 'Wavelength (nm)',

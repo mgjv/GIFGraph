@@ -1,16 +1,17 @@
 use GIFgraph::lines;
+use strict;
 
 print STDERR "Processing sample 5-1\n";
 
 # The reverse is in here, because I thought the falling line was 
 # depressing, but I was too lazy to retype the data set
 
-@data = ( 
+my @data = ( 
     [ qw( Jan Feb Mar Apr May Jun Jul Aug Sep ) ],
     [ reverse(4, 3, 5, 6, 3,  1.5, -1, -3, -4)],
 );
 
-$my_graph = new GIFgraph::lines();
+my $my_graph = new GIFgraph::lines();
 
 $my_graph->set( 
 	x_label => 'Month',

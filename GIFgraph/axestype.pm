@@ -5,7 +5,7 @@
 #	Name:
 #		GIFgraph::axestype.pm
 #
-# $Id: axestype.pm,v 1.1.1.9 1999-10-10 12:40:46 mgjv Exp $
+# $Id: axestype.pm,v 1.2 1999-10-10 13:03:22 mgjv Exp $
 #
 #==========================================================================
 
@@ -745,10 +745,12 @@ my %Defaults = (
 
 		# Make sure bars and area always have a zero offset
 
-		if (ref($s) eq 'GIFgraph::bars' or ref($s) eq 'GIFgraph::area')
+		if ($s->{y_min}[1] > 0)
 		{
-			$s->{y_min}[1] = 0 if $s->{y_min}[1] > 0;
-			$s->{y_min}[2] = 0 if $s->{y_min}[2] && $s->{y_min}[2] > 0;
+			if (ref($s) eq 'GIFgraph::bars' or ref($s) eq 'GIFgraph::area')
+			{
+				$s->{y_min}[1] = 0; 
+			}
 		}
 
 		# Overwrite these with any user supplied ones

@@ -1,11 +1,12 @@
 use GIFgraph::linespoints;
+use strict;
 
 print STDERR "Processing sample 4-2\n";
 
-@data =  read_data_from_csv("sample42.dat")
+my @data =  read_data_from_csv("sample42.dat")
 	or die "Cannot read data from sample42.dat";
 
-$my_graph = new GIFgraph::linespoints( );
+my $my_graph = new GIFgraph::linespoints( );
 
 $my_graph->set( 
 	x_label => 'X Label',

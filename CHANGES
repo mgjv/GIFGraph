@@ -1,3 +1,23 @@
+Sat Oct  9 1999
+
+- Finally possible to do some work on it again
+- Added build of samples to Makefile
+- removed tests from distribution. Caused too many false fails for
+  different GD distributions. Use samples and visual check now.
+
+Fri August 28 1998
+
+- Added plot_to_gd method
+- Removed test from distribution
+- Fixed tick drawing bug. Ticks overwrote axis.
+- Fixed redraw of bottom for area graphs
+
+Thu August 27 1998
+
+- Changed default for y_tick_number to 'auto'
+- Fixed bug with placement of numerical axis ticks off by one pixel
+- Added sample, edited sample files
+
 Tue August 25 1998
 
 - Fixed bug with undef values for first value in lines graphs

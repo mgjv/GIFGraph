@@ -1,8 +1,9 @@
 use GIFgraph::mixed;
+use strict;
 
 print STDERR "Processing sample 6-1 (The error message is intended)\n";
 
-@data = ( 
+my @data = ( 
     ["1st","2nd","3rd","4th","5th","6th","7th", "8th", "9th"],
     [    1,    2,    5,    6,    3,  1.5,   -1,    -3,    -4],
     [   -4,   -3,    1,    1,   -3, -1.5,   -2,    -1,     0],
@@ -12,7 +13,7 @@ print STDERR "Processing sample 6-1 (The error message is intended)\n";
 	[ -0.1,    2,    5,    4,   -3,  2.5,  3.2,     4,    -4],
 );
 
-$my_graph = new GIFgraph::mixed();
+my $my_graph = new GIFgraph::mixed();
 
 $my_graph->set( 
 	types => [ qw( lines bars points area linespoints wrong_type ) ],

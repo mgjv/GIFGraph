@@ -18,7 +18,7 @@
 #		GIFgraph::pie
 #		GIFgraph::mixed
 #
-# $Id: GIFgraph.pm,v 1.1.1.9 1999-10-10 12:40:40 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.2 1999-10-10 13:03:19 mgjv Exp $
 #
 #==========================================================================
 
@@ -40,7 +40,7 @@ use GD;
 package GIFgraph;
 
 $GIFgraph::prog_name    = 'GIFgraph.pm';
-$GIFgraph::prog_rcs_rev = '$Revision: 1.1.1.9 $';
+$GIFgraph::prog_rcs_rev = '$Revision: 1.2 $';
 $GIFgraph::prog_version = 
 	($GIFgraph::prog_rcs_rev =~ /\s+(\d*\.\d*)/) ? $1 : "0.0";
 
@@ -869,11 +869,11 @@ effect.
 =head2 Options for graphs with a numerical X axis
 
 First of all: GIFgraph does B<not> support numerical x axis the way it
-should. Data for X axes should be equally spaced. That understood:
-There is some support to make the printing of graphs with numerical X
-axis values a bit better, thanks to Scott Prahl. If the option
-C<x_tick_number> is set to a defined value, GIFgraph will attempt to
-treat the X data as numerical.
+should. Data for X axes still has to be equally spaced. That
+understood: There is some support to make the printing of graphs with
+numerical X axis values a bit better, thanks to Scott Prahl. If the
+option C<x_tick_number> is set to a defined value, GIFgraph will
+attempt to treat the X data as numerical.
 
 Extra options are:
 
@@ -894,7 +894,10 @@ Default: computed.
 
 =item x_number_format
 
-See y_number_format
+See y_number_format. Note that this only has an effect if you're
+trying to format a graph with a 'numerical' X axis. That is why the
+option is listed under this heading. (I just keep getting questions
+about it :))
 
 =item x_label_skip
 
@@ -1088,11 +1091,15 @@ Wherever a font name is required, a font from L<GD> should be used.
 
 =head1 AUTHOR
 
-Martien Verbruggen
+Martien Verbruggen <mgjv@comdyn.com.au>
 
-=head2 Contact info 
+=head2 Thanks
 
-email: mgjv@comdyn.com.au
+The following people have contributed to GIFgraph (alphabetical
+order):
+
+Dave Belcher, brian d foy, Honza Pazdziora, Scott Prahl, 
+Vegard Vesterheim
 
 =head2 Copyright
 
@@ -1102,4 +1109,3 @@ and/or modify it under the same terms as Perl itself.
 
 =cut
 
-# WWW: L<http://www.tcp.chem.tue.nl/~tgtcmv/>

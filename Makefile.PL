@@ -1,17 +1,24 @@
 # This -*- perl -*- script makes the Makefile
-# $Id: Makefile.PL,v 1.1.1.5 1999-10-10 12:39:45 mgjv Exp $
+# $Id: Makefile.PL,v 1.2 1999-10-10 13:03:19 mgjv Exp $
  
 #--- Distribution section ---
  
 $MODNAME = 'GIFgraph';
  
-BEGIN { require 5.001 }
+BEGIN { require 5.004 }
  
 use ExtUtils::MakeMaker;
+use Config;
  
-my @clean = qw(*% *.html *.b[ac]k *.old .[A-z]* tags);
-push @clean, map { "*/$_" } @clean;
- 
+my @clean = qw(*% *.b[ac]k *.old tags samples/sample??.gif);
+opendir(DD, 'samples') || die 'samples directory missing';
+my @samples = 
+	sort
+	map { s/\.pl$/.gif/; $_ } 
+	grep { /^sample..\.pl$/ } 
+	readdir(DD);
+closedir(DD);
+
 WriteMakefile(
 		'VERSION_FROM'		=> $MODNAME . '.pm',	#finds $VERSION
         'DISTNAME'  		=> $MODNAME,
@@ -30,6 +37,19 @@ WriteMakefile(
 			'SUFFIX'   		=> 'gz', 
 		},
  
-        'clean'   => { 'FILES' => join(" ", @clean), },
+        'clean'   	=> { 'FILES' => q(*% *.b[ac]k *.old tags) },
+        'realclean'	=> { 'FILES' => q(samples/sample??.gif) },
+
+		'macro'	  => { 'SAMPLES' => "@samples" },
 );
+
+sub MY::postamble {
+	my $postamble =<<END;
+samples: all
+	@(cd samples && make PERL=$Config{'perl'})
+	echo Samples have been created in samples directory
+END
+
+	$postamble;
+}
 

@@ -1,13 +1,14 @@
 use GIFgraph::pie;
+use strict;
 
 print STDERR "Processing sample 9-2\n";
 
-@data = ( 
+my @data = ( 
     ["1st","2nd","3rd","4th","5th","6th"],
     [    4,    2,    3,    4,    3,  3.5]
 );
 
-$my_graph = new GIFgraph::pie( 250, 200 );
+my $my_graph = new GIFgraph::pie( 250, 200 );
 
 $my_graph->set( 
 	title => 'A Pie Chart',

@@ -1,14 +1,15 @@
 use GIFgraph::mixed;
+use strict;
 
 print STDERR "Processing sample 6-2\n";
 
-@data = ( 
+my @data = ( 
     ["1st","2nd","3rd","4th","5th","6th","7th", "8th", "9th"],
     [    9,    8,    9,  8.4,  7.1,  7.5,    8,     3,     3],
     [   .4,   .3,    1,    1,   .3,  1.5,    2,     1,     0],
 );
 
-$my_graph = new GIFgraph::mixed();
+my $my_graph = new GIFgraph::mixed();
 
 $my_graph->set( 
 	x_label => 'X Label',

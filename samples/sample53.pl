@@ -1,12 +1,13 @@
 use GIFgraph::lines;
 use GIFgraph::colour;
+use strict;
 
 GIFgraph::colour::read_rgb("rgb.txt") or 
 	die "Cannot read colours from rgb.txt";
 
 print STDERR "Processing sample 5-3\n";
 
-@data = ( 
+my @data = ( 
     ["1st","2nd","3rd","4th","5th","6th","7th", "8th", "9th"],
     [    1,    2,    5,    6,    3,  1.5,   -1,    -3,    -4],
     [   -4,   -3,    1,    1,   -3, -1.5,   -2,    -1,     0],
@@ -14,7 +15,7 @@ print STDERR "Processing sample 5-3\n";
 	[  0.1,  0.2,  0.5,  0.4,  0.3,  0.5,  0.1,     0,   0.4],
 );
 
-$my_graph = new GIFgraph::lines();
+my $my_graph = new GIFgraph::lines();
 
 $my_graph->set( 
 	x_label => 'X Label',

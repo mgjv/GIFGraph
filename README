@@ -1,4 +1,4 @@
-This is GIFgraph 1.10, a package to generate GIF charts, using Lincoln
+This is GIFgraph a package to generate GIF charts, using Lincoln
 Stein's GD.pm.
 
 INSTALLATION
@@ -12,36 +12,45 @@ to install:
 
 	perl Makefile.PL
 	make
-	make test
 	make install
 
-NB: make test may report errors. If you are not using GD 1.18 this is
-normal. Because of differences in the way GD implements fonts and
-polygons in the various versions, the produced GIFs will differ very
-slightly. If you see this behaviour, please 'make' the samples in the
-samples directory, and check the produced GIFs visually. If they look
-ok, then GIFgraph is ok.
+NB: make test is no longer available. Because of the differences in
+the versions of GD, it was almost impossible to make a set of reliable
+tests. If everybody out there had a recent version of GD, there would
+be no problem. Instead of 'make test', Just have a look at the
+samples. If they look ok, then GIFgraph will work.
 
 to see some samples:
 
 	cd samples
 	make
 
+or, if you have a decent make, try
+
+	make samples
+
+from this directory
+
 That should generate a set of gifs, which you can view using the HTML
 pages in the same directory (or whichever other way pleases you).
 
 The documentation available is contained in GIFgraph.pm, as pod.
 
-The latest release should normally be available from CPAN and from 
-http://www.tcp.chem.tue.nl/~tgtcmv/perl/
+The latest release should normally be available from CPAN. Older
+version may still be available from
+http://www.tcp.chem.tue.nl/~tgtcmv/perl/, but that location will no
+longer be maintained
 
 TESTED PLATFORMS (also see NOTES FOR WIN32)
 
-Latest version:
+1.11:
+
+1.10:
+- perl 5.005_03 on Linux (RedHat 6.0), GD 1.19
+- perl 5.005_02 on Solaris 2.6, GD 1.19
 - perl 5.004_04 on Solaris 2.6, GD 1.18
 - perl 5.005_02 on Solaris 2.6, GD 1.18
-
-Version 1.01:
+1.01:
 - perl 5.004_04 on Solaris 2.5.1, GD 1.15
 - perl 5.004_02 for win32 by Gurusamy Sarathy, GD (1.14 I think)
 - perl 5.004_04 HP-UX 10.20, GD 1.18 (Ronald Post)
@@ -50,7 +59,13 @@ AUTHOR
 
 Martien Verbruggen
 mgjv@comdyn.com.au
-tgtcmv@chem.tue.nl
+
+MOST IMPORTANT CHANGES SINCE VERSION 1.10
+
+- plot_to_gd method added
+- some bug fixes
+- worked on some samples
+- removed tests from distribution
 
 MOST IMPORTANT CHANGES SINCE VERSION 1.04
 
@@ -89,10 +104,12 @@ MOST IMPORTANT CHANGES SINCE VERSION 0.91
 - Changed 'zero' angle for pie charts (was right, now is front/bottom)
 - Definition of colours now possible. See GIFgraph::colour::read_rgb
   for details
-- See file CHANGES for more
 
 TODO
 
+- Allow settings for individual data sets
+- For mixed graphs, calculate the number of bar sets
+- make overwrite = 2 work everywhere
 - 3d look for graphs
 - logarithmic scaling
 - numerical X axes (halfway there)
@@ -122,11 +139,7 @@ have personally not tested that yet.
 
 THANKS
 
-	Scott Prahl
-	brian d foy
-	Honza Pazdziora
-	Dave Belcher
-	Vegard Vesterheim
+	See documentation in GIFgraph.pm
 
 COPYRIGHT
 
@@ -134,4 +147,3 @@ Copyright (c) 1995-1997 Martien Verbruggen. All rights reserved.
 
 This package is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
-
