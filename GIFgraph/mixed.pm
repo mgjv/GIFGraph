@@ -5,14 +5,21 @@
 #	Name:
 #		GIFgraph::mixed.pm
 #
-# $Id: mixed.pm,v 1.2 1999-12-26 04:39:13 mgjv Exp $
+# $Id: mixed.pm,v 1.3 1999-12-26 10:59:19 mgjv Exp $
 #
 #==========================================================================
 
 package GIFgraph::mixed;
 use strict;
-@GIFgraph::mixed::ISA = qw(GIFgraph::axestype GD::Graph::mixed);
+use GIFgraph;
+use GD::Graph::mixed;
+@GIFgraph::mixed::ISA = qw(GD::Graph::mixed GIFgraph);
 
-# Intentionally left blank
+sub plot 
+{ 
+	my $self = shift;
+	my $gd   = $self->SUPER::plot(@_);
+	$self->_old_plot($gd);
+}
 
 1;

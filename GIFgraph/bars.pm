@@ -5,17 +5,21 @@
 #	Name:
 #		GIFgraph::bars.pm
 #
-# $Id: bars.pm,v 1.2 1999-12-26 04:39:12 mgjv Exp $
+# $Id: bars.pm,v 1.3 1999-12-26 10:59:19 mgjv Exp $
 #
 #==========================================================================
  
 package GIFgraph::bars;
 use strict;
+use GIFgraph;
+use GD::Graph::bars;
+@GIFgraph::bars::ISA = qw(GD::Graph::bars GIFgraph);
 
-use GIFgraph::axestype;
-use GIFgraph::utils qw(:all);
-@GIFgraph::bars::ISA = qw(GIFgraph::axestype GD::Graph::bars);
-
-# Intentionally left blank
+sub plot 
+{ 
+	my $self = shift;
+	my $gd   = $self->SUPER::plot(@_);
+	$self->_old_plot($gd);
+}
 
 1;

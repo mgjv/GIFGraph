@@ -18,7 +18,7 @@
 #		GIFgraph::pie
 #		GIFgraph::mixed
 #
-# $Id: GIFgraph.pm,v 1.3 1999-12-26 04:39:12 mgjv Exp $
+# $Id: GIFgraph.pm,v 1.4 1999-12-26 10:59:19 mgjv Exp $
 #
 #==========================================================================
 
@@ -27,8 +27,29 @@ package GIFgraph;
 use strict;
 use Carp;
 
+use GD::Graph;
+use GIFgraph::Convert;
+
 $GIFgraph::VERSION = '1.20';
 @GIFgraph::ISA = qw(GD::Graph);
+
+# Old plot returned GIF data. GD::Graph::plot returns GD data
+sub _old_plot
+{
+	my $self = shift;
+	my $gd   = shift;
+
+	for ($self->export_format)
+	{
+		/^gif$/ and 
+			return $gd->gif;
+
+		/^png$/ and 
+			return GIFgraph::Convert::png2gif($gd->png);
+
+		croak 'Cannot deal with GD export format. Please contact author';
+	}
+}
 
 sub plot_to_gif # ("file.gif", \@data)
 {
@@ -38,18 +59,8 @@ sub plot_to_gif # ("file.gif", \@data)
 	local(*PLOT);
 	my $img_data;
 
-	my $gd = $self->plot($data);
-
-	for ($self->export_format)
-	{
-		/^gif$/ and 
-			$img_data = $gd->gif, last;
-
-		/^png$/ and 
-			$img_data = GIFgraph::Convert::png2gif($gd->png), last;
-
-		croak 'Cannot deal with GD export format. Please contact author';
-	}
+	$img_data = $self->plot($data) or
+		croak "GIFgraph::plot_to_gif: Cannot get image data";
 
 	open (PLOT,">$file") or 
 		carp "Cannot open $file for writing: $!", return;

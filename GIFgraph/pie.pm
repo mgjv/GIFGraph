@@ -5,14 +5,21 @@
 #	Name:
 #		GIFgraph::pie.pm
 #
-# $Id: pie.pm,v 1.2 1999-12-26 04:39:13 mgjv Exp $
+# $Id: pie.pm,v 1.3 1999-12-26 10:59:19 mgjv Exp $
 #
 #==========================================================================
 
 package GIFgraph::pie;
 use strict;
-@GIFgraph::pie::ISA = qw(GIFgraph GD::Graph::pie);
+use GIFgraph;
+use GD::Graph::pie;
+@GIFgraph::pie::ISA = qw(GD::Graph::pie GIFgraph);
 
-# Intentionally left blank
+sub plot 
+{ 
+	my $self = shift;
+	my $gd   = $self->SUPER::plot(@_);
+	$self->_old_plot($gd);
+}
 
 1;

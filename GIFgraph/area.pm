@@ -5,14 +5,21 @@
 #	Name:
 #		GIFgraph::area.pm
 #
-# $Id: area.pm,v 1.2 1999-12-26 04:39:12 mgjv Exp $
+# $Id: area.pm,v 1.3 1999-12-26 10:59:19 mgjv Exp $
 #
 #==========================================================================
 
 package GIFgraph::area;
 use strict;
-@GIFgraph::area::ISA = qw(GIFgraph::axestype GD::Graph::area);
+use GIFgraph;
+use GD::Graph::area;
+@GIFgraph::area::ISA = qw(GD::Graph::area GIFgraph);
 
-# Intentionally left blank
+sub plot 
+{ 
+	my $self = shift;
+	my $gd   = $self->SUPER::plot(@_);
+	$self->_old_plot($gd);
+}
 
 1;

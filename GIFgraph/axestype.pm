@@ -5,13 +5,15 @@
 #	Name:
 #		GIFgraph::axestype.pm
 #
-# $Id: axestype.pm,v 1.3 1999-12-26 04:39:12 mgjv Exp $
+# $Id: axestype.pm,v 1.4 1999-12-26 10:59:19 mgjv Exp $
 #
 #==========================================================================
 
 package GIFgraph::axestype;
 use strict;
-@GIFgraph::axestype::ISA = qw(GIFgraph GD::Graph::axestype);
+use GIFgraph;
+use GD::Graph::axestype;
+@GIFgraph::axestype::ISA = qw(GD::Graph::axestype GIFgraph);
 
 # Intentionally left blank
 

@@ -1,8 +1,10 @@
 PERL = perl
 .SUFFIXES: .gif .pl
 .SILENT:
-LIB = -I.. -I/home/mgjv/lib/perl5/site_perl/5.005/i386-linux
-OPTIONS = -Tw
+
+OPTIONS = -I.. -Tw
+#OPTIONS = -I.. -I../../GDGraph/lib -I/home/mgjv/perl/GD1.19 -Tw
+#OPTIONS = -I.. -I../../GDGraph/lib -I/home/mgjv/perl/GD1.19 -Tw
 
 GIFS =  sample11.gif sample12.gif sample13.gif \
 		sample15.gif sample16.gif \
@@ -16,7 +18,7 @@ GIFS =  sample11.gif sample12.gif sample13.gif \
 all: $(GIFS)
 
 .pl.gif:
-	$(PERL) $(OPTIONS) $(LIB) $<
+	$(PERL) $(OPTIONS) $<
 
 clean:
 	rm -f $(GIFS)

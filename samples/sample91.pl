@@ -17,7 +17,9 @@ $my_graph->set(
 	pie_height => 36,
 );
 
-$my_graph->plot_to_gif( "sample91.gif", \@data );
-
-exit;
+my $gif_data = $my_graph->plot(\@data);
+open(GIF, '>sample91.gif') or die "Cannot write sample91.gif: $!";
+binmode(GIF);
+print GIF $gif_data;
+close(GIF);
 

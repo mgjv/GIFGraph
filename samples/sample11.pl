@@ -1,5 +1,4 @@
 use GIFgraph::bars;
-use GIFgraph::colour;
 use strict;
 
 print STDERR "Processing sample 1-1\n";
@@ -20,7 +19,9 @@ $my_graph->set(
 	y_label_skip => 2,
 );
 
-$my_graph->plot_to_gif( "sample11.gif", \@data );
-
-exit;
+my $gif_data = $my_graph->plot(\@data);
+open(GIF, '>sample11.gif') or die "Cannot write sample11.gif: $!";
+binmode(GIF);
+print GIF $gif_data;
+close(GIF);
 

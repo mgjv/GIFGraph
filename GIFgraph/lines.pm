@@ -5,14 +5,21 @@
 #	Name:
 #		GIFgraph::lines.pm
 #
-# $Id: lines.pm,v 1.2 1999-12-26 04:39:12 mgjv Exp $
+# $Id: lines.pm,v 1.3 1999-12-26 10:59:19 mgjv Exp $
 #
 #==========================================================================
 
 package GIFgraph::lines;
 use strict;
-@GIFgraph::lines::ISA = qw(GIFgraph::axestype GD::Graph::lines);
+use GIFgraph;
+use GD::Graph::lines;
+@GIFgraph::lines::ISA = qw(GD::Graph::lines GIFgraph);
 
-# Intentionally left blank
+sub plot 
+{ 
+	my $self = shift;
+	my $gd   = $self->SUPER::plot(@_);
+	$self->_old_plot($gd);
+}
 
 1;

@@ -47,5 +47,3 @@ $my_graph->set_legend( qw( one two three four five six ) );
 
 $my_graph->plot_to_gif( "sample61.gif", \@data );
 
-exit;
-

@@ -1,8 +1,8 @@
 use GIFgraph::lines;
-use GIFgraph::colour;
+use GD::Graph::colour;
 use strict;
 
-GIFgraph::colour::read_rgb("rgb.txt") or 
+GD::Graph::colour::read_rgb("rgb.txt") or 
 	die "Cannot read colours from rgb.txt";
 
 print STDERR "Processing sample 5-3\n";
